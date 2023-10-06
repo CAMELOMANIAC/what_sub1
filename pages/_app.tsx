@@ -1,5 +1,6 @@
 import '../pages/global.css'
 import Head from 'next/head'
+import GlobalNav from '../components/GlobalNav';
 
 export default function MyApp({ Component, pageProps }) {
   return (
@@ -8,6 +9,9 @@ export default function MyApp({ Component, pageProps }) {
         <title>whatsub</title>
         <meta name="sandwich recipe" content="initial-scale=1.0, width=device-width"/>      
       </Head>
+      <nav className='mb-12'>{/*globalNav이 가리는 부분을 방지하는 여백*/}
+        <GlobalNav></GlobalNav>
+      </nav>
       <Component {...pageProps} />
     </>
   );

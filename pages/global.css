@@ -5,6 +5,7 @@
 body{
     display: flex;
     justify-content: center;
+    @apply bg-slate-50;
 }
 
 .input-no-clear::-webkit-search-cancel-button {
