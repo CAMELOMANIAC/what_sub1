@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
+body {
     display: flex;
     justify-content: center;
     @apply bg-slate-50;
@@ -10,4 +10,4 @@ body{
 
 .input-no-clear::-webkit-search-cancel-button {
     @apply hidden;
-  }
+}
