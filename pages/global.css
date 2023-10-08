@@ -8,6 +8,23 @@ body {
     @apply bg-slate-50;
 }
 
+/*인풋버튼 기본 내용제거버튼 숨기기*/
 .input-no-clear::-webkit-search-cancel-button {
     @apply hidden;
 }
+
+@keyframes bounce {
+    0% {
+      transform: translateY(-300px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  .animation-instance {
+    animation-name: bounce;
+    animation-duration: 0.8s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+  }
