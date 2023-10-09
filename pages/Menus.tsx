@@ -17,25 +17,25 @@ const Menus = () => {
 
     const [menuType, setMenuType] = useState(0);
     const menuSelectorArray: { menuName: string, src: string, type?: number }[] = [
-        { menuName: '로스티드 치킨', src: '/images/sandwich_menu/Roasted-Chicken_20211231095032718.png', type:0},
-        { menuName: '로티세리 바베큐', src: '/images/sandwich_menu/Rotisserie-Barbecue-Chicken_20211231023137878.png' },
-        { menuName: '베지', src: '/images/sandwich_menu/Veggie-Delite_20211231095658375.png' },
-        { menuName: '서브웨이클럽', src: '/images/sandwich_menu/Subway-Club™_20211231095518589.png' },
-        { menuName: '스파이시 쉬림프', src: '/images/sandwich_menu/치킨슬라이스샌드위치_20220804012537491.png' },
-        { menuName: '스파이시 바베큐', src: '/images/sandwich_menu/스파이시바비큐_정면_20221031041334845.png' },
-        { menuName: '스파이시 이탈리안', src: '/images/sandwich_menu/spicy_italian_20211231095435532.png' },
-        { menuName: '스테이크 & 치즈', src: '/images/sandwich_menu/Steak-&-Cheese_20211231095455613.png' },
-        { menuName: '쉬림프', src: '/images/sandwich_menu/Shrimp_20211231095411189.png' },
-        { menuName: '이탈리안 B.M.T', src: '/images/sandwich_menu/Italian_B.M.T_20211231094910899.png' },
-        { menuName: '에그마요', src: '/images/sandwich_menu/Egg-Mayo_20211231094817112.png' },
-        { menuName: '치킨 베이컨 아보카도', src: '/images/sandwich_menu/치킨베이컨아보카도샌드위치_20220804012954461.png' },
-        { menuName: '참치', src: '/images/sandwich_menu/Tuna_20211231095535268.png' },
-        { menuName: '치킨 슬라이스', src: '/images/sandwich_menu/치킨슬라이스샌드위치_20220804012537491.png' },
-        { menuName: '치킨 데리야끼', src: '/images/sandwich_menu/Chicken-Teriyaki_20211231094803381.png' },
-        { menuName: '풀드포크', src: '/images/sandwich_menu/Pulled-Pork+cheese_20211231095012512.png' },
-        { menuName: '햄', src: '/images/sandwich_menu/Ham_20211231094833168.png' },
-        { menuName: 'B.L.T', src: '/images/sandwich_menu/B.L.T_20211231094744175.png' },
-        { menuName: 'K-bbq', src: '/images/sandwich_menu/K-BBQ_20211231094930225.png' },
+        { menuName: '로스티드 치킨', src: '/images/sandwich_menu/Roasted-Chicken_20211231095032718.png', type:2},
+        { menuName: '로티세리 바베큐', src: '/images/sandwich_menu/Rotisserie-Barbecue-Chicken_20211231023137878.png', type:2},
+        { menuName: '베지', src: '/images/sandwich_menu/Veggie-Delite_20211231095658375.png', type:2},
+        { menuName: '서브웨이클럽', src: '/images/sandwich_menu/Subway-Club™_20211231095518589.png', type:2},
+        { menuName: '스파이시 쉬림프', src: '/images/sandwich_menu/치킨슬라이스샌드위치_20220804012537491.png', type:3},
+        { menuName: '스파이시 바베큐', src: '/images/sandwich_menu/스파이시바비큐_정면_20221031041334845.png', type:4},
+        { menuName: '스파이시 이탈리안', src: '/images/sandwich_menu/spicy_italian_20211231095435532.png', type:3},
+        { menuName: '스테이크 & 치즈', src: '/images/sandwich_menu/Steak-&-Cheese_20211231095455613.png', type:3},
+        { menuName: '쉬림프', src: '/images/sandwich_menu/Shrimp_20211231095411189.png', type:3},
+        { menuName: '이탈리안 B.M.T', src: '/images/sandwich_menu/Italian_B.M.T_20211231094910899.png', type:1},
+        { menuName: '에그마요', src: '/images/sandwich_menu/Egg-Mayo_20211231094817112.png', type:1},
+        { menuName: '참치', src: '/images/sandwich_menu/Tuna_20211231095535268.png', type:1},
+        { menuName: '치킨 베이컨 아보카도', src: '/images/sandwich_menu/치킨베이컨아보카도샌드위치_20220804012954461.png', type:2},
+        { menuName: '치킨 슬라이스', src: '/images/sandwich_menu/치킨슬라이스샌드위치_20220804012537491.png', type:2},
+        { menuName: '치킨 데리야끼', src: '/images/sandwich_menu/Chicken-Teriyaki_20211231094803381.png', type:3},
+        { menuName: '풀드포크', src: '/images/sandwich_menu/Pulled-Pork+cheese_20211231095012512.png', type:3},
+        { menuName: '햄', src: '/images/sandwich_menu/Ham_20211231094833168.png', type:1},
+        { menuName: 'B.L.T', src: '/images/sandwich_menu/B.L.T_20211231094744175.png', type:1},
+        { menuName: 'K-bbq', src: '/images/sandwich_menu/K-BBQ_20211231094930225.png', type:3},
     ]
 
     return (
@@ -64,19 +64,19 @@ const Menus = () => {
                         </div>
                     }{menuType === 1 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (index.type === 0 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
+                            {menuSelectorArray.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
                         </div>
                     }{menuType === 2 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (<MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
+                            {menuSelectorArray.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
                         </div>
                     }{menuType === 3 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (<MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
+                            {menuSelectorArray.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
                         </div>
                     }{menuType === 4 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (<MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
+                            {menuSelectorArray.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
                         </div>
                     }
 
