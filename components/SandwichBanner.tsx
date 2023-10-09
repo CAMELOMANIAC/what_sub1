@@ -64,40 +64,40 @@ const SandwichBanner = () => {
                         }
                         gridValues.push(row);
                     }
-/*
-                    console.log(gridValues);
-                    //이미지 그리드 육안확인용
-                    if (context) {
-                        // 이미지 그리기
-                        context.drawImage(image, 0, 0, rect.width, rect.height);
-
-                        // 그리드 그리기
-                        for (let i = 0; i <= cols; i++) {
-                            const x = i * gridWidth;
-                            context.moveTo(x, 0);
-                            context.lineTo(x, rect.height * scale);
-                        }
-
-                        for (let i = 0; i <= rows; i++) {
-                            const y = i * gridHeight;
-                            context.moveTo(0, y);
-                            context.lineTo(rect.width * scale, y);
-                        }
-
-                        // 그리드 색상 채우기
-                        for (let i = 0; i <= cols; i++) {
-                            for (let j = 0; j <= rows; j++) {
-                                if (gridValues[j] && gridValues[j][i] === false) {
-                                    const x = i * gridWidth;
-                                    const y = j * gridHeight;
-                                    context.fillStyle = 'rgba(2, 255, 255, 0.5)';
-                                    context.fillRect(x, y, gridWidth, gridHeight);
-                                }
-                            }
-                        }
-                        context.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-                        context.stroke();
-                    }*/
+                    /*
+                                        console.log(gridValues);
+                                        //이미지 그리드 육안확인용
+                                        if (context) {
+                                            // 이미지 그리기
+                                            context.drawImage(image, 0, 0, rect.width, rect.height);
+                    
+                                            // 그리드 그리기
+                                            for (let i = 0; i <= cols; i++) {
+                                                const x = i * gridWidth;
+                                                context.moveTo(x, 0);
+                                                context.lineTo(x, rect.height * scale);
+                                            }
+                    
+                                            for (let i = 0; i <= rows; i++) {
+                                                const y = i * gridHeight;
+                                                context.moveTo(0, y);
+                                                context.lineTo(rect.width * scale, y);
+                                            }
+                    
+                                            // 그리드 색상 채우기
+                                            for (let i = 0; i <= cols; i++) {
+                                                for (let j = 0; j <= rows; j++) {
+                                                    if (gridValues[j] && gridValues[j][i] === false) {
+                                                        const x = i * gridWidth;
+                                                        const y = j * gridHeight;
+                                                        context.fillStyle = 'rgba(2, 255, 255, 0.5)';
+                                                        context.fillRect(x, y, gridWidth, gridHeight);
+                                                    }
+                                                }
+                                            }
+                                            context.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+                                            context.stroke();
+                                        }*/
 
                     const clickListener = (event) => {
                         const x = event.clientX - rect.left;
@@ -161,8 +161,8 @@ const SandwichBanner = () => {
 
                             setForkPosition({ x, y, angle });
                             console.log(forkPosition);
-                        }else{
-                            setForkPosition({ x:0, y:-100, angle:0 });
+                        } else {
+                            setForkPosition({ x: 0, y: -100, angle: 0 });
                         }
                     };
 
@@ -190,11 +190,12 @@ const SandwichBanner = () => {
                     style={{
                         position: 'absolute',
                         top: forkPosition.y,
-                        left: forkPosition.x +100,
+                        left: forkPosition.x + 100,
                         pointerEvents: 'none',
                         transform: `rotate(${forkPosition.angle + 180}rad)`,
                         transformOrigin: 'top center', // 회전 중심점을 이미지 중앙으로 설정
-                        transition: 'top 1s, left 1s, transform 1s'
+                        transition: 'top 1s, left 1s, transform 1s',
+                        scale: '0.4'
                     }}
                 />
             )}
