@@ -1,9 +1,5 @@
-import { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import MenusSelectorGridItem from '../components/MenusSelectorGridItem';
-
-const StyledImg = styled.img`
-`
 
 const Menus = () => {
     const menuArray: { name: string, value: string }[] = [
@@ -37,6 +33,11 @@ const Menus = () => {
         { menuName: 'B.L.T', src: '/images/sandwich_menu/B.L.T_20211231094744175.png', type:1},
         { menuName: 'K-bbq', src: '/images/sandwich_menu/K-BBQ_20211231094930225.png', type:3},
     ]
+    const [searchQuery,setSearchQuery]=useState('');
+    const queryChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
+        setSearchQuery(e.target.value);
+    }
+    const searchResult = menuSelectorArray.filter((item)=>item.menuName.includes(searchQuery))
 
     return (
         <main className='w-full max-w-screen-xl mx-auto'>
@@ -44,12 +45,12 @@ const Menus = () => {
             <div className="grid grid-cols-6 gap-2 w-[66rem] pt-4">
                 <div className="col-span-6 border bg-white">
                     {/*메뉴 간단정보*/}
-                    ㄴㅁㅇㄹ
+                    as23df+{searchQuery}
                 </div>
 
                 <div className="col-span-2 border bg-white p-2">
                     {/*메뉴 선택기 */}
-                    <input type="text" className='border placeholder:text-gray-400 focus:ring-0 w-full p-1' />
+                    <input type="text" className='border placeholder:text-gray-400 focus:ring-0 w-full p-1' onChange={queryChange}/>
                     <div className="flex w-full pt-2">
                         <button className={`border rounded-l py-2 w-full text-xs ${menuType === 0 ? 'bg-blue-500 text-white' : ''}`} onClick={() => setMenuType(0)}>all</button>
                         <button className={`border-y py-2 w-full text-xs ${menuType === 1 ? 'bg-blue-500 text-white' : ''}`} onClick={() => setMenuType(1)}>클래식</button>
@@ -60,26 +61,25 @@ const Menus = () => {
 
                     {menuType === 0 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (<MenusSelectorGridItem menuName={index.menuName} src={index.src} key={index.menuName}/>))}
+                            {searchResult.map((index) => (<MenusSelectorGridItem menuName={index.menuName} src={index.src} key={index.menuName}/>))}
                         </div>
                     }{menuType === 1 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
+                            {searchResult.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
                         </div>
                     }{menuType === 2 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
+                            {searchResult.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
                         </div>
                     }{menuType === 3 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
+                            {searchResult.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
                         </div>
                     }{menuType === 4 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {menuSelectorArray.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
+                            {searchResult.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} />))}
                         </div>
                     }
-
                 </div>
 
                 <div className="col-span-4 border bg-white">
