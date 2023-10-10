@@ -1,5 +1,3 @@
-import styled from "styled-components";
-
 type TestObject = {
     name: string;
     value: string;

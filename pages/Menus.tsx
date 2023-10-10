@@ -42,6 +42,7 @@ const Menus = () => {
         setSearchQuery(e.target.value);
     }
     const searchResult = menuSelectorArray.filter((item) => item.menuName.includes(searchQuery))
+    const [order, setOrder] = useState(0);
 
     return (
         <main className='w-full max-w-screen-xl mx-auto'>
