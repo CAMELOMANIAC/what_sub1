@@ -6,15 +6,30 @@ const Menus = () => {
     const arrayTemplate: { name: string, favorit: string, recipes: string, matches: string } = {
         name: '메뉴 이름', favorit: '좋아요 수', recipes: '레시피 수', matches: '더 하면 좋은 재료'
     }
-    const menuArray: { name: string, favorit: string, recipes: string, matches?: Array<any> }[] = [
-        { name: '베지', favorit: '1', recipes: '1' },
-        { name: '서브웨이클럽', favorit: '2', recipes: '1' },
-        { name: '스파이시 쉬림프', favorit: '3', recipes: '1' },
-        { name: '스파이시 바베큐', favorit: '1', recipes: '1' },
-        { name: '스파이시 이탈리안', favorit: '4', recipes: '1' },
-        { name: '스테이크 & 치즈', favorit: '3', recipes: '1' },
+    //메뉴 순위용 배열
+    const menuArray: { name: string, image: string, favorit: number, recipes: number, matches?: Array<any> }[] = [
+        { name: '로스티드 치킨', image: '/images/sandwich_menu/Roasted-Chicken_20211231095032718.png', favorit: 2, recipes: 1 },
+        { name: '로티세리 바베큐', image: '/images/sandwich_menu/Rotisserie-Barbecue-Chicken_20211231023137878.png', favorit: 2, recipes: 1 },
+        { name: '베지', image: '/images/sandwich_menu/Veggie-Delite_20211231095658375.png', favorit: 2, recipes: 1 },
+        { name: '서브웨이클럽', image: '/images/sandwich_menu/Subway-Club™_20211231095518589.png', favorit: 2, recipes: 1 },
+        { name: '스파이시 쉬림프', image: '/images/sandwich_menu/치킨슬라이스샌드위치_20220804012537491.png', favorit: 3, recipes: 1 },
+        { name: '스파이시 바베큐', image: '/images/sandwich_menu/스파이시바비큐_정면_20221031041334845.png', favorit: 4, recipes: 1 },
+        { name: '스파이시 이탈리안', image: '/images/sandwich_menu/spicy_italian_20211231095435532.png', favorit: 3, recipes: 1 },
+        { name: '스테이크 & 치즈', image: '/images/sandwich_menu/Steak-&-Cheese_20211231095455613.png', favorit: 3, recipes: 1 },
+        { name: '쉬림프', image: '/images/sandwich_menu/Shrimp_20211231095411189.png', favorit: 3, recipes: 1 },
+        { name: '이탈리안 B.M.T', image: '/images/sandwich_menu/Italian_B.M.T_20211231094910899.png', favorit: 1, recipes: 1 },
+        { name: '에그마요', image: '/images/sandwich_menu/Egg-Mayo_20211231094817112.png', favorit: 1, recipes: 1 },
+        { name: '참치', image: '/images/sandwich_menu/Tuna_20211231095535268.png', favorit: 1, recipes: 1 },
+        { name: '치킨 베이컨 아보카도', image: '/images/sandwich_menu/치킨베이컨아보카도샌드위치_20220804012954461.png', favorit: 2, recipes: 1 },
+        { name: '치킨 슬라이스', image: '/images/sandwich_menu/치킨슬라이스샌드위치_20220804012537491.png', favorit: 2, recipes: 1 },
+        { name: '치킨 데리야끼', image: '/images/sandwich_menu/Chicken-Teriyaki_20211231094803381.png', favorit: 3, recipes: 1 },
+        { name: '풀드포크', image: '/images/sandwich_menu/Pulled-Pork+cheese_20211231095012512.png', favorit: 3, recipes: 1 },
+        { name: '햄', image: '/images/sandwich_menu/Ham_20211231094833168.png', favorit: 1, recipes: 1 },
+        { name: 'B.L.T', image: '/images/sandwich_menu/B.L.T_20211231094744175.png', favorit: 1, recipes: 1 },
+        { name: 'K-bbq', image: '/images/sandwich_menu/K-BBQ_20211231094930225.png', favorit: 3, recipes: 1 },
     ];
 
+    //메뉴 선택기용 배열
     const [menuType, setMenuType] = useState(0);
     const menuSelectorArray: { menuName: string, src: string, type?: number }[] = [
         { menuName: '로스티드 치킨', src: '/images/sandwich_menu/Roasted-Chicken_20211231095032718.png', type: 2 },
@@ -42,7 +57,36 @@ const Menus = () => {
         setSearchQuery(e.target.value);
     }
     const searchResult = menuSelectorArray.filter((item) => item.menuName.includes(searchQuery))
-    const [order, setOrder] = useState(0);
+
+    const [order, setOrder] = useState('favorit');const orderChangeFavorit = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const id = e.currentTarget.id;
+        setOrder(prevOrder => {
+            if (id === 'favorit' && prevOrder ==='favorit'){
+                return 'reverseFavorit';
+            }
+            else if(id === 'favorit' && prevOrder ==='reverseFavorit'){
+                return 'favorit';
+            }
+            return 'favorit';
+        });
+        console.log(order);
+    }
+    
+    const orderChangeRecipes = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const id = e.currentTarget.id;
+        setOrder(prevOrder => {
+            if (id === 'recipes' && prevOrder ==='recipes'){
+                return 'reverseRecipes';
+            }
+            else if(id === 'recipes' && prevOrder ==='reverseRecipes'){
+                return 'recipes';
+            }
+            return 'recipes';
+        });
+        console.log(order);
+    }
+    
+    
 
     return (
         <main className='w-full max-w-screen-xl mx-auto'>
@@ -50,7 +94,7 @@ const Menus = () => {
             <div className="grid grid-cols-6 gap-2 w-[66rem] pt-4">
                 <div className="col-span-6 border bg-white">
                     {/*메뉴 간단정보*/}
-                    {searchQuery}
+                    {order}
                 </div>
 
                 <div className="col-span-2 border bg-white p-2">
@@ -66,34 +110,45 @@ const Menus = () => {
 
                     {menuType === 0 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (<MenusSelectorGridItem menuName={index.menuName} src={index.src} key={index.menuName} href={''}/>))}
+                            {searchResult.map((index) => (<MenusSelectorGridItem menuName={index.menuName} src={index.src} key={index.menuName} href={''} />))}
                         </div>
                     }{menuType === 1 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} href={''}/>))}
+                            {searchResult.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} href={''} />))}
                         </div>
                     }{menuType === 2 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} href={''}/>))}
+                            {searchResult.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} href={''} />))}
                         </div>
                     }{menuType === 3 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} href={''}/>))}
+                            {searchResult.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} href={''} />))}
                         </div>
                     }{menuType === 4 &&
                         <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} href={''}/>))}
+                            {searchResult.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.menuName} src={index.src} href={''} />))}
                         </div>
                     }
                 </div>
                 {/*메뉴 순위 */}
-                <div className="col-span-4 border bg-white relative w-full p-2 divide-y text-sm">
-                    <div className='py-1'>
-                        <span className="inline-block w-[10%] text-center">순위</span><span className="inline-block w-[30%]">{arrayTemplate.name}</span><span className="inline-block w-[15%] text-center">{arrayTemplate.favorit}</span><span className="inline-block w-[15%] text-center">{arrayTemplate.recipes}</span><span className="inline-block w-[30%] text-center">{arrayTemplate.matches}</span>
+                <div className="col-span-4 border bg-white relative w-full divide-y text-sm">
+                    <div className='flex items-center py-1 bg-slate-100 text-gray-400'>
+                        <span className="inline-block w-[10%] text-center">순위</span>
+                        <span className="inline-block w-[30%]">{arrayTemplate.name}</span><span className='inline-block w-10'></span>
+                        <button className="inline-block w-[15%] text-center" id='favorit' onClick={orderChangeFavorit}>{arrayTemplate.favorit}</button>
+                        <button className="inline-block w-[15%] text-center" id='recipes' onClick={orderChangeRecipes}>{arrayTemplate.recipes}</button>
+                        <span className="inline-block w-[30%] text-center">{arrayTemplate.matches}</span>
                     </div>
                     {menuArray?.map((item, index) => (
-                        <Link href={'/'} key={index} className='block py-3'>
-                            <span className="inline-block w-[10%] text-center">{index + 1}</span><span className="inline-block w-[30%]">{item.name}</span><span className="inline-block w-[15%] text-center">{item.favorit}</span><span className="inline-block w-[15%] text-center">{item.recipes}</span><span className="inline-block w-[30%] text-center">{item.matches}</span>
+                        <Link href={'/'} key={index} className='flex items-center py-1'>
+                            <span className="inline-block w-[10%] text-center text-gray-400">{index + 1}</span>
+                            <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto'>
+                                <img src={item.image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                            </div>
+                            <span className="inline-block w-[30%] font-bold pl-2">{item.name}</span>
+                            <span className="inline-block w-[15%] text-center">{item.favorit}</span>
+                            <span className="inline-block w-[15%] text-center">{item.recipes}</span>
+                            <span className="inline-block w-[30%] text-center">{item.matches}</span>
                         </Link>
                     ))}
                 </div>

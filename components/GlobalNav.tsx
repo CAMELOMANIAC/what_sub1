@@ -2,7 +2,7 @@ import Logo from "./Logo";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { MdOutlineAccountBox } from 'react-icons/md';
+import { MdOutlineAccountCircle } from 'react-icons/md';
 
 const GlobalNav = () => {
     const router = useRouter()
@@ -28,7 +28,7 @@ const GlobalNav = () => {
                 <Link href="/" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath == '/' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>홈</Link>
                 <Link href="/Menus" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath == '/Menus' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>메뉴</Link>
                 <Link href="/Recipes" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath == '/Recipes' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>레시피</Link>
-                <button className="absolute right-2 top-2 px-3 h-4/6 rounded-r rounded-l bg-green-600 text-white text-2xl"><MdOutlineAccountBox/></button>
+                <button className="absolute right-2 top-2 px-1 h-4/6 rounded-r rounded-l bg-green-600 text-white text-sm"><MdOutlineAccountCircle className="inline text-2xl"/></button>
             </div></div>
     );
 };
