@@ -22,7 +22,7 @@ const GlobalNav = () => {
     }, [router.events])
 
     return (
-        <div className="w-full fixed left-0 bg-white z-10 border-gray-200 border-b mb-auto flex align-middle">
+        <div className="w-full fixed left-0 bg-white z-10 border-gray-200 border-b mb-auto flex align-middle min-w-[500px]">
             <Link href="/"><Logo size="2rem" /></Link>
             <div className="flex align-middle ml-2">
                 <Link href="/" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath == '/' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>홈</Link>

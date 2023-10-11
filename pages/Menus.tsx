@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import MenusSelectorGridItem from '../components/MenusSelectorGridItem';
 import Link from 'next/link';
 import { FiSearch } from 'react-icons/fi';
+import { RiPencilFill } from 'react-icons/ri';
+import styled from 'styled-components';
+
+const StyledDiv = styled.div`
+    background: linear-gradient(135deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))50%, rgb(22 163 74 / 0) 50%, rgb(22 163 74 / 0) 100%);
+    
+    `;
 
 const Menus = () => {
     const arrayTemplate: { name: string, favorit: string, recipes: string, matches: string } = {
@@ -103,77 +110,83 @@ const Menus = () => {
     }, [order]);
 
     return (
-        <main className='w-full max-w-screen-xl mx-auto'>
-
-            <div className="grid grid-cols-6 gap-2 w-[66rem] pt-4">
-                <div className="col-span-6 border bg-white">
-                    {/*메뉴 간단정보*/}
-                    {order}
-                </div>
-
-                <div className="col-span-2 border bg-white h-fit p-2">
-                    {/*메뉴 선택기 */}
-                    <div className="flex flex-row items-center border placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
-                        <FiSearch className='text-lg mx-1 text-gray-400' />
-                        <input type="text" className='focus-within:outline-none w-full' onChange={queryChange} />
-                    </div>
-                    <div className="flex w-full pt-2">
-                        <button className={`border rounded-l py-2 w-full text-xs ${menuType === 0 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(0)}>all</button>
-                        <button className={`border-y py-2 w-full text-xs ${menuType === 1 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(1)}>클래식</button>
-                        <button className={`border-y border-x py-2 w-full text-xs ${menuType === 2 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(2)}>프레쉬</button>
-                        <button className={`border-y py-2 w-full text-xs ${menuType === 3 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(3)}>프리미엄</button>
-                        <button className={`border rounded-r py-2 w-full text-xs ${menuType === 4 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(4)}>신제품</button>
-                    </div>
-
-                    {menuType === 0 &&
-                        <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (<MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
-                        </div>
-                    }{menuType === 1 &&
-                        <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
-                        </div>
-                    }{menuType === 2 &&
-                        <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
-                        </div>
-                    }{menuType === 3 &&
-                        <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
-                        </div>
-                    }{menuType === 4 &&
-                        <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                            {searchResult.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
-                        </div>
-                    }
-                </div>
-
-                {/*메뉴 순위 */}
-                <div className="col-span-4 border bg-white relative w-full divide-y text-sm">
-                    <div className='flex items-center bg-slate-100 text-gray-400'>
-                        <span className="inline-block w-[10%] text-center">순위</span>
-                        <span className="inline-block w-[30%]">{arrayTemplate.name}</span><span className='inline-block w-10'></span>
-                        <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'favorit' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseFavorit' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
-                            id='favorit' onClick={orderChangeFavorit}>{arrayTemplate.favorit}</button>
-                        <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'recipes' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseRecipes' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
-                            id='recipes' onClick={orderChangeRecipes}>{arrayTemplate.recipes}</button>
-                        <span className="inline-block w-[30%] text-center">{arrayTemplate.matches}</span>
-                    </div>
-                    {sortedArray?.map((item, index) => (
-                        <Link href={'/'} key={index} className='flex items-stretch '>
-                            <span className="flex justify-center items-center  w-[10%] text-center text-gray-400">{index + 1}</span>
-                            <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1'>
-                                <img src={item.image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
-                            </div>
-                            <span className="flex justify-start items-center  w-[30%] font-bold pl-2">{item.name}</span>
-                            <span className={`flex justify-center items-center w-[15%] text-center `+ `${((order === 'favorit') || (order === 'reverseFavorit')) && 'bg-gray-100 '}`}>{item.favorit}</span>
-                            <span className={`flex justify-center items-center w-[15%] text-center `+ `${((order === 'recipes') || (order === 'reverseRecipes')) && 'bg-gray-100 '}`}>{item.recipes}</span>
-                            <span className="flex justify-center items-center  w-[30%] text-center">{item.matches}</span>
-                        </Link>
-                    ))}
+        <>
+            <div className="absolute w-screen min-w-[1280px] right-0 mx-auto h-[300px] grid grid-cols-6 bg-green-600">
+                {/*메뉴 간단정보                */}
+                <StyledDiv className="col-span-3 h-[300px]">
+                    {/**/}<img src='/images/sandwich_menu/Veggie-Delite_20211231095658375.png' className='absolute right-[50%] object-contain object-right scale-[0.8]'></img>
+                </StyledDiv>
+                <div className="col-span-3 bg-transparent text-white">
+                    미친
                 </div>
             </div>
-        </main>
+
+            <main className='w-full max-w-screen-xl mx-auto pt-2 mt-[calc(300px+3rem)]'>
+                <div className="grid grid-cols-6 gap-2 w-[66rem]">
+                    <div className="col-span-2 border bg-white h-fit p-2">
+                        {/*메뉴 선택기 */}
+                        <div className="flex flex-row items-center border placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
+                            <FiSearch className='text-lg mx-1 text-gray-400' />
+                            <input type="text" className='focus-within:outline-none w-full' onChange={queryChange} />
+                        </div>
+                        <div className="flex w-full pt-2">
+                            <button className={`border rounded-l py-2 w-full text-xs ${menuType === 0 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(0)}>all</button>
+                            <button className={`border-y py-2 w-full text-xs ${menuType === 1 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(1)}>클래식</button>
+                            <button className={`border-y border-x py-2 w-full text-xs ${menuType === 2 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(2)}>프레쉬</button>
+                            <button className={`border-y py-2 w-full text-xs ${menuType === 3 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(3)}>프리미엄</button>
+                            <button className={`border rounded-r py-2 w-full text-xs ${menuType === 4 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(4)}>신제품</button>
+                        </div>
+
+                        {menuType === 0 &&
+                            <div className='grid grid-cols-5 pt-2  gap-2 relative'>
+                                {searchResult.map((index) => (<MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
+                            </div>
+                        }{menuType === 1 &&
+                            <div className='grid grid-cols-5 pt-2  gap-2 relative'>
+                                {searchResult.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
+                            </div>
+                        }{menuType === 2 &&
+                            <div className='grid grid-cols-5 pt-2  gap-2 relative'>
+                                {searchResult.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
+                            </div>
+                        }{menuType === 3 &&
+                            <div className='grid grid-cols-5 pt-2  gap-2 relative'>
+                                {searchResult.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
+                            </div>
+                        }{menuType === 4 &&
+                            <div className='grid grid-cols-5 pt-2  gap-2 relative'>
+                                {searchResult.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} href={''} />))}
+                            </div>
+                        }
+                    </div>
+
+                    {/*메뉴 순위 */}
+                    <div className="col-span-4 border bg-white relative w-full divide-y text-sm">
+                        <div className='flex items-center bg-slate-100 text-gray-400'>
+                            <span className="inline-block w-[10%] text-center">순위</span>
+                            <span className="inline-block w-[30%]">{arrayTemplate.name}</span><span className='inline-block w-10'></span>
+                            <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'favorit' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseFavorit' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
+                                id='favorit' onClick={orderChangeFavorit}>{arrayTemplate.favorit}</button>
+                            <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'recipes' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseRecipes' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
+                                id='recipes' onClick={orderChangeRecipes}>{arrayTemplate.recipes}</button>
+                            <span className="inline-block w-[30%] text-center">{arrayTemplate.matches}</span>
+                        </div>
+                        {sortedArray?.map((item, index) => (
+                            <Link href={'/'} key={index} className='flex items-stretch '>
+                                <span className="flex justify-center items-center  w-[10%] text-center text-gray-400">{index + 1}</span>
+                                <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1'>
+                                    <img src={item.image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                                </div>
+                                <span className="flex justify-start items-center  w-[30%] font-bold pl-2">{item.name}</span>
+                                <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'favorit') || (order === 'reverseFavorit')) && 'bg-gray-100 '}`}>{item.favorit}</span>
+                                <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'recipes') || (order === 'reverseRecipes')) && 'bg-gray-100 '}`}>{item.recipes}</span>
+                                <span className="flex justify-center items-center  w-[30%] text-center">{item.matches}</span>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </main>
+        </>
     );
 };
 
