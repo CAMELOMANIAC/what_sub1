@@ -22,13 +22,16 @@ const GlobalNav = () => {
     }, [router.events])
 
     return (
-        <div className="w-screen fixed left-0 bg-white z-10 border-gray-200 border-b mb-auto flex align-middle">
+        <div className="w-full fixed left-0 bg-white z-10 border-gray-200 border-b mb-auto flex align-middle">
             <Link href="/"><Logo size="2rem" /></Link>
             <div className="flex align-middle ml-2">
                 <Link href="/" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath == '/' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>홈</Link>
                 <Link href="/Menus" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath == '/Menus' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>메뉴</Link>
                 <Link href="/Recipes" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath == '/Recipes' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>레시피</Link>
-                <button className="absolute right-2 top-2 px-1 h-4/6 rounded-r rounded-l bg-green-600 text-white text-sm"><MdOutlineAccountCircle className="inline text-2xl"/></button>
+                <button className="absolute flex items-center right-2 top-2 px-1 h-4/6 rounded-full bg-green-600 text-white text-sm">
+                    <span className="m-1">로그인</span>
+                    <MdOutlineAccountCircle className="inline text-2xl"/>
+                </button>
             </div></div>
     );
 };
