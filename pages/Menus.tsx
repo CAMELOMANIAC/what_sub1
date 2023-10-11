@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MenusSelectorGridItem from '../components/MenusSelectorGridItem';
 import Link from 'next/link';
 import { FiSearch } from 'react-icons/fi';
@@ -18,7 +18,7 @@ const Menus = () => {
         { name: '스파이시 이탈리안', image: '/images/sandwich_menu/spicy_italian_20211231095435532.png', favorit: 3, recipes: 1 },
         { name: '스테이크 & 치즈', image: '/images/sandwich_menu/Steak-&-Cheese_20211231095455613.png', favorit: 3, recipes: 1 },
         { name: '쉬림프', image: '/images/sandwich_menu/Shrimp_20211231095411189.png', favorit: 3, recipes: 1 },
-        { name: '이탈리안 B.M.T', image: '/images/sandwich_menu/Italian_B.M.T_20211231094910899.png', favorit: 1, recipes: 1 },
+        { name: '이탈리안 B.M.T', image: '/images/sandwich_menu/Italian_B.M.T_20211231094910899.png', favorit: 1, recipes: 4 },
         { name: '에그마요', image: '/images/sandwich_menu/Egg-Mayo_20211231094817112.png', favorit: 1, recipes: 1 },
         { name: '참치', image: '/images/sandwich_menu/Tuna_20211231095535268.png', favorit: 1, recipes: 1 },
         { name: '치킨 베이컨 아보카도', image: '/images/sandwich_menu/치킨베이컨아보카도샌드위치_20220804012954461.png', favorit: 2, recipes: 1 },
@@ -84,10 +84,23 @@ const Menus = () => {
             }
             return 'recipes';
         });
-        console.log(order);
     }
 
+    //얕은검사는 배열의 순서가 바껴도 인식하지 못함으로 배열을 복사해서 정렬해야함
+    const [sortedArray, setSortedArray] = useState([...menuArray]);
 
+    useEffect(() => {
+        let sorted = [...menuArray];
+        if (order === 'favorit')
+            sorted.sort((a, b) => (b.favorit - a.favorit));
+        if (order === 'reverseFavorit')
+            sorted.sort((a, b) => (a.favorit - b.favorit));
+        if (order === 'recipes')
+            sorted.sort((a, b) => (b.recipes - a.recipes));
+        if (order === 'reverseRecipes')
+            sorted.sort((a, b) => (a.recipes - b.recipes));
+        setSortedArray(sorted);
+    }, [order]);
 
     return (
         <main className='w-full max-w-screen-xl mx-auto'>
@@ -101,7 +114,7 @@ const Menus = () => {
                 <div className="col-span-2 border bg-white h-fit p-2">
                     {/*메뉴 선택기 */}
                     <div className="flex flex-row items-center border placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
-                        <FiSearch className='text-lg mx-1 text-gray-400'/>
+                        <FiSearch className='text-lg mx-1 text-gray-400' />
                         <input type="text" className='focus-within:outline-none w-full' onChange={queryChange} />
                     </div>
                     <div className="flex w-full pt-2">
@@ -137,14 +150,16 @@ const Menus = () => {
 
                 {/*메뉴 순위 */}
                 <div className="col-span-4 border bg-white relative w-full divide-y text-sm">
-                    <div className='flex items-center py-1 bg-slate-100 text-gray-400'>
+                    <div className='flex items-center bg-slate-100 text-gray-400'>
                         <span className="inline-block w-[10%] text-center">순위</span>
                         <span className="inline-block w-[30%]">{arrayTemplate.name}</span><span className='inline-block w-10'></span>
-                        <button className="inline-block w-[15%] text-center" id='favorit' onClick={orderChangeFavorit}>{arrayTemplate.favorit}</button>
-                        <button className="inline-block w-[15%] text-center" id='recipes' onClick={orderChangeRecipes}>{arrayTemplate.recipes}</button>
+                        <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'favorit' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseFavorit' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
+                            id='favorit' onClick={orderChangeFavorit}>{arrayTemplate.favorit}</button>
+                        <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'recipes' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseRecipes' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
+                            id='recipes' onClick={orderChangeRecipes}>{arrayTemplate.recipes}</button>
                         <span className="inline-block w-[30%] text-center">{arrayTemplate.matches}</span>
                     </div>
-                    {menuArray?.map((item, index) => (
+                    {sortedArray?.map((item, index) => (
                         <Link href={'/'} key={index} className='flex items-center py-1'>
                             <span className="inline-block w-[10%] text-center text-gray-400">{index + 1}</span>
                             <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto'>

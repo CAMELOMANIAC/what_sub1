@@ -27,7 +27,7 @@ const MenusSelectorGridItem = ({ menuName, src, href }) => {
             <div className=' overflow-hidden relative rounded-md  aspect-square'>
                 <img src={src} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
             </div>
-            <div className='text-left text-xs align-top leading-3 text-ellipsis overflow-hidden whitespace-nowrap'><span>{menuName}</span></div></Marquee>
+            <div className='text-left text-xs text-gray-500 align-top leading-3 text-ellipsis overflow-hidden whitespace-nowrap mt-1'><span>{menuName}</span></div></Marquee>
         </Link>
     );
 };
