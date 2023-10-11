@@ -160,15 +160,15 @@ const Menus = () => {
                         <span className="inline-block w-[30%] text-center">{arrayTemplate.matches}</span>
                     </div>
                     {sortedArray?.map((item, index) => (
-                        <Link href={'/'} key={index} className='flex items-center py-1'>
-                            <span className="inline-block w-[10%] text-center text-gray-400">{index + 1}</span>
-                            <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto'>
+                        <Link href={'/'} key={index} className='flex items-stretch '>
+                            <span className="flex justify-center items-center  w-[10%] text-center text-gray-400">{index + 1}</span>
+                            <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1'>
                                 <img src={item.image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                             </div>
-                            <span className="inline-block w-[30%] font-bold pl-2">{item.name}</span>
-                            <span className="inline-block w-[15%] text-center">{item.favorit}</span>
-                            <span className="inline-block w-[15%] text-center">{item.recipes}</span>
-                            <span className="inline-block w-[30%] text-center">{item.matches}</span>
+                            <span className="flex justify-start items-center  w-[30%] font-bold pl-2">{item.name}</span>
+                            <span className={`flex justify-center items-center w-[15%] text-center `+ `${((order === 'favorit') || (order === 'reverseFavorit')) && 'bg-gray-100 '}`}>{item.favorit}</span>
+                            <span className={`flex justify-center items-center w-[15%] text-center `+ `${((order === 'recipes') || (order === 'reverseRecipes')) && 'bg-gray-100 '}`}>{item.recipes}</span>
+                            <span className="flex justify-center items-center  w-[30%] text-center">{item.matches}</span>
                         </Link>
                     ))}
                 </div>
