@@ -13,7 +13,7 @@ html {
 body {
     display: flex;
     justify-content: center;
-    @apply bg-slate-50;
+    @apply bg-gray-50;
 }
 
 /*인풋버튼 기본 내용제거버튼 숨기기*/
