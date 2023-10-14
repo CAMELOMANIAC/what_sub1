@@ -31,11 +31,9 @@ const Recipes = () => {
                                 <img src={selected[0].image} alt='selected[0].image' className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                             </div>
                             <div className='whitespace-pre-line'>
-                                <h2 className='font-bold text-2xl text-black pb-4'>{selected[0].name}</h2>
-                                <div>프레쉬</div>
-                                <div className='flex flex-row'>{selected[0].ingredients.map((item) =>
-                                    <img src={'/images/sandwich_menu/ingredients/' + item} alt={item} key={item} className='object-cover w-10 aspect-square rounded-md mr-1 mb-10'></img>
-                                )}</div>
+                                <h2 className='font-bold text-3xl inline text-black pb-4'>{selected[0].name}</h2>
+                                <span className='text-lg text-gray-400'>프레쉬</span>
+                                <div className=''>좋아요</div>
                             </div>
 
                         </div>
