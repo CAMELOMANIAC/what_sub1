@@ -97,16 +97,16 @@ const Menus = () => {
 
     return (
         <>
-            <StyledDiv className="absolute w-screen min-w-[1280px] right-0 mx-auto h-[300px] grid grid-cols-6 bg-white overflow-hidden">
+            <StyledDiv className="absolute w-screen min-w-[1024px] right-0 mx-auto h-[300px] grid grid-cols-6 bg-white overflow-hidden">
                 {/*메뉴 간단정보*/}
                 <div className="col-span-3 h-[300px]">
-                    <StyledImg src={selected.image} className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></StyledImg>
+                    <StyledImg src={selected.image} alt='sandwich_image' className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></StyledImg>
                 </div>
                 <div className="col-span-3 whitespace-pre-line flex flex-col justify-center">
                     <h2 className='font-bold text-3xl text-white pb-4'>{selected.name}</h2>
-                    <div className='text-white/70 mb-1'>{selected.summary}</div>
+                    <div className='text-white/70 mb-2'>{selected.summary}</div>
                     <div className='flex flex-row'>{selected.ingredients.map((item)=>
-                        <img src={'/images/sandwich_menu/ingredients/'+item} key={item} className='object-cover w-10 aspect-square rounded-md mr-1 mb-10'></img>
+                        <img src={'/images/sandwich_menu/ingredients/'+item} key={item} className='object-cover w-10 aspect-square rounded-md mr-1 mb-8' alt='item'></img>
                     )}</div>
                     <div className='flex flex-row'>
                         <Link href={{
@@ -128,7 +128,7 @@ const Menus = () => {
             </StyledDiv>
 
             <main className='w-full max-w-screen-xl mx-auto pt-2 mt-[calc(300px+3rem)]'>
-                <div className="grid grid-cols-6 gap-2 w-[66rem]">
+                <div className="grid grid-cols-6 gap-2 w-[1024px]">
                     <div className="col-span-2 border bg-white h-fit p-2">
                         {/*메뉴 선택기 */}
                         <div className="flex flex-row items-center border placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
@@ -181,7 +181,7 @@ const Menus = () => {
                             <button key={index} className='flex items-stretch w-full' onClick={() => setSelected(item)}>
                                 <span className="flex justify-center items-center  w-[10%] text-center text-gray-400">{index + 1}</span>
                                 <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1'>
-                                    <img src={item.image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                                    <img src={item.image} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                                 </div>
                                 <span className="flex justify-start items-center  w-[30%] font-bold pl-2">{item.name}</span>
                                 <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'favorit') || (order === 'reverseFavorit')) && 'bg-gray-100 '}`}>{item.favorit}</span>
