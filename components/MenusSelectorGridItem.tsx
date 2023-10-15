@@ -23,7 +23,7 @@ span {
 type MenusSelectorGridItemProps = {
     menuName: string;
     src: string;
-    clickHandler?: () => void; // 함수의 정확한 타입은 함수의 인자와 반환값에 따라 달라집니다.
+    clickHandler?: () => void; //함수를 저장하는 props는 반환값이 타입임
     className?: string;
 };
 
