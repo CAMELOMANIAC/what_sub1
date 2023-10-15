@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MenusSelectorGridItem from '../components/MenusSelectorGridItem';
 import Link from 'next/link';
 import { FiSearch } from 'react-icons/fi';
-import { AiOutlineArrowRight } from 'react-icons/Ai';
+import { IoIosArrowForward } from 'react-icons/io';
 import { PiHeartStraight } from 'react-icons/Pi';
 import { RiPencilFill } from 'react-icons/ri';
 import styled from 'styled-components';
@@ -134,7 +134,7 @@ const Menus = () => {
                             pathname: '/Recipes',  // 이동할 페이지의 경로
                             query: { param: selected.name }  /* URL에 전달할 쿼리 매개변수*/
                         }}
-                            className='font-bold rounded-full px-3 py-2 mr-2 text-black bg-yellow-500 flex justify-center items-center'>자세히 보기<AiOutlineArrowRight className='inline-block text-xl' /></Link>
+                            className='font-bold rounded-full px-3 py-2 mr-2 text-black bg-yellow-500 flex justify-center items-center'>자세히 보기<IoIosArrowForward className='inline-block text-xl' /></Link>
                         <Link href={{
                             pathname: '/Recipes',  // 이동할 페이지의 경로
                             query: { param: selected.name }  /* URL에 전달할 쿼리 매개변수*/

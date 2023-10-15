@@ -3,19 +3,25 @@ import { useRouter } from 'next/router';
 import { menuArray } from './Menus'
 import Card from '../components/Card';
 import { PiHeartStraight } from 'react-icons/Pi';
+import { IoIosArrowBack } from 'react-icons/io';
+import Link from 'next/link';
 
 const Recipes = () => {
     const router = useRouter();
     const bannerRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
+    const [recipesTap,setRecipesTap] = useState<number>(1);
 
     //배너랑 글로벌네비 높이 여백계산
     useEffect(() => {
         if (bannerRef.current) {
-            console.log(bannerRef.current)
-            console.log(bannerRef.current.offsetHeight)
-            if (mainRef.current)
+            if (mainRef.current){
                 mainRef.current.style.marginTop = bannerRef.current.offsetHeight + 50 + 'px';
+                console.log(mainRef.current.style.marginTop);
+            }else{
+                console.log('찾을수없음')
+            }
+        
         }
     }, [router.isReady]);
 
@@ -37,10 +43,11 @@ const Recipes = () => {
             {//next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
                 //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
                 //서버가 값을 전달하기 전까지는 일단 param이 비어있는 상태이므로 그 사이에 js는 param 값이 없다고 에러를 띄우게된다. param값을 사용하는 요소들은 값을 받고나서 렌더링 할수있도록 조치해줘야한다
-                router.isReady === true && selected.length > 0 &&
+                router.isReady === true && selected.length > 0 ?
                 <div className="absolute flex justify-center w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b" ref={bannerRef}>
-                    <div className="flex flex-col justify-start ml-[15px] w-[1024px] max-w-[1024px] py-10">
-                        <div className='flex flex-row mb-5'>
+                    <Link href={'/Recipes'} className='py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-xl h-1/2'/></Link>
+                    <div className="flex flex-col justify-start w-[1024px] max-w-[1024px] py-10">
+                        <div className='flex flex-row pb-5 pl-4 border-l'>
                             <div className='inline-block w-[100px] overflow-hidden relative rounded-md aspect-square'>
                                 <img src={selected[0].image} alt='selected[0].image' className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                             </div>
@@ -118,6 +125,7 @@ const Recipes = () => {
                         </div>
                     </div>
                 </div>
+                : <div className="absolute flex justify-center w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b"></div>
             }
 
 
