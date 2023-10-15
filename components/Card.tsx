@@ -18,12 +18,12 @@ const Card = () => {
                     <h2 className='text-xl font-bold text-ellipsis overflow-hidden whitespace-nowrap w-[220px]'>맛있는 샌드위치asdasdasdfadfs</h2>
                 </div>
             </div>
+            <div className='flex flex-row justify-end text-sm w-full text-gray-400'>
+                <span>#저칼로리</span><span>#짭조름</span>
+            </div>
             <section className='flex flex-row overflow-hidden flex-wrap'>{selected.map((item) =>
                 <img src={'/images/sandwich_menu/ingredients/' + item} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></img>
             )}</section>
-            <div className='flex flex-row justify-end mt-auto text-sm w-full text-gray-400'>
-                <span>#저칼로리</span><span>#짭조름</span>
-            </div>
             <div className='flex flex-row justify-end mt-auto text-gray-400'>
                 <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>가나다라마바사아자차카타파하</div>
                 <button className='flex items-center mr-2 hover:text-green-600'><PiHeartStraight className='m-1' />123</button>
