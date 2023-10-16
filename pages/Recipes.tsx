@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Card from '../components/Card';
+import EmptyCard from '../components/EmptyCard';
 import RecipesBanner from '../components/RecipesBanner';
 
 const Recipes = () => {
@@ -25,7 +26,7 @@ const Recipes = () => {
             {router.isReady &&<RecipesBanner ref={bannerRef}/>}
             <main className={'w-full max-w-screen-lg mx-auto pt-2'} ref={mainRef}>
                 <div className='grid grid-cols-6 grid-flow-row gap-2 w-[1024px]'>
-                    <Card></Card>
+                    <EmptyCard></EmptyCard>
                     <Card></Card>
                     <Card></Card>
                     <Card></Card>

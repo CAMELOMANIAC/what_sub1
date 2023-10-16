@@ -1,9 +1,10 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { PiHeartStraight } from 'react-icons/Pi';
 import { IoIosArrowBack } from 'react-icons/io';
 import Link from 'next/link';
 import { menuArray } from '../pages/Menus'
+import SearchBar from './SearchBar';
 
 type Props = {
     className?: string
@@ -23,17 +24,18 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
         const { param } = router.query;
         selected = menuArray.filter((item) => (item.name == String(param).replaceAll('+', ' ')));//쿼리로 값을 전달할때 뛰어쓰기는 +기호로 치환되므로 적절히 조치해야함
     }
-
     const recipesTop3: Array<string>[] = [['레드와인식초.jpg', '마요네즈.jpg'], ['레드와인식초.jpg', '마요네즈.jpg'], ['레드와인식초.jpg', '마요네즈.jpg']];
     const breadTop3: string[] = ['레드와인식초.jpg', '마요네즈.jpg', '아보카도.png'];
 
     //next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
     //서버가 값을 전달하기 전까지는 일단 param이 비어있는 상태이므로 그 사이에 js는 param 값이 없다고 에러를 띄우게된다. param값을 사용하는 요소들은 값을 받고나서 렌더링 할수있도록 조치해줘야한다
-    if (router.isReady === true && selected.length > 0)
-        return (
+
+
+    return (
+        router.isReady && selected.length > 0 ? (
             <>
-                <div className={`absolute flex justify-center w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b +${props.className}`} ref={ref}>
+                <div className={`absolute flex justify-center w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
                     <Link href={'/Recipes'} className='ml-[15px] py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-xl h-1/2' /></Link>
                     <div className="flex flex-col justify-start w-[1024px] max-w-[1024px] py-10">
                         <div className='flex flex-row pb-5 pl-4 border-l'>
@@ -114,18 +116,30 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                         </div>
                     </div>
                 </div>
-            </>
-        );
-    else return (
-        <div className={`absolute flex justify-center w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b +${props.className}`} ref={ref}>
-            <div>asdasdf</div>
-            <div>asdasdf</div>
-            <div>asdasdf</div>
-            <div>asdasdf</div>
-            <div>asdasdf</div>
-        </div>
+            </>) : (
+            <>
+                <div className={`absolute w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
+                    <div className='w-[1024px] mx-auto'>
+                        <div>레시피 검색</div>
+                        <SearchBar className='my-2 ml-0' />
+                    </div>
+                </div>
+            </>)
     );
 
 });
 
 export default RecipesBanner;
+
+
+/*
+
+
+    else return (
+        <div className={`absolute w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b +${props.className}`} ref={ref}>
+            <div className='w-[1024px] mx-auto'>
+                <div>레시피 검색</div>
+                <SearchBar className='my-2 ml-0' />
+            </div>
+        </div>
+*/
