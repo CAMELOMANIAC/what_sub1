@@ -1,10 +1,24 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef} from 'react';
 import { useRouter } from 'next/router';
 import { PiHeartStraight } from 'react-icons/Pi';
 import { IoIosArrowBack } from 'react-icons/io';
+import { HiFilter } from 'react-icons/hi';
 import Link from 'next/link';
 import { menuArray } from '../pages/Menus'
 import SearchBar from './SearchBar';
+import styled from 'styled-components';
+
+const StyleTag = styled.div`
+    height:100%;
+    display:inline-block;
+    border:1px solid gray;
+    border-radius:9999px;
+    border-color:color: rgb(107 114 128);
+    margin-right:0.1rem;
+    padding:0.1rem 0.5rem 0.1rem 0.5rem;
+    font-size:0.875rem;
+    color: rgb(107 114 128);
+`
 
 type Props = {
     className?: string
@@ -31,16 +45,15 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
     //서버가 값을 전달하기 전까지는 일단 param이 비어있는 상태이므로 그 사이에 js는 param 값이 없다고 에러를 띄우게된다. param값을 사용하는 요소들은 값을 받고나서 렌더링 할수있도록 조치해줘야한다
 
-
     return (
-        router.isReady && selected.length > 0 ? (
-            <>
+        <>
+            {router.isReady && selected.length !== 0 ? (
                 <div className={`absolute flex justify-center w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
-                    <Link href={'/Recipes'} className='ml-[15px] py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-xl h-1/2' /></Link>
-                    <div className="flex flex-col justify-start w-[1024px] max-w-[1024px] py-10">
+                    <Link href={'/Recipes'} className='py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-lg h-1/2' /></Link>
+                    <div className="flex flex-col justify-start pt-4 pb-10 w-[1024px] max-w-[1024px]">
                         <div className='flex flex-row pb-5 pl-4 border-l'>
                             <div className='inline-block w-[100px] overflow-hidden relative rounded-md aspect-square'>
-                                <img src={selected[0].image} alt='selected[0].image' className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                                <img src={selected[0].image} alt={selected[0].image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                             </div>
                             <div className='whitespace-pre-line'>
                                 <div className='flex items-center'>
@@ -116,30 +129,79 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                         </div>
                     </div>
                 </div>
-            </>) : (
-            <>
+            ) : (
                 <div className={`absolute w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
-                    <div className='w-[1024px] mx-auto'>
-                        <div>레시피 검색</div>
-                        <SearchBar className='my-2 ml-0' />
+                    <div className='w-[1024px] mx-auto pt-4 pb-10'>
+                        <div className='mb-4'>
+                            <div className='flex flex-row justify-start items-center my-2'>
+                                <SearchBar className='ml-0 mr-2' />
+                                <button className='text-green-600 text-2xl bg-white rounded-full w-[42px] h-[42px] text-center align-middle flex justify-center items-center font-bold'><HiFilter/></button>
+                            </div>
+                            <StyleTag>#짭조름</StyleTag>
+                            <StyleTag>1위</StyleTag>
+                            <StyleTag>로스티드 치킨</StyleTag>
+                            <StyleTag>허니머스타드</StyleTag>
+                            <span className='text-sm text-gray-500'>으로 검색해보세요</span>
+                        </div>
+
+                        <div className='grid grid-cols-2 grid-flow-row'>
+                            <div className='border-l px-4'>
+                                <span className=' font-bold'>추천 검색어 top3</span>
+                                <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
+                                    <span className='col-span-5 text-left'>브레드</span>
+                                    <span className='col-span-2'>조합 선택율</span>
+                                    <span className='col-span-2'>평균 좋아요</span>
+                                </div>
+                                {breadTop3.map((item, index) => (
+                                    <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
+                                        <span className='col-span-5 flex items-center justify-start'>
+                                            <img
+                                                src={'images/sandwich_menu/ingredients/' + item}
+                                                alt={item}
+                                                className='w-12 aspect-square inline object-cover'
+                                            />
+                                        </span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>10%</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>103</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className='border-l px-4'>
+                                <span className=' font-bold'>추천 레시피 top3</span>
+                                <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
+                                    <span className='col-span-5 text-left'>조합법</span>
+                                    <span className='col-span-2'>조합 선택율</span>
+                                    <span className='col-span-2'>평균 좋아요</span>
+                                </div>
+                                {recipesTop3.map((item, index) => (
+                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
+                                        <span className='col-span-5 flex items-center justify-start'>{
+                                            item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
+                                                <React.Fragment key={subIndex}>
+                                                    {subIndex % 2 === 1 ? '+' : null}
+                                                    <img
+                                                        src={'images/sandwich_menu/ingredients/' + subItem}
+                                                        alt={subItem}
+                                                        className='w-12 aspect-square inline object-cover'
+                                                    />
+                                                </React.Fragment>
+                                            ))
+                                        }
+                                        </span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>10%</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>103</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </>)
+            )
+
+            }
+        </>
     );
 
 });
 
 export default RecipesBanner;
-
-
-/*
-
-
-    else return (
-        <div className={`absolute w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b +${props.className}`} ref={ref}>
-            <div className='w-[1024px] mx-auto'>
-                <div>레시피 검색</div>
-                <SearchBar className='my-2 ml-0' />
-            </div>
-        </div>
-*/
