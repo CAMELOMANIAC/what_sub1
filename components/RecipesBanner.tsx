@@ -56,7 +56,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                 <img src={selected[0].image} alt={selected[0].image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                             </div>
                             <div className='whitespace-pre-line'>
-                                <div className='flex items-center'>
+                                <div className='flex items-center m-2'>
                                     <h1 className='font-bold text-3xl inline text-black pb-4'>{selected[0].name}</h1>
                                     <button className='flex items-center text-xl'><PiHeartStraight className='inline-block' /></button>
                                 </div>
