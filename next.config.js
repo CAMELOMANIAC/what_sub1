@@ -11,8 +11,8 @@ const nextConfig = {
     'MYSQL_USER': 'root',
     'MYSQL_PASSWORD': '1234',
 
-    'KAKAO_CLIENT_ID': 'f417de962e4f7161ae761a86c4653cd2',
-    'KAKAO_CLIENT_SECRET': '',
+    'KAKAO_CLIENT_SECRET': 'aEuOy5Dj6HILcuDDfnyRXxbvzm1gMdWL',
+    'KAKAO_RESTAPI_KEY': 'f417de962e4f7161ae761a86c4653cd2',
   },
 };
 module.exports = nextConfig;
