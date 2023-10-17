@@ -21,7 +21,7 @@ import executeQuery from '../../../lib/db'
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     try {
-      const results = await executeQuery({ query: 'SELECT * FROM sawon', values: [] });
+      const results = await executeQuery({ query: 'SELECT * FROM user_table', values: [] });
 
       if (!Array.isArray(results)) {
         throw new Error('Cannot find user data')
@@ -44,17 +44,3 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 export default handler
-
-/*
-try {
-    const results = await executeQuery({query:'SELECT * FROM sawon',values:[]});
-    
-    if (!Array.isArray(results)) {
-      throw new Error('Cannot find user data')
-    } else {
-      res.status(200).json(results);
-    }
-  } catch (err: any) {
-    res.status(500).json({ statusCode: 500, message: err.message })
-  }
-   */

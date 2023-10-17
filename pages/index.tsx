@@ -14,7 +14,12 @@ const IndexPage = () => {
     { name: '3', value: '3' },
   ];
 
-  const [posts, setPosts] = useState([]);
+  type Post = {
+    user_id: string;
+    user_pwd: string;
+  };
+
+  const [posts, setPosts] = useState<Post[]>([]);
   useEffect(() => {
     fetch('/api/users')
       .then(res => res.json())
@@ -34,6 +39,12 @@ const IndexPage = () => {
       <div className='flex justify-center mx-auto mb-4'>
         <Logo />
       </div>
+      {posts.map((post) => (
+        <div key={post.user_id}>
+        <h3>{post.user_id}</h3>
+          <h3>{post.user_pwd}</h3>
+        </div>
+      ))}
       <SearchBar className='pb-4' />
       <FrontPopularRecipe array={test} />
     </main>
