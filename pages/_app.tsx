@@ -3,7 +3,6 @@ import Head from 'next/head'
 import GlobalNav from '../components/GlobalNav';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
-
 export default function MyApp({ Component, pageProps }) {
   return (
     <>

@@ -39,12 +39,12 @@ const IndexPage = () => {
       <div className='flex justify-center mx-auto mb-4'>
         <Logo />
       </div>
-      {posts.map((post) => (
+      {posts.length >0 &&(posts.map((post) => (
         <div key={post.user_id}>
         <h3>{post.user_id}</h3>
           <h3>{post.user_pwd}</h3>
         </div>
-      ))}
+      )))}
       <SearchBar className='pb-4' />
       <FrontPopularRecipe array={test} />
     </main>
