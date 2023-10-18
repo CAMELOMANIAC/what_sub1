@@ -22,8 +22,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         throw new Error('업데이트가 적용되지 않음')
                     } else {
                         console.log('업데이트 적용됨')
-                        res.setHeader('Set-Cookie', `session=${sessionId}; Path=/; HttpOnly; SameSite=Lax`);
-                        res.status(200).json(results);
+                        res.setHeader('Set-Cookie', `session=${sessionId}; Path=/; HttpOnly; SameSite=Lax`);  
+                        res.status(200).json({ redirectTo: '/' });
+
                     }
                 } catch (err: any) {
                     res.status(500).json({ statusCode: 500, message: err.message })

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-const LoginModal = ({handleClose}) => {
+const LoginModal = ({ handleClose }) => {
   const router = useRouter()
   const handleKakaoLogin = () => {
     //window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=http://localhost:3000/api/socialLogIn`;
@@ -21,8 +21,11 @@ const LoginModal = ({handleClose}) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-      });
+        if (data.redirectTo) {
+          window.location.href = data.redirectTo;
+        }
+      })
+      .catch(error => console.error('Error:', error));
   }
   const [id, setId] = useState('')
   const [pwd, setPwd] = useState('')
@@ -34,12 +37,12 @@ const LoginModal = ({handleClose}) => {
   }
 
   return (
-    <div className='absolute w-[600px] h-[800px] bg-white mx-auto my-auto'>
-      <input className='border-2' onChange={handleChangeId} type=""></input>
-      <input className='border-2' onChange={handleChangePwd}></input>
-      <button onClick={handleKakaoLogin}>카카오 로그인</button>
-      <button onClick={handleLogin}>그냥 로그인</button>
-      <button onClick={handleClose}>닫기</button>
+    <div className='w-[500px] h-[550px] bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-lg flex flex-col justify-center items-center'>
+        <input className='border-2 w-1/2 p-2' onChange={handleChangeId} type=""></input>
+        <input className='border-2' onChange={handleChangePwd}></input>
+        <button onClick={handleLogin}>그냥 로그인</button>
+        <button onClick={handleKakaoLogin}>카카오 로그인</button>
+        <button onClick={handleClose}>닫기</button>
     </div>
   );
 }

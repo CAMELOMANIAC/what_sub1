@@ -1,9 +1,9 @@
 
 import { combineReducers } from '@reduxjs/toolkit';
-import someReducer from './someReducer';
+import userReducer from './userReducer';
 
 const rootReducer = combineReducers({
-  some: someReducer,
+  user: userReducer,
   // 다른 리듀서 추가
 });
 
