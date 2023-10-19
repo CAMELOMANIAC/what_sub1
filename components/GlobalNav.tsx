@@ -4,11 +4,34 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { MdOutlineAccountCircle } from 'react-icons/md';
 import LoginModal from "./LoginModal";
+import { useSelector,useDispatch } from 'react-redux';
+import { RootState } from "../redux/store";
+import {actionLoginChangeId} from '../redux/reducer/userReducer';
 
+
+const getCookieValue = (key) => {
+    let cookieKey = key + "=";
+    let result = "";
+    const cookieArr = document.cookie.split(";");
+  
+    for (let i = 0; i < cookieArr.length; i++) {
+      if (cookieArr[i][0] === " ") {
+        cookieArr[i] = cookieArr[i].substring(1);
+      }
+  
+      if (cookieArr[i].indexOf(cookieKey) === 0) {
+        result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
+        return result;
+      }
+    }
+    return result;
+  }
+  
 const GlobalNav = () => {
     const router = useRouter()
     const [currentPath, setCurrentPath] = useState(router.pathname)//pathname속성은 현재 경로만 저장되는 속성
     const [isLoginModal, setLoginModal] = useState(false)
+    let userName = useSelector((state:RootState)=>state.user.userName);
 
     //router.events는 라우터 이벤트로 이벤트객체가 변경될때(=주소창 경로가 바뀔때) 상태값을 변경하는 이벤트핸들러 추가
     useEffect(() => {
@@ -23,6 +46,14 @@ const GlobalNav = () => {
         }
     }, [router.events])
 
+    const dispatch =  useDispatch();
+    //새로고침시에 쿠키값을 가져와서 로그인여부를 판단하고 전역상태로 저장
+    useEffect(() => {
+      if (userName === '') {
+        dispatch(actionLoginChangeId(getCookieValue('user')))
+      }
+    }, [])
+
     return (
         <div className="w-full fixed left-0 bg-white z-10 border-gray-200 border-b mb-auto flex align-middle min-w-[500px]">
             <Link href="/"><Logo size="2rem" /></Link>
@@ -31,8 +62,9 @@ const GlobalNav = () => {
                 <Link href="/Menus" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath.includes('/Menus') && 'border-green-600 border-b-4 text-green-600'}`}>메뉴</Link>
                 <Link href="/Recipes" className={`font-semibold text-lg py-2 px-4 my-auto text-black hover:text-green-600 ${currentPath.includes('/Recipes') && 'border-green-600 border-b-4 text-green-600'}`}>레시피</Link>
                 <button className="absolute flex items-center right-2 top-2 px-1 h-4/6 rounded-full bg-green-600 text-white text-sm" onClick={()=>setLoginModal(true)}>
-                    <span className="m-1">로그인</span>
+                    {userName==''&&<span className="m-1">로그인</span>}
                     <MdOutlineAccountCircle className="inline text-2xl" />
+                    {userName!==''&&<span className="m-1">{userName}</span>}
                 </button>
                 {isLoginModal && <LoginModal handleClose={()=>setLoginModal(false)}/>}
             </div>

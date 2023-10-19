@@ -4,7 +4,7 @@ import { PiHeartStraight } from 'react-icons/Pi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { HiFilter } from 'react-icons/hi';
 import Link from 'next/link';
-import { menuArray } from '../pages/Menus'
+import { menuArray } from '../utils/menuArray';
 import SearchBar from './SearchBar';
 import styled from 'styled-components';
 
