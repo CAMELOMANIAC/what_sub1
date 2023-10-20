@@ -7,6 +7,7 @@ import { PiHeartStraight } from 'react-icons/Pi';
 import { RiPencilFill } from 'react-icons/ri';
 import styled from 'styled-components';
 import { menuArray, menuArrayType } from '../utils/menuArray';
+import {checkSession} from '../utils/checkSession';
 
 const StyledDiv = styled.div`
     background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
@@ -16,8 +17,19 @@ const StyledImg = styled.img`
     -webkit-mask-image: linear-gradient(to left, black 70%, transparent 100%);
     mask-image: linear-gradient(to left, black 70%, transparent 100%);*/
 `
+export async function getServerSideProps({ req }) {
+    const cookie = req.headers.cookie;
+    const sessionCheck = await checkSession(cookie);
 
-const Menus = () => {
+    return {
+        props: {
+            sessionCheck,
+        },
+    };
+}
+
+const Menus = ({sessionCheck}) => {
+    console.log(sessionCheck)
     const arrayTemplate: { name: string, favorit: string, recipes: string, avgRecipe: string, matches: string } = {
         name: '메뉴 이름', favorit: '메뉴 좋아요', recipes: '레시피 수', avgRecipe: '레시피 평균', matches: '더 하면 좋은 재료'
     }
