@@ -4,18 +4,33 @@ import executeQuery from '../../lib/db'
 
 const loadRecipes = async (searchQuery, offset, limit) => {
     try {
-        const query = `SELECT recipe_table.recipe_name, recipe_table.recipe_ingredients, 
-        recipe_table.user_table_user_id, recipe_table.sandwich_table_sandwich_name, 
-        GROUP_CONCAT(recipe_tag_table.tag_table_tag_name) AS tag
-         FROM recipe_table 
+        const query = `SELECT 
+        recipe_table.recipe_name, 
+        recipe_table.recipe_ingredients, 
+        recipe_table.user_table_user_id, 
+        recipe_table.sandwich_table_sandwich_name, 
+        GROUP_CONCAT(DISTINCT recipe_tag_table.tag_table_tag_name) AS tag,
+        COUNT(DISTINCT reply_table.reply_context) AS reply_count,
+        COALESCE(like_counts.like_count, 0) AS like_count
+        FROM recipe_table 
         LEFT JOIN recipe_tag_table ON recipe_table.recipe_id = recipe_tag_table.recipe_table_recipe_id
-        GROUP BY recipe_table.recipe_id, recipe_table.recipe_name
-        HAVING recipe_table.sandwich_table_sandwich_name LIKE ?
-          OR recipe_table.recipe_name LIKE ?
-          OR recipe_table.recipe_ingredients LIKE ?
-          OR recipe_table.user_table_user_id LIKE ?
-          OR tag LIKE ?
-         LIMIT ? OFFSET ?;
+        LEFT JOIN reply_table ON recipe_table.recipe_id = reply_table.recipe_table_recipe_id
+        LEFT JOIN (
+        SELECT recipe_table_recipe_id, COUNT(*) AS like_count
+        FROM recipe_like_table
+        GROUP BY recipe_table_recipe_id
+        ) AS like_counts ON recipe_table.recipe_id = like_counts.recipe_table_recipe_id
+        GROUP BY recipe_table.recipe_id, 
+        recipe_table.recipe_name, 
+        recipe_table.recipe_ingredients, 
+        recipe_table.user_table_user_id, 
+        recipe_table.sandwich_table_sandwich_name
+        HAVING recipe_table.sandwich_table_sandwich_name LIKE ? 
+          OR recipe_table.recipe_name LIKE ? 
+          OR recipe_table.recipe_ingredients LIKE ? 
+          OR recipe_table.user_table_user_id LIKE ? 
+          OR tag LIKE ? 
+        LIMIT ? OFFSET ?;
         `
 
         const sanitizedQuery = '%' + searchQuery + '%'; // 검색 쿼리 전처리
@@ -34,8 +49,10 @@ const loadRecipes = async (searchQuery, offset, limit) => {
             recipe_name: index.recipe_name,
             recipe_ingredients: index.recipe_ingredients,
             user_id: index.user_table_user_id,
-            sandwich_table_sandwich_name: index.sandwich_table_sandwich_name,
-            tag: index.tag
+            sandwich_name: index.sandwich_table_sandwich_name,
+            tag: index.tag,
+            reply_count: index.reply_count,
+            like_count: index.like_count
         }));
     } catch (err) {
         throw new Error('검색실패: ' + err.message);

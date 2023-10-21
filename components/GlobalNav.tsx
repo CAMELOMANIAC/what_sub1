@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../redux/store";
 import { actionLoginChangeId } from '../redux/reducer/userReducer';
 
+//id쿠키에서 id값 가져오는 함수
 const getCookieValue = (key) => {
     let cookieKey = key + "=";
     let result = "";

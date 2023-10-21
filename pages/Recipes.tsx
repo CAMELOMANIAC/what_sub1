@@ -2,26 +2,37 @@ import React, { useRef, useEffect } from 'react';
 import Card from '../components/Card';
 import EmptyCard from '../components/EmptyCard';
 import RecipesBanner from '../components/RecipesBanner';
+import { useRouter } from 'next/router';
 
 const Recipes = () => {
     const bannerRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
+    const [recipes, setRecipes] = React.useState<any[]>([]);
+    const router = useRouter();
 
-    //배너랑 글로벌네비 높이 여백계산
+    //배너랑 글로벌네비 높이 여백계산(router.query가 변경되면 bannerRef의 높이가 변경되므로 의존성배열에 추가함)
     useEffect(() => {
         if (bannerRef.current) {
             if (mainRef.current) {
                 mainRef.current.style.marginTop = bannerRef.current.offsetHeight + 50 + 'px';
-                console.log(mainRef.current.style.marginTop);
             }
         }
-    }, [bannerRef.current]);
+    }, [bannerRef.current, router.query]);
 
-
+    //페이지 로드시 보여줄 레시피불러오기
     useEffect(() => {
+        let query = router.query.query;
+        if (typeof query === 'undefined') {
+            query=''
+        }
+        getRecipes(String(query), 0, 8)
+    }, [router.query]);
+
+    //recipe카드 통신함수
+    const getRecipes = (query = '', offset = 0, limit = 3) => {
         //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩함수안써도됨
-        fetch('/api/loadRecipes?query=' + encodeURIComponent('ㅁㄴㅇㅁㄴㅇㅁㄹ')+'&offset=0&limit=6')
+        fetch('/api/loadRecipes?query=' + encodeURIComponent(query) + `&offset=${offset}&limit=${limit}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('네트워크 응답이 실패했습니다.');
@@ -30,11 +41,12 @@ const Recipes = () => {
             })
             .then(data => {
                 console.log('서버 응답:', data);
+                setRecipes(data);
             })
             .catch(error => {
                 console.error('에러 발생:', error);
             });
-    }, []);
+    }
 
     return (
         <>
@@ -47,7 +59,9 @@ const Recipes = () => {
             <main className={'w-full max-w-screen-lg mx-auto pt-2'} ref={mainRef}>
                 <div className='grid grid-cols-6 grid-flow-row gap-2 w-[1024px]'>
                     <EmptyCard></EmptyCard>
-                    {}
+                    {recipes.map((recipe, index) => (
+                        <Card key={index} recipe={recipe}></Card>
+                    ))}
                 </div>
             </main>
         </>

@@ -1,4 +1,4 @@
-import React, { forwardRef} from 'react';
+import React, { forwardRef } from 'react';
 import { useRouter } from 'next/router';
 import { PiHeartStraight } from 'react-icons/Pi';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -48,7 +48,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     return (
         <>
             {router.isReady && selected.length !== 0 ? (
-                <div className={`absolute flex justify-center w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
+                <div className={`absolute flex justify-center w-screen right-0 bg-white border-gray-200 border-b`} ref={ref}>
                     <Link href={'/Recipes'} className='py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-lg h-1/2' /></Link>
                     <div className="flex flex-col justify-start pt-4 pb-10 w-[1024px] max-w-[1024px]">
                         <div className='flex flex-row pb-5 pl-4 border-l'>
@@ -85,7 +85,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>평균 좋아요</span>
                                 </div>
-                                {breadTop3.map((item, index) => (
+                                {breadTop3.map((item) => (
                                     <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <img
