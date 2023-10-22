@@ -108,7 +108,7 @@ const Menus = ({sessionCheck}) => {
             <StyledDiv className="absolute w-screen min-w-[1024px] right-0 mx-auto h-[300px] grid grid-cols-6 bg-white overflow-hidden">
                 {/*메뉴 간단정보*/}
                 <div className="col-span-3 h-[300px]">
-                    <StyledImg src={selected.image} alt='sandwich_image' className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></StyledImg>
+                    <img src={`/images/sandwich_menu/${selected.name}.png`} alt={selected.name} className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></img>
                 </div>
                 <div className="col-span-3 whitespace-pre-line flex flex-col justify-center">
                     <div className='flex flex-row items-center text-white pb-4'>
@@ -122,11 +122,11 @@ const Menus = ({sessionCheck}) => {
                     <div className='flex flex-row'>
                         <Link href={{
                             pathname: '/Recipes',  // 이동할 페이지의 경로
-                            query: { param: selected.name }  /* URL에 전달할 쿼리 매개변수*/
+                            query: { param: selected.name, query:selected.name }  /* URL에 전달할 쿼리 매개변수*/
                         }}
                             className='font-bold rounded-full px-3 py-2 mr-2 text-black bg-yellow-500 flex justify-center items-center'>자세히 보기<IoIosArrowForward className='inline-block text-xl' /></Link>
                         <Link href={{
-                            pathname: '/Recipes',  // 이동할 페이지의 경로
+                            pathname: '/AddRecipe',  // 이동할 페이지의 경로
                             query: { param: selected.name }  /* URL에 전달할 쿼리 매개변수*/
                         }}
                             className='font-bold rounded-full px-3 py-2 mr-2 text-white underline decoration-1 underline-offset-3 flex justify-center items-center'>레시피 작성<RiPencilFill className='inline-block text-xl' /></Link>
@@ -156,23 +156,23 @@ const Menus = ({sessionCheck}) => {
 
                         {menuType === 0 &&
                             <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                                {searchResult.map((index) => (<MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} clickHandler={() => setSelected(index)} />))}
+                                {searchResult.map((index) => (<MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
                             </div>
                         }{menuType === 1 &&
                             <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                                {searchResult.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} clickHandler={() => setSelected(index)} />))}
+                                {searchResult.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
                             </div>
                         }{menuType === 2 &&
                             <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                                {searchResult.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} clickHandler={() => setSelected(index)} />))}
+                                {searchResult.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
                             </div>
                         }{menuType === 3 &&
                             <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                                {searchResult.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} clickHandler={() => setSelected(index)} />))}
+                                {searchResult.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
                             </div>
                         }{menuType === 4 &&
                             <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                                {searchResult.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.name} src={index.image} key={index.name} clickHandler={() => setSelected(index)} />))}
+                                {searchResult.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
                             </div>
                         }
                     </div>
@@ -194,7 +194,7 @@ const Menus = ({sessionCheck}) => {
                             <button key={index} className='flex items-stretch w-full' onClick={() => setSelected(item)}>
                                 <span className="flex justify-center items-center  w-[10%] text-center text-gray-400">{index + 1}</span>
                                 <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1'>
-                                    <img src={item.image} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                                    <img src={`/images/sandwich_menu/${item.name}.png`} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                                 </div>
                                 <span className="flex justify-start items-center  w-[30%] font-bold pl-2">{item.name}</span>
                                 <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'favorit') || (order === 'reverseFavorit')) && 'bg-gray-100 '}`}>{item.favorit}</span>

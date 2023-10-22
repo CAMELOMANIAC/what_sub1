@@ -53,7 +53,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                     <div className="flex flex-col justify-start pt-4 pb-10 w-[1024px] max-w-[1024px]">
                         <div className='flex flex-row pb-5 pl-4 border-l'>
                             <div className='inline-block w-[100px] overflow-hidden relative rounded-md aspect-square'>
-                                <img src={selected[0].image} alt={selected[0].image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                                <img src={`/images/sandwich_menu/${selected[0].name}.png`} alt={selected[0].image} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                             </div>
                             <div className='whitespace-pre-line'>
                                 <div className='flex items-center m-2'>
