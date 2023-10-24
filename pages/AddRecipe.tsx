@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { menuArray } from '../utils/menuArray';
 import styled from 'styled-components';
 
@@ -25,6 +25,8 @@ const AddRecipe = ({ param }) => {
     const [addMeat, setAddMeat] = useState<string>('');
 
     const [isShowAddMeat, setIsShowAddMeat] = useState<boolean>(false);
+    const [isShowAddCheese, setIsShowAddCheese] = useState<boolean>(false);
+    const [isShowAddIngredient, setIsShowAddIngredient] = useState<boolean>(false);
 
     const vegetableChagedHandler = (e) => {
         if (e.target.checked) {
@@ -56,30 +58,147 @@ const AddRecipe = ({ param }) => {
         }
     }
 
-    const showAddMeatClickHandler=()=>{
+    const showAddMeatClickHandler = () => {
         setIsShowAddMeat(false);
         setAddMeat('')
     }
+    const showAddCheeseClickHandler = () => {
+        setIsShowAddCheese(false);
+        setAddCheese('')
+    }
+    const showAddIngredientClickHandler = () => {
+        setIsShowAddIngredient(false);
+        setAddingredient([])
+    }
+
+    const recipeNameRef = useRef<HTMLDivElement | null>(null);
+    const breadeRef = useRef<HTMLDivElement | null>(null);
+    const cheeseRef = useRef<HTMLDivElement | null>(null);
+    const toastingRef = useRef<HTMLDivElement | null>(null);
+    const vegitableRef = useRef<HTMLDivElement | null>(null);
+    const sauceRef = useRef<HTMLDivElement | null>(null);
+    const [orderList, setOrderList] = useState<number>(0);
+
+    const handleClick = (e) => {
+        if (recipeNameRef.current && e.currentTarget.id === 'recipeName') {
+            recipeNameRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(()=>{setOrderList(0)},201)
+        }
+        else if (breadeRef.current && e.currentTarget.id === 'bread') {
+            breadeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(()=>{setOrderList(1)},201)
+        }
+        else if (cheeseRef.current && e.currentTarget.id === 'cheese') {
+            cheeseRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(()=>{setOrderList(2)},201)
+        }
+        else if (toastingRef.current && e.currentTarget.id === 'toasting') {
+            toastingRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(()=>{setOrderList(3)},201)
+        }
+        else if (vegitableRef.current && e.currentTarget.id === 'vegitable') {
+            vegitableRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(()=>{setOrderList(4)},201)
+        }
+        else if (sauceRef.current && e.currentTarget.id === 'sauce') {
+            sauceRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(()=>{setOrderList(5)},201)
+        }
+    };
+
+    useEffect(() => {
+        let scrollPercentage = 0;
+        let cardRatio = [0, 0, 0, 0, 0, 0];
+        const handleScroll = () => {
+            scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            if (cardRatio[0] > scrollPercentage) {
+                console.log('recipeNameRef' + orderList);
+                setOrderList(0);
+            }
+            else if (cardRatio[0] < scrollPercentage && cardRatio[1] > scrollPercentage) {
+                console.log('breadeRef' + orderList);
+                setOrderList(1);
+            }
+            else if (cardRatio[1] < scrollPercentage && cardRatio[2] > scrollPercentage) {
+                console.log('cheeseRef' + orderList);
+                setOrderList(2);
+            }
+            else if (cardRatio[2] < scrollPercentage && cardRatio[3] > scrollPercentage) {
+                console.log('toastingRef' + orderList);
+                setOrderList(3);
+            }
+            else if (cardRatio[3] < scrollPercentage && cardRatio[4] > scrollPercentage) {
+                console.log('vegitableRef' + orderList);
+                setOrderList(4);
+            }
+            else if (cardRatio[4] < scrollPercentage && cardRatio[5] > scrollPercentage) {
+                console.log('sauceRef' + orderList);
+                setOrderList(5);
+            }
+        };
+        if (recipeNameRef.current) {
+            let offsetTop = window.screenY + window.scrollY + recipeNameRef.current.getBoundingClientRect().bottom;
+            let bodyHeight = document.body.offsetHeight; // body의 높이 얻기
+            cardRatio[0] = Math.floor((offsetTop / bodyHeight) * 100); // 비율 계산
+            console.log(cardRatio[0]);
+        }
+        if (breadeRef.current) {
+            let offsetTop = window.screenY + window.scrollY + breadeRef.current.getBoundingClientRect().bottom;
+            let bodyHeight = document.body.offsetHeight; // body의 높이 얻기
+            cardRatio[1] = Math.floor((offsetTop / bodyHeight) * 100); // 비율 계산
+            console.log(cardRatio[1]);
+        }
+        if (cheeseRef.current) {
+            let offsetTop = window.screenY + window.scrollY + cheeseRef.current.getBoundingClientRect().bottom;
+            let bodyHeight = document.body.offsetHeight; // body의 높이 얻기
+            cardRatio[2] = Math.floor((offsetTop / bodyHeight) * 100); // 비율 계산
+            console.log(cardRatio[2]);
+        }
+        if (toastingRef.current) {
+            let offsetTop = window.screenY + window.scrollY + toastingRef.current.getBoundingClientRect().bottom;
+            let bodyHeight = document.body.offsetHeight; // body의 높이 얻기
+            cardRatio[3] = Math.floor((offsetTop / bodyHeight) * 100); // 비율 계산
+            console.log(cardRatio[3]);
+        }
+        if (vegitableRef.current) {
+            let offsetTop = window.screenY + window.scrollY + vegitableRef.current.getBoundingClientRect().bottom;
+            let bodyHeight = document.body.offsetHeight; // body의 높이 얻기
+            cardRatio[4] = Math.floor((offsetTop / bodyHeight) * 100); // 비율 계산
+            console.log(cardRatio[4]);
+        }
+        if (sauceRef.current) {
+            let offsetTop = window.screenY + window.scrollY + sauceRef.current.getBoundingClientRect().bottom;
+            let bodyHeight = document.body.offsetHeight; // body의 높이 얻기
+            cardRatio[5] = Math.floor((offsetTop / bodyHeight) * 100); // 비율 계산
+            console.log(cardRatio[5]);
+        }
+
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
-        <main className={'w-full max-w-screen-lg mx-auto'}>
+        <main className={'w-full max-w-screen-lg mx-auto mb-[80px] pt-2'}>
             <div className='w-[1024px] grid grid-cols-6'>
-                <div className="col-span-3 h-[300px]">
+                <div className="col-span-3 h-[300px] sticky top-[10%]">
                     <h2 className='text-2xl'>{param}</h2>
                     <div className='whitespace-pre-line'>{menuArray[index].summary}</div>
-                    <img src={`/images/sandwich_menu/${param}.png`} alt={String(param)} className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></img>
+                    <img src={`/images/sandwich_menu/${param}.png`} alt={String(param)} className='object-contain object-right h-[350px] drop-shadow-lg'></img>
                 </div>
-                <div className="col-span-3">
-                    <div className="bg-white rounded-md shadow-sm mb-2 p-6">
+                <div className="col-span-3 mt-[10%]">
+                    <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={recipeNameRef}>
                         <h3>레시피 이름</h3>
-                        <input type=''></input>
+                        <input className='w-full'></input>
                     </div>
                     <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6">
                         <h3>주메뉴</h3>
                         {param}
-                    </div>
-                    <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6">
                         <h3>미트추가</h3>
-                        {isShowAddMeat===false && <button onClick={()=>setIsShowAddMeat(true)}>추가하기</button>}
+                        {isShowAddMeat === false && <button className='w-full' onClick={() => setIsShowAddMeat(true)}>추가하기</button>}
                         {isShowAddMeat &&
                             <>
                                 <div>
@@ -141,7 +260,7 @@ const AddRecipe = ({ param }) => {
                             </>
                         }
                     </div>
-                    <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6">
+                    <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6" ref={breadeRef}>
                         <h3>빵 선택</h3>
                         <div>
                             <input type='radio' id='하티' name='bread' value='하티' checked={bread === '하티'} onChange={(e) => (setBread(e.target.value))}></input>
@@ -168,7 +287,7 @@ const AddRecipe = ({ param }) => {
                             <label htmlFor='화이트'>화이트</label>
                         </div>
                     </div>
-                    <div className="bg-white rounded-md shadow-sm mb-2 p-6">
+                    <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={cheeseRef}>
                         <h3>치즈 선택</h3>
                         <div>
                             <input type='radio' id='아메리칸' name='cheese' value='아메리칸' checked={cheese === '아메리칸'} onChange={(e) => (setCheese(e.target.value))} ></input>
@@ -187,59 +306,67 @@ const AddRecipe = ({ param }) => {
                             <label htmlFor='치즈 없음'>치즈없음</label>
                         </div>
                         <h3>치즈 추가</h3>
-                        <div>
-                            <input type='radio' id='치즈 추가 없음' name='AddCheese' value='치즈 추가 없음' checked={AddCheese === ''} onChange={(e) => (setAddCheese(''))} ></input>
-                            <label htmlFor='치즈 추가 없음'>치즈 추가 없음</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='아메리칸 추가' name='AddCheese' value='아메리칸 추가' checked={AddCheese === '아메리칸 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
-                            <label htmlFor='아메리칸 추가'>아메리칸 치즈 추가</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='슈레드 추가' name='AddCheese' value='슈레드 추가' checked={AddCheese === '슈레드 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
-                            <label htmlFor='슈레드 추가'>슈레드 치즈 추가</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='모짜렐라 추가' name='AddCheese' value='모짜렐라 추가' checked={AddCheese === '모짜렐라 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
-                            <label htmlFor='모짜렐라 추가'>모짜렐라 치즈 추가</label>
-                        </div>
+                        {isShowAddCheese === false && <button className='w-full' onClick={() => setIsShowAddCheese(true)}>추가하기</button>}
+                        {isShowAddCheese &&
+                            <>
+                                <div>
+                                    <input type='radio' id='치즈 추가 없음' name='AddCheese' value='치즈 추가 없음' onChange={(e) => (showAddCheeseClickHandler())} ></input>
+                                    <label htmlFor='치즈 추가 없음'>치즈 추가 없음</label>
+                                </div>
+                                <div>
+                                    <input type='radio' id='아메리칸 추가' name='AddCheese' value='아메리칸 추가' checked={AddCheese === '아메리칸 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
+                                    <label htmlFor='아메리칸 추가'>아메리칸 치즈 추가</label>
+                                </div>
+                                <div>
+                                    <input type='radio' id='슈레드 추가' name='AddCheese' value='슈레드 추가' checked={AddCheese === '슈레드 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
+                                    <label htmlFor='슈레드 추가'>슈레드 치즈 추가</label>
+                                </div>
+                                <div>
+                                    <input type='radio' id='모짜렐라 추가' name='AddCheese' value='모짜렐라 추가' checked={AddCheese === '모짜렐라 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
+                                    <label htmlFor='모짜렐라 추가'>모짜렐라 치즈 추가</label>
+                                </div>
+                            </>}
                     </div>
 
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6">
                         <h3>추가재료</h3>
-                        <div>
-                            <input type='checkbox' id='추가재료 없음' name='addIngredient' value='추가재료 없음' checked={addIngredient.length === 0} onChange={() => setAddingredient([])} ></input>
-                            <label htmlFor='추가재료 없음'>추가재료 없음</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='에그마요' name='addIngredient' value='에그마요' checked={addIngredient.includes('에그마요')} onChange={addIngredientChagedHandler} ></input>
-                            <label htmlFor='에그마요'>에그마요</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='페퍼로니' name='addIngredient' value='페퍼로니' checked={addIngredient.includes('페퍼로니')} onChange={addIngredientChagedHandler} ></input>
-                            <label htmlFor='페퍼로니'>페퍼로니</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='베이컨' name='addIngredient' value='베이컨' checked={addIngredient.includes('베이컨')} onChange={addIngredientChagedHandler} ></input>
-                            <label htmlFor='베이컨'>베이컨</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='아보카도' name='addIngredient' value='아보카도' checked={addIngredient.includes('아보카도')} onChange={addIngredientChagedHandler} ></input>
-                            <label htmlFor='아보카도'>아보카도</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='오믈렛' name='addIngredient' value='오믈렛' checked={addIngredient.includes('오믈렛')} onChange={addIngredientChagedHandler} ></input>
-                            <label htmlFor='오믈렛'>오믈렛</label>
-                        </div>
+                        {isShowAddIngredient === false && <button className='w-full' onClick={() => setIsShowAddIngredient(true)}>추가하기</button>}
+                        {isShowAddIngredient &&
+                            <>
+                                <div>
+                                    <input type='checkbox' id='추가재료 없음' name='addIngredient' value='추가재료 없음' onChange={() => showAddIngredientClickHandler()} ></input>
+                                    <label htmlFor='추가재료 없음'>추가재료 없음</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' id='에그마요' name='addIngredient' value='에그마요' checked={addIngredient.includes('에그마요')} onChange={addIngredientChagedHandler} ></input>
+                                    <label htmlFor='에그마요'>에그마요</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' id='페퍼로니' name='addIngredient' value='페퍼로니' checked={addIngredient.includes('페퍼로니')} onChange={addIngredientChagedHandler} ></input>
+                                    <label htmlFor='페퍼로니'>페퍼로니</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' id='베이컨' name='addIngredient' value='베이컨' checked={addIngredient.includes('베이컨')} onChange={addIngredientChagedHandler} ></input>
+                                    <label htmlFor='베이컨'>베이컨</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' id='아보카도' name='addIngredient' value='아보카도' checked={addIngredient.includes('아보카도')} onChange={addIngredientChagedHandler} ></input>
+                                    <label htmlFor='아보카도'>아보카도</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' id='오믈렛' name='addIngredient' value='오믈렛' checked={addIngredient.includes('오믈렛')} onChange={addIngredientChagedHandler} ></input>
+                                    <label htmlFor='오믈렛'>오믈렛</label>
+                                </div>
+                            </>}
                     </div>
-                    <div className="bg-white rounded-md shadow-sm mb-2 p-6">
+                    <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={toastingRef}>
                         <h3>토스팅 여부</h3>
                         <div>
                             <button onClick={() => setIsTosting(true)} className={`${isTosting && 'bg-green-600 text-white'}`}>예</button>
                             <button onClick={() => setIsTosting(false)} className={`${isTosting === false && 'bg-green-600 text-white'}`}>아니오</button>
                         </div>
                     </div>
-                    <div className="bg-white rounded-md shadow-sm mb-2 p-6">
+                    <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={vegitableRef}>
                         <h3>신선 채소 선택</h3>
                         <div>
                             <input type='checkbox' id='양상추' name='vegetable' value='양상추' checked={vegetable.includes('양상추')} onChange={vegetableChagedHandler} ></input>
@@ -284,8 +411,8 @@ const AddRecipe = ({ param }) => {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-md shadow-sm mb-2 p-6">
-                        <h3>소스</h3>
+                    <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={sauceRef}>
+                        <h3>소스 선택</h3>
                         <span>(최대3개)</span>
                         <div>
                             <input type='checkbox' id='랜치' name='sauce' value='랜치' checked={sauce.includes('랜치')} onChange={sauceChagedHandler} ></input>
@@ -348,11 +475,62 @@ const AddRecipe = ({ param }) => {
                             <label htmlFor='소스 없음'>소스 없음</label>
                         </div>
                     </div>
+
+                    <div className="bg-white rounded-md shadow-sm p-6 mb-[10%]" ref={sauceRef}>
+                        <h3>작성완료</h3>
+                    </div>
+
                 </div>
-
             </div>
-            <RecipeNav>
 
+            <RecipeNav className='p-4 grid grid-cols-7 grid-rows-1'>
+                <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600' onClick={(e) => handleClick(e)} id='recipeName'>
+                    {orderList === 0 ?
+                        <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div> :
+                        <div className='bg-white w-[8px] h-[8px] translate-y-[-8px] rounded-full border-[1px] border-green-600'></div>
+                    }
+                    <div className='col-span-1 text-center absolute mt-1'>레시피 이름</div>
+                </button>
+                <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600' onClick={(e) => handleClick(e)} id='bread'>
+                    {orderList === 1 ?
+                        <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div> :
+                        <div className='bg-white w-[8px] h-[8px] translate-y-[-8px] rounded-full border-[1px] border-green-600'></div>
+                    }
+                    <div className='col-span-1 text-center absolute mt-1'>빵 선택</div>
+                </button>
+                <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600' onClick={(e) => handleClick(e)} id='cheese'>
+                    {orderList === 2 ?
+                        <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div> :
+                        <div className='bg-white w-[8px] h-[8px] translate-y-[-8px] rounded-full border-[1px] border-green-600'></div>
+                    }
+                    <div className='col-span-1 text-center absolute mt-1'>치즈 선택</div>
+                </button>
+                <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600' onClick={(e) => handleClick(e)} id='toasting'>
+                    {orderList === 3 ?
+                        <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div> :
+                        <div className='bg-white w-[8px] h-[8px] translate-y-[-8px] rounded-full border-[1px] border-green-600'></div>
+                    }
+                    <div className='col-span-1 text-center absolute mt-1'>토스팅 여부</div>
+                </button>
+                <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600' onClick={(e) => handleClick(e)} id='vegitable'>
+                    {orderList === 4 ?
+                        <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div> :
+                        <div className='bg-white w-[8px] h-[8px] translate-y-[-8px] rounded-full border-[1px] border-green-600'></div>
+                    }
+                    <div className='col-span-1 text-center absolute mt-1'>채소 선택</div>
+                </button>
+                <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600' onClick={(e) => handleClick(e)} id='sauce'>
+                    {orderList === 5 ?
+                        <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div> :
+                        <div className='bg-white w-[8px] h-[8px] translate-y-[-8px] rounded-full border-[1px] border-green-600'></div>
+                    }
+                    <div className='col-span-1 text-center absolute mt-1'>소스 선택</div>
+                </button>
+                <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600'>
+                    <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div>
+                    <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-yellow-400'></div>
+                    <div className='col-span-1 text-center absolute mt-1'>작성완료</div>
+                </button>
             </RecipeNav>
         </main>
     );
