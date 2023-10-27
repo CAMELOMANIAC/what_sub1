@@ -42,16 +42,21 @@ export type nutrientsArrayType = {
     sugars: number,
     sodium: number
 }
-export const nutrientsArray: nutrientsArrayType[] = [
+
+export const breadNutrientArray: nutrientsArrayType[] = [
     { name: '화이트', weight: 71, kcal: 202, protein: 6.1, saturatedFats: 0.3, sugars: 2.8, sodium: 0.343 },
     { name: '파마산 오레가노', weight: 74.5, kcal: 213, protein: 6.3, saturatedFats: 0.4, sugars: 3.2, sodium: 0.489 },
     { name: '위트', weight: 78, kcal: 192, protein: 8.4, saturatedFats: 0.5, sugars: 5, sodium: 0.257 },
     { name: '허니오트', weight: 88.6, kcal: 235, protein: 8.8, saturatedFats: 0.6, sugars: 9.3, sodium: 0.306 },
     { name: '하티', weight: 75, kcal: 210, protein: 7, saturatedFats: 1, sugars: 3, sodium: 0.340 },
     { name: '플랫브레드', weight: 86, kcal: 233.5, protein: 8.1, saturatedFats: 8.5, sugars: 1.45, sodium: 0.468 },
+]
+export const cheeseNutrientArray: nutrientsArrayType[] = [
     { name: '아메리칸', weight: 10, kcal: 35.3, protein: 1.8, saturatedFats: 1.9, sugars: 0.4, sodium: 0.193 },
     { name: '슈레드', weight: 14, kcal: 53.6, protein: 3.2, saturatedFats: 2.4, sugars: 0, sodium: 0.0847 },
     { name: '모짜렐라', weight: 14, kcal: 43.8, protein: 2.8, saturatedFats: 2.1, sugars: 0.2, sodium: 0.0823 },
+]
+export const sauceNutrientArray: nutrientsArrayType[] = [
     { name: '머스타드', weight: 21, kcal: 15.3, protein: 1.1, saturatedFats: 0.1, sugars: 0.2, sodium: 0.193 },
     { name: '레드와인식초', weight: 3.5, kcal: 0.7, protein: 0, saturatedFats: 0, sugars: 0, sodium: 0 },
     { name: '스위트어니언', weight: 21, kcal: 40.1, protein: 0.1, saturatedFats: 0, sugars: 8.2, sodium: 0.0817 },
@@ -64,9 +69,11 @@ export const nutrientsArray: nutrientsArrayType[] = [
     { name: '뉴 사우스웨스트 치폴레', weight: 21, kcal: 96.5, protein: 0.4, saturatedFats: 1.6, sugars: 1, sodium: 0.160 },
     { name: '홀스래디쉬', weight: 21, kcal: 106, protein: 0.3, saturatedFats: 1.6, sugars: 2.6, sodium: 0.152 },
     { name: '올리브오일', weight: 3.5, kcal: 124, protein: 0, saturatedFats: 2.1, sugars: 0, sodium: 0 },
+]
 
+export const menuNutrientArray: nutrientsArrayType[] = [
     //주메뉴=미트+채소
-    { name: '스파이시 바비큐', weight: 178, kcal: 182, protein: 16.8, saturatedFats: 6.9, sugars: 10.0, sodium: 0.646 },
+    { name: '스파이시 바베큐', weight: 178, kcal: 182, protein: 16.8, saturatedFats: 6.9, sugars: 10.0, sodium: 0.646 },
     { name: '스파이시 쉬림프', weight: 135, kcal: 53, protein: 8.1, saturatedFats: 0.4, sugars: 4.1, sodium: 0.313 },
     { name: '스파이시 이탈리안', weight: 146, kcal: 272, protein: 12.3, saturatedFats: 8.6, sugars: 3.7, sodium: 0.993 },
     { name: '스테이크 & 치즈', weight: 167, kcal: 163, protein: 19.7, saturatedFats: 3.7, sugars: 3.8, sodium: 0.523 },
@@ -76,7 +83,7 @@ export const nutrientsArray: nutrientsArrayType[] = [
     { name: '로티세리 바베큐', weight: 171, kcal: 135, protein: 20.7, saturatedFats: 2, sugars: 2.8, sodium: 0.285 },
     { name: 'K-bbq', weight: 178, kcal: 180, protein: 17.2, saturatedFats: 1.6, sugars: 9.7, sodium: 0.642 },
     { name: '풀드포크', weight: 157, kcal: 135, protein: 16.4, saturatedFats: 1.6, sugars: 2.8, sodium: 0.432 },
-    { name: '써브웨이 클럽', weight: 138, kcal: 107, protein: 11.4, saturatedFats: 1.9, sugars: 3.53, sodium: 0.596 },
+    { name: '서브웨이 클럽', weight: 138, kcal: 107, protein: 11.4, saturatedFats: 1.9, sugars: 3.53, sodium: 0.596 },
     { name: '이탈리안 B.M.T', weight: 150, kcal: 196, protein: 12.6, saturatedFats: 5.4, sugars: 3.6, sodium: 0.807 },
     { name: '치킨 슬라이스', weight: 143, kcal: 73, protein: 10.2, saturatedFats: 0.4, sugars: 3.7, sodium: 0.494 },
     { name: '참치', weight: 160, kcal: 124, protein: 18.5, saturatedFats: 0.9, sugars: 2.6, sodium: 0.278 },
@@ -85,4 +92,4 @@ export const nutrientsArray: nutrientsArrayType[] = [
     { name: 'B.L.T', weight: 104, kcal: 108, protein: 7.5, saturatedFats: 3.2, sugars: 2.9, sodium: 0.409 },
     { name: '치킨 데리야끼', weight: 177, kcal: 122, protein: 18.1, saturatedFats: 0.7, sugars: 5.1, sodium: 0.441 },
     { name: '에그마요', weight: 160, kcal: 224, protein: 8.0, saturatedFats: 4.3, sugars: 2.7, sodium: 0.297 }
-];
+]

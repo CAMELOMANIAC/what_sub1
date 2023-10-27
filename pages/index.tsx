@@ -40,7 +40,8 @@ const IndexPage = ({users}: {users: Post[]}) => {
         <h3>{post.user_id}</h3>
           <h3>{post.user_pwd}</h3>
         </div>
-      )))}
+      )))
+      }
       <SearchBar className='pb-4' />
       <FrontPopularRecipe array={test} />
     </main>

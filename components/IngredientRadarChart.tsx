@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RadarChart } from "recharts";
-import { Legend, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar } from "recharts";
-import { nutrientsArray } from "../utils/menuArray"
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar } from "recharts";
+import { breadNutrientArray,cheeseNutrientArray,sauceNutrientArray,menuNutrientArray } from "../utils/menuArray"
 import { Tooltip } from "recharts";
 
 export const useIsServerSide = () => {
@@ -19,6 +19,7 @@ const IngredientsRadarChart = ({ context }) => {
     const [saturatedFats, setSaturatedFats] = useState<number>(0);
     const [sugars, setSugars] = useState<number>(0);
     const [sodium, setSodium] = useState<number>(0);
+    const nutrientsArray = [...breadNutrientArray,...cheeseNutrientArray,...sauceNutrientArray,...menuNutrientArray];
 
     useEffect(() => {
         setCalorie(0);

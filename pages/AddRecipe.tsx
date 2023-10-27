@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { menuArray } from '../utils/menuArray';
+import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrientArray, menuArray } from "../utils/menuArray"
 import styled from 'styled-components';
 import IngredientsRadarChart from '../components/IngredientRadarChart';
 import { TbAlertCircle } from 'react-icons/tb';
@@ -123,7 +123,7 @@ const AddRecipe = ({ param }) => {
             let firstEntry = entries.reduce((first, entry) => {
                 return (entry.boundingClientRect.top < first.boundingClientRect.top) ? entry : first;
             });
-            entries.forEach((entry) => {
+            entries.forEach(() => {
                 if (firstEntry.isIntersecting) {
                     switch (firstEntry.target.id) {
                         case 'recipeName':
@@ -199,7 +199,7 @@ const AddRecipe = ({ param }) => {
             <div className='w-[1024px] h-[600px] grid grid-cols-6'>
                 <div className="col-span-3 h-[300px] mt-[10%]">
                     <h2 className='text-2xl ml-8 '>{param}</h2>
-                    <div className='whitespace-pre-line ml-8 text-gray-500 text-sm'>{menuArray[index].summary}</div>
+                    <div className='whitespace-pre-line ml-8 text-sm'>{menuArray[index].summary}</div>
                     <img src={`/images/sandwich_menu/${param}.png`} alt={String(param)} className='object-contain object-right h-[350px] drop-shadow-lg'></img>
 
                     <h3 className='ml-8 text-gray-500 group'>
@@ -220,309 +220,271 @@ const AddRecipe = ({ param }) => {
                         <input className='w-full' onChange={handleChange}></input>
                     </div>
                     <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6">
-                        <h3>주메뉴</h3>
-                        {param}
-                        <h3>미트추가</h3>
-                        {isShowAddMeat === false && <button className='w-full' onClick={() => setIsShowAddMeat(true)}>추가하기</button>}
-                        {isShowAddMeat &&
-                            <>
-                                <div>
-                                    <input type='radio' id='미트 추가 없음' name='addMeat' value='미트 추가 없음' onChange={showAddMeatClickHandler} ></input>
-                                    <label htmlFor='미트 추가 없음'>미트 추가 없음</label>
+                        <div className='m-2 mb-8'>
+                            <h3 className='text-xl font-bold'>주메뉴</h3>
+                            <p className='p-2 flex items-center h-12'>{param}</p>
+                        </div>
+                        <div className='m-2'>
+                            <h3 className='text-xl font-bold'>미트추가</h3>
+                            {isShowAddMeat === false && <button className='w-full' onClick={() => setIsShowAddMeat(true)}>추가하기</button>}
+                            {isShowAddMeat &&
+                                <div className='p-2'>
+                                    <div className='h-12 flex items-center'>
+                                        <input type='radio' id='미트 추가 없음' name='addMeat' value='미트 추가 없음' onChange={showAddMeatClickHandler} className='mr-2'></input>
+                                        <label htmlFor='미트 추가 없음'>미트 추가 없음</label>
+                                    </div>
+                                    {menuNutrientArray.filter(item => item.name !== '베지').map((item) => (
+                                        <div key={item.name} className='flex flex-row'>
+                                            <input type='radio' id={`${item.name} 추가`} name='addMeat' value={`${item.name} 추가`} checked={addMeat === (`${item.name} 추가`)} onChange={(e) => (setAddMeat(e.target.value))} className='mr-2'></input>
+
+                                            <label htmlFor={`${item.name} 추가`} className='my-auto flex items-center'>
+                                                <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1 mr-2'>
+                                                    <img src={`/images/sandwich_menu/${item.name}.png`} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                                                </div>
+                                                <span className=''>{item.name} 추가</span>
+                                            </label>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div>
-                                    <input type='radio' id='스파이시 바비큐 추가' name='addMeat' value='스파이시 바비큐 추가' checked={addMeat === ('스파이시 바비큐 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='스파이시 바비큐 추가'>스파이시 바비큐 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='스파이시 쉬림프 추가' name='addMeat' value='스파이시 쉬림프 추가' checked={addMeat === ('스파이시 쉬림프 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='스파이시 쉬림프 추가'>스파이시 쉬림프 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='스파이시 이탈리안 추가' name='addMeat' value='스파이시 이탈리안 추가' checked={addMeat === ('스파이시 이탈리안 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='스파이시 이탈리안 추가'>스파이시 이탈리안 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='스테이크 & 치즈 추가' name='addMeat' value='스테이크 & 치즈 추가' checked={addMeat === ('스테이크 & 치즈 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='스테이크 & 치즈 추가'>스테이크 & 치즈 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='치킨 베이컨 아보카도 추가' name='addMeat' value='치킨 베이컨 아보카도 추가' checked={addMeat === ('치킨 베이컨 아보카도 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='치킨 베이컨 아보카도 추가'>치킨 베이컨 아보카도 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='쉬림프 추가' name='addMeat' value='쉬림프 추가' checked={addMeat === ('쉬림프 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='쉬림프 추가'>쉬림프 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='로스티드 치킨 추가' name='addMeat' value='로스티드 치킨 추가' checked={addMeat === ('로스티드 치킨 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='로스티드 치킨 추가'>로스티드 치킨 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='로티세리 바베큐 추가' name='addMeat' value='로티세리 바베큐 추가' checked={addMeat === ('로티세리 바베큐 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='로티세리 바베큐 추가'>로티세리 바베큐 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='K-bbq 추가' name='addMeat' value='K-bbq 추가' checked={addMeat === ('K-bbq 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='K-bbq 추가'>K-bbq 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='풀드포크 추가' name='addMeat' value='풀드포크 추가' checked={addMeat === ('풀드포크 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='풀드포크 추가'>풀드포크 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='써브웨이 클럽 추가' name='addMeat' value='써브웨이 클럽 추가' checked={addMeat === ('써브웨이 클럽 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='써브웨이 클럽 추가'>써브웨이 클럽 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='이탈리안 B.M.T 추가' name='addMeat' value='이탈리안 B.M.T 추가' checked={addMeat === ('이탈리안 B.M.T 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='이탈리안 B.M.T 추가'>이탈리안 B.M.T 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='치킨 슬라이스 추가' name='addMeat' value='치킨 슬라이스 추가' checked={addMeat === ('치킨 슬라이스 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='치킨 슬라이스 추가'>치킨 슬라이스 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='참치 추가' name='addMeat' value='참치 추가' checked={addMeat === ('참치 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='참치 추가'>참치 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='햄 추가' name='addMeat' value='햄 추가' checked={addMeat === ('햄 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='햄 추가'>햄 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='B.L.T 추가' name='addMeat' value='B.L.T 추가' checked={addMeat === ('B.L.T 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='B.L.T 추가'>B.L.T 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='치킨 데리야끼 추가' name='addMeat' value='치킨 데리야끼 추가' checked={addMeat === ('치킨 데리야끼 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='치킨 데리야끼 추가'>치킨 데리야끼 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='에그마요 추가' name='addMeat' value='에그마요 추가' checked={addMeat === ('에그마요 추가')} onChange={(e) => (setAddMeat(e.target.value))} ></input>
-                                    <label htmlFor='에그마요 추가'>에그마요 추가</label>
-                                </div>
-                            </>
-                        }
+                            }
+                        </div>
                     </div>
                     <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6" ref={breadeRef} id='bread'>
-                        <h3>빵 선택</h3>
-                        <div>
-                            <input type='radio' id='하티' name='bread' value='하티' checked={bread === '하티'} onChange={(e) => (setBread(e.target.value))}></input>
-                            <label htmlFor='하티'>하티</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='허니오트' name='bread' value='허니오트' checked={bread === '허니오트'} onChange={(e) => (setBread(e.target.value))} ></input>
-                            <label htmlFor='허니오트'>허니오트</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='플랫브레드' name='bread' value='플랫브레드' checked={bread === '플랫브레드'} onChange={(e) => (setBread(e.target.value))}></input>
-                            <label htmlFor='플랫브레드'>플랫브레드</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='위트' name='bread' value='위트' checked={bread === '위트'} onChange={(e) => (setBread(e.target.value))}></input>
-                            <label htmlFor='위트'>위트</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='파마산 오레가노' name='bread' value='파마산 오레가노' checked={bread === '파마산 오레가노'} onChange={(e) => (setBread(e.target.value))}></input>
-                            <label htmlFor='파마산 오레가노'>파마산 오레가노</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='화이트' name='bread' value='화이트' checked={bread === '화이트'} onChange={(e) => (setBread(e.target.value))}></input>
-                            <label htmlFor='화이트'>화이트</label>
+                        <div className='m-2'>
+                            <h3 className='text-xl font-bold'>빵 선택</h3>
+                            <div className='p-2'>
+                                {
+                                    breadNutrientArray.map((item) => (
+                                        <div key={item.name} className='flex flex-row'>
+                                            <input type='radio' id={`${item.name}`} name='bread' value={`${item.name}`} checked={bread === item.name} onChange={(e) => (setBread(e.target.value))} className='mr-2'></input>
+                                            <label htmlFor={`${item.name}`} className='my-auto flex items-center'>
+                                                <img src={'/images/sandwich_menu/ingredients/' + item.name + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={item.name}></img>
+                                                <p>{item.name}</p>
+                                            </label>
+                                        </div>
+                                    ))
+                                }
+                            </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={cheeseRef} id='cheese'>
-                        <h3>치즈 선택</h3>
-                        <div>
-                            <input type='radio' id='아메리칸' name='cheese' value='아메리칸' checked={cheese === '아메리칸'} onChange={(e) => (setCheese(e.target.value))} ></input>
-                            <label htmlFor='아메리칸'>아메리칸</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='슈레드' name='cheese' value='슈레드' checked={cheese === '슈레드'} onChange={(e) => (setCheese(e.target.value))} ></input>
-                            <label htmlFor='슈레드'>슈레드</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='모짜렐라' name='cheese' value='모짜렐라' checked={cheese === '모짜렐라'} onChange={(e) => (setCheese(e.target.value))} ></input>
-                            <label htmlFor='모짜렐라'>모짜렐라</label>
-                        </div>
-                        <div>
-                            <input type='radio' id='치즈 없음' name='cheese' value='치즈 없음' checked={cheese === ''} onChange={(e) => (setCheese(''))} ></input>
-                            <label htmlFor='치즈 없음'>치즈없음</label>
-                        </div>
-                        <h3>치즈 추가</h3>
-                        {isShowAddCheese === false && <button className='w-full' onClick={() => setIsShowAddCheese(true)}>추가하기</button>}
-                        {isShowAddCheese &&
-                            <>
-                                <div>
-                                    <input type='radio' id='치즈 추가 없음' name='AddCheese' value='치즈 추가 없음' onChange={(e) => (showAddCheeseClickHandler())} ></input>
-                                    <label htmlFor='치즈 추가 없음'>치즈 추가 없음</label>
+                    <div className="bg-white rounded-md shadow-sm mb-2 p-6 " ref={cheeseRef} id='cheese'>
+                        <div className='m-2 mb-8'>
+                            <h3 className='text-xl font-bold'>치즈 선택</h3>
+                            <div className='p-2'>
+                                {
+                                    cheeseNutrientArray.map((item) => (
+                                        <div key={item.name} className='flex flex-row'>
+                                            <input type='radio' id={`${item.name}`} name='cheese' value={`${item.name}`} checked={cheese === item.name} onChange={(e) => (setCheese(e.target.value))} className='mr-2'></input>
+                                            <label htmlFor={`${item.name}`} className='my-auto flex items-center'>
+                                                <img src={'/images/sandwich_menu/ingredients/' + item.name + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={item.name}></img>
+                                                <p>
+                                                    {item.name} 치즈
+                                                </p>
+                                            </label>
+                                        </div>
+                                    ))
+                                }
+                                <div className='h-12 flex items-center'>
+                                    <input type='radio' id='치즈 없음' name='cheese' value='치즈 없음' onChange={(e) => (setCheese(''))} className='mr-2'></input>
+                                    <label htmlFor='치즈 없음'>치즈 없음</label>
                                 </div>
-                                <div>
-                                    <input type='radio' id='아메리칸 추가' name='AddCheese' value='아메리칸 추가' checked={AddCheese === '아메리칸 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
-                                    <label htmlFor='아메리칸 추가'>아메리칸 치즈 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='슈레드 추가' name='AddCheese' value='슈레드 추가' checked={AddCheese === '슈레드 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
-                                    <label htmlFor='슈레드 추가'>슈레드 치즈 추가</label>
-                                </div>
-                                <div>
-                                    <input type='radio' id='모짜렐라 추가' name='AddCheese' value='모짜렐라 추가' checked={AddCheese === '모짜렐라 추가'} onChange={(e) => (setAddCheese(e.target.value))} ></input>
-                                    <label htmlFor='모짜렐라 추가'>모짜렐라 치즈 추가</label>
-                                </div>
-                            </>}
+                            </div>
+                        </div>
+                        <div className='m-2'>
+                            <h3 className='text-xl font-bold'>치즈 추가</h3>
+                            <div className='p-2'>
+                                {isShowAddCheese === false && <button className='w-full' onClick={() => setIsShowAddCheese(true)}>추가하기</button>}
+                                {isShowAddCheese &&
+                                    <>
+                                        <div className='h-12 flex items-center'>
+                                            <input type='radio' id='치즈 추가 없음' name='AddCheese' value='치즈 추가 없음' onChange={(e) => (showAddCheeseClickHandler())} className='mr-2'></input>
+                                            <label htmlFor='치즈 추가 없음'>치즈 추가 없음</label>
+                                        </div>
+                                        {
+                                            cheeseNutrientArray.map((item) => (
+                                                <div key={item.name} className='flex flex-row'>
+                                                    <input type='radio' id={`${item.name} 추가`} name='AddCheese' value={`${item.name} 추가`} checked={AddCheese === item.name + ' 추가'} onChange={(e) => (setAddCheese(e.target.value))} className='mr-2'></input>
+                                                    <label htmlFor={`${item.name} 추가`} className='my-auto flex items-center'>
+                                                        <img src={'/images/sandwich_menu/ingredients/' + item.name + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={item.name}></img>
+                                                        <p>{item.name} 치즈 추가</p>
+                                                    </label>
+                                                </div>
+                                            ))
+                                        }
+                                    </>
+                                }
+                            </div>
+                        </div>
                     </div>
 
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6">
-                        <h3>추가재료</h3>
-                        {isShowAddIngredient === false && <button className='w-full' onClick={() => setIsShowAddIngredient(true)}>추가하기</button>}
-                        {isShowAddIngredient &&
-                            <>
-                                <div>
-                                    <input type='checkbox' id='추가재료 없음' name='addIngredient' value='추가재료 없음' onChange={() => showAddIngredientClickHandler()} ></input>
-                                    <label htmlFor='추가재료 없음'>추가재료 없음</label>
-                                </div>
-                                <div>
-                                    <input type='checkbox' id='에그마요 추가' name='addIngredient' value='에그마요 추가' checked={addIngredient.includes('에그마요 추가')} onChange={addIngredientChagedHandler} ></input>
-                                    <label htmlFor='에그마요 추가'>에그마요 추가</label>
-                                </div>
-                                <div>
-                                    <input type='checkbox' id='페퍼로니 추가' name='addIngredient' value='페퍼로니 추가' checked={addIngredient.includes('페퍼로니 추가')} onChange={addIngredientChagedHandler} ></input>
-                                    <label htmlFor='페퍼로니 추가'>페퍼로니 추가</label>
-                                </div>
-                                <div>
-                                    <input type='checkbox' id='베이컨 추가' name='addIngredient' value='베이컨 추가' checked={addIngredient.includes('베이컨 추가')} onChange={addIngredientChagedHandler} ></input>
-                                    <label htmlFor='베이컨 추가'>베이컨 추가</label>
-                                </div>
-                                <div>
-                                    <input type='checkbox' id='아보카도 추가' name='addIngredient' value='아보카도 추가' checked={addIngredient.includes('아보카도 추가')} onChange={addIngredientChagedHandler} ></input>
-                                    <label htmlFor='아보카도 추가'>아보카도 추가</label>
-                                </div>
-                                <div>
-                                    <input type='checkbox' id='오믈렛 추가' name='addIngredient' value='오믈렛 추가' checked={addIngredient.includes('오믈렛 추가')} onChange={addIngredientChagedHandler} ></input>
-                                    <label htmlFor='오믈렛 추가'>오믈렛 추가</label>
-                                </div>
-                            </>}
+                        <div className='m-2'>
+                            <h3 className='text-xl font-bold'>추가재료</h3>
+                            {isShowAddIngredient === false && <button className='w-full' onClick={() => setIsShowAddIngredient(true)}>추가하기</button>}
+                            {isShowAddIngredient &&
+                                <div className='p-2'>
+                                    <div className='flex flex-row h-12'>
+                                        <input type='checkbox' id='추가재료 없음' name='addIngredient' value='추가재료 없음' onChange={() => showAddIngredientClickHandler()} className='mr-2'></input>
+                                        <label htmlFor='추가재료 없음' className='my-auto flex items-center'>
+                                            <p>추가재료 없음</p>
+                                        </label>
+                                    </div>
+                                    <div className='flex flex-row'>
+                                        <input type='checkbox' id='에그마요 추가' name='addIngredient' value='에그마요 추가' checked={addIngredient.includes('에그마요 추가')} onChange={addIngredientChagedHandler} className='mr-2'></input>
+                                        <label htmlFor='에그마요 추가' className='my-auto flex items-center'>
+                                            <img src={'/images/sandwich_menu/ingredients/' + '에그마요' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'에그마요'}></img>
+                                            <p>에그마요 추가</p>
+                                        </label>
+                                    </div>
+                                    <div className='flex flex-row'>
+                                        <input type='checkbox' id='페퍼로니 추가' name='addIngredient' value='페퍼로니 추가' checked={addIngredient.includes('페퍼로니 추가')} onChange={addIngredientChagedHandler} className='mr-2'></input>
+                                        <label htmlFor='페퍼로니 추가' className='my-auto flex items-center'>
+                                            <img src={'/images/sandwich_menu/ingredients/' + '페퍼로니' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'페퍼로니'}></img>
+                                            <p>페퍼로니 추가</p>
+                                        </label>
+                                    </div>
+                                    <div className='flex flex-row'>
+                                        <input type='checkbox' id='베이컨 추가' name='addIngredient' value='베이컨 추가' checked={addIngredient.includes('베이컨 추가')} onChange={addIngredientChagedHandler} className='mr-2'></input>
+                                        <label htmlFor='베이컨 추가' className='my-auto flex items-center'>
+                                            <img src={'/images/sandwich_menu/ingredients/' + '베이컨' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'베이컨'}></img>
+                                            <p>베이컨 추가</p>
+                                        </label>
+                                    </div>
+                                    <div className='flex flex-row'>
+                                        <input type='checkbox' id='아보카도 추가' name='addIngredient' value='아보카도 추가' checked={addIngredient.includes('아보카도 추가')} onChange={addIngredientChagedHandler} className='mr-2'></input>
+                                        <label htmlFor='아보카도 추가' className='my-auto flex items-center'>
+                                            <img src={'/images/sandwich_menu/ingredients/' + '아보카도' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'아보카도'}></img>
+                                            <p>아보카도 추가</p>
+                                        </label>
+                                    </div>
+                                    <div className='flex flex-row'>
+                                        <input type='checkbox' id='오믈렛 추가' name='addIngredient' value='오믈렛 추가' checked={addIngredient.includes('오믈렛 추가')} onChange={addIngredientChagedHandler} className='mr-2'></input>
+                                        <label htmlFor='오믈렛 추가' className='my-auto flex items-center'>
+                                            <img src={'/images/sandwich_menu/ingredients/' + '오믈렛' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'오믈렛'}></img>
+                                            <p>오믈렛 추가</p>
+                                        </label>
+                                    </div>
+                                </div>}
+                        </div>
                     </div>
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={toastingRef} id='toasting'>
-                        <h3>토스팅 여부</h3>
-                        <div>
-                            <button onClick={() => setisToasting(true)} className={`${isToasting && 'bg-green-600 text-white'}`}>예</button>
-                            <button onClick={() => setisToasting(false)} className={`${isToasting === false && 'bg-green-600 text-white'}`}>아니오</button>
+                        <div className='m-2'>
+                            <h3 className='text-xl font-bold'>토스팅 여부</h3>
+                            <div className='p-2'>
+                                <button onClick={() => setisToasting(true)} className={`${isToasting && 'bg-green-600 text-white'}`}>예</button>
+                                <button onClick={() => setisToasting(false)} className={`${isToasting === false && 'bg-green-600 text-white'}`}>아니오</button>
+                            </div>
                         </div>
                     </div>
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={vegetableRef} id='vegetable'>
-                        <h3>신선 채소 선택</h3>
-                        <div>
-                            <input type='checkbox' id='양상추' name='vegetable' value='양상추' checked={vegetable.includes('양상추')} onChange={vegetableChagedHandler} ></input>
-                            <label htmlFor='양상추'>양상추</label>
+                        <div className='m-2'>
+                            <h3 className='text-xl font-bold'>신선 채소 선택</h3>
+                            <div className='p-2 mb-8'>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='양상추' name='vegetable' value='양상추' checked={vegetable.includes('양상추')} onChange={vegetableChagedHandler} className='mr-2'></input>
+                                    <label htmlFor='양상추' className='my-auto flex items-center'>
+                                        <img src={'/images/sandwich_menu/ingredients/' + '양상추' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'양상추'}></img>
+                                        <p>양상추</p>
+                                    </label>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='토마토' name='vegetable' value='토마토' checked={vegetable.includes('토마토')} onChange={vegetableChagedHandler} className='mr-2'></input>
+                                    <label htmlFor='토마토' className='my-auto flex items-center'>
+                                        <img src={'/images/sandwich_menu/ingredients/' + '토마토' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'토마토'}></img>
+                                        <p>토마토</p>
+                                    </label>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='오이' name='vegetable' value='오이' checked={vegetable.includes('오이')} onChange={vegetableChagedHandler} className='mr-2'></input>
+                                    <label htmlFor='오이' className='my-auto flex items-center'>
+                                        <img src={'/images/sandwich_menu/ingredients/' + '오이' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'오이'}></img>
+                                        <p>오이</p>
+                                    </label>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='피망' name='vegetable' value='피망' checked={vegetable.includes('피망')} onChange={vegetableChagedHandler} className='mr-2'></input>
+                                    <label htmlFor='피망' className='my-auto flex items-center'>
+                                        <img src={'/images/sandwich_menu/ingredients/' + '피망' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'피망'}></img>
+                                        <p>피망</p>
+                                    </label>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='양파' name='vegetable' value='양파' checked={vegetable.includes('양파')} onChange={vegetableChagedHandler} className='mr-2'></input>
+                                    <label htmlFor='양파' className='my-auto flex items-center'>
+                                        <img src={'/images/sandwich_menu/ingredients/' + '양파' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'양파'}></img>
+                                        <p>양파</p>
+                                    </label>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='신선 채소 없음' name='vegetable' value='신선 채소 없음' checked={vegetable.length === 0} onChange={() => setVegetable([])} className='mr-2'></input>
+                                    <label htmlFor='신선 채소 없음' className='my-auto flex items-center h-12'>
+                                        <p>신선 채소 없음</p>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <input type='checkbox' id='토마토' name='vegetable' value='토마토' checked={vegetable.includes('토마토')} onChange={vegetableChagedHandler} ></input>
-                            <label htmlFor='토마토'>토마토</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='오이' name='vegetable' value='오이' checked={vegetable.includes('오이')} onChange={vegetableChagedHandler} ></input>
-                            <label htmlFor='오이'>오이</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='피망' name='vegetable' value='피망' checked={vegetable.includes('피망')} onChange={vegetableChagedHandler} ></input>
-                            <label htmlFor='피망'>피망</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='양파' name='vegetable' value='양파' checked={vegetable.includes('양파')} onChange={vegetableChagedHandler} ></input>
-                            <label htmlFor='양파'>양파</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='신선 채소 없음' name='vegetable' value='신선 채소 없음' checked={vegetable.length === 0} onChange={() => setVegetable([])} ></input>
-                            <label htmlFor='신선 채소 없음'>신선 채소 없음</label>
-                        </div>
-                        <h3>절임 채소 선택</h3>
-                        <div>
-                            <input type='checkbox' id='피클' name='pickle' value='피클' checked={pickle.includes('피클')} onChange={pickleChagedHandler} ></input>
-                            <label htmlFor='피클'>피클</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='올리브' name='pickle' value='올리브' checked={pickle.includes('올리브')} onChange={pickleChagedHandler} ></input>
-                            <label htmlFor='올리브'>올리브</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='할라피뇨' name='pickle' value='할라피뇨' checked={pickle.includes('할라피뇨')} onChange={pickleChagedHandler} ></input>
-                            <label htmlFor='할라피뇨'>할라피뇨</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='절임 채소 없음' name='pickle' value='절임 채소 없음' checked={pickle.length === 0} onChange={() => setPickle([])} ></input>
-                            <label htmlFor='절임 채소 없음'>절임 채소 없음</label>
+                        <div className='m-2'>
+                            <h3 className='text-xl font-bold'>절임 채소 선택</h3>
+                            <div className='p-2'>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='피클' name='pickle' value='피클' checked={pickle.includes('피클')} onChange={pickleChagedHandler} className='mr-2'></input>
+                                    <label htmlFor='피클' className='my-auto flex items-center'>
+                                        <img src={'/images/sandwich_menu/ingredients/' + '피클' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'피클'}></img>
+                                        <p>피클</p>
+                                    </label>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='올리브' name='pickle' value='올리브' checked={pickle.includes('올리브')} onChange={pickleChagedHandler} className='mr-2'></input>
+                                    <label htmlFor='올리브' className='my-auto flex items-center'>
+                                        <img src={'/images/sandwich_menu/ingredients/' + '올리브' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'올리브'}></img>
+                                        <p>올리브</p>
+                                    </label>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='할라피뇨' name='pickle' value='할라피뇨' checked={pickle.includes('할라피뇨')} onChange={pickleChagedHandler} className='mr-2'></input>
+                                    <label htmlFor='할라피뇨' className='my-auto flex items-center'>
+                                        <img src={'/images/sandwich_menu/ingredients/' + '할라피뇨' + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={'할라피뇨'}></img>
+                                        <p>할라피뇨</p>
+                                    </label>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='절임 채소 없음' name='pickle' value='절임 채소 없음' checked={pickle.length === 0} onChange={() => setPickle([])} className='mr-2'></input>
+                                    <label htmlFor='절임 채소 없음' className='my-auto flex items-center h-12'>
+                                        <p>절임 채소 없음</p>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={sauceRef} id='sauce'>
-                        <h3>소스 선택</h3>
-                        <span>(최대3개)</span>
-                        <div>
-                            <input type='checkbox' id='랜치' name='sauce' value='랜치' checked={sauce.includes('랜치')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='랜치'>랜치</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='스위트어니언' name='sauce' value='스위트어니언' checked={sauce.includes('스위트어니언')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='스위트어니언'>스위트어니언</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='마요네즈' name='sauce' value='마요네즈' checked={sauce.includes('마요네즈')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='마요네즈'>마요네즈</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='스위트칠리' name='sauce' value='스위트칠리' checked={sauce.includes('스위트칠리')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='스위트칠리'>스위트칠리</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='스모크바베큐' name='sauce' value='스모크바베큐' checked={sauce.includes('스모크바베큐')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='스모크바베큐'>스모크바베큐</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='핫칠리' name='sauce' value='핫칠리' checked={sauce.includes('핫칠리')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='핫칠리'>핫칠리</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='허니머스타드' name='sauce' value='허니머스타드' checked={sauce.includes('허니머스타드')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='허니머스타드'>허니머스타드</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='뉴 사우스웨스트 치폴레' name='sauce' value='뉴 사우스웨스트 치폴레' checked={sauce.includes('뉴 사우스웨스트 치폴레')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='뉴 사우스웨스트 치폴레'>뉴 사우스웨스트 치폴레</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='홀스래디쉬' name='sauce' value='홀스래디쉬' checked={sauce.includes('홀스래디쉬')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='홀스래디쉬'>홀스래디쉬</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='머스타드' name='sauce' value='머스타드' checked={sauce.includes('머스타드')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='머스타드'>머스타드</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='올리브오일' name='sauce' value='올리브오일' checked={sauce.includes('올리브오일')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='올리브오일'>올리브오일</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='레드와인식초' name='sauce' value='레드와인식초' checked={sauce.includes('레드와인식초')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='레드와인식초'>레드와인식초</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='소금' name='sauce' value='소금' checked={sauce.includes('소금')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='소금'>소금</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='후추' name='sauce' value='후추' checked={sauce.includes('후추')} onChange={sauceChagedHandler} ></input>
-                            <label htmlFor='후추'>후추</label>
-                        </div>
-                        <div>
-                            <input type='checkbox' id='소스 없음' name='sauce' value='소스 없음' checked={sauce.length === 0} onChange={() => setSauce([])} ></input>
-                            <label htmlFor='소스 없음'>소스 없음</label>
+                        <div className='m-2'>
+                            <h3 className='text-xl font-bold'>소스 선택</h3>
+                            <span>(최대3개)</span>
+                            <div className='p-2'>
+                                {
+                                    sauceNutrientArray.map((item) => (
+                                        <div key={item.name} className='flex flex-row'>
+                                            <input type='checkbox' id={item.name} name='sauce' value={item.name} checked={sauce.includes(item.name)} onChange={sauceChagedHandler} className='mr-2'></input>
+                                            <label htmlFor={item.name} className='my-auto flex items-center'>
+                                                <img src={'/images/sandwich_menu/ingredients/' + item.name + '.jpg'} className='object-cover w-12 aspect-square rounded-md mr-2' alt={item.name}></img>
+                                                <p>{item.name}</p>
+                                            </label>
+                                        </div>
+                                    ))
+                                }
+                                <div className='flex flex-row'>
+                                    <input type='checkbox' id='소스 없음' name='sauce' value='소스 없음' checked={sauce.length === 0} onChange={() => setSauce([])} className='mr-2'></input>
+                                    <label htmlFor='소스 없음' className='my-auto flex items-center h-12'>
+                                        소스 없음
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div className="bg-white rounded-md shadow-sm p-6">
-                        <h3>작성완료</h3>
+                        <h3 className='text-xl font-bold'>작성완료</h3>
                     </div>
 
                 </div>
