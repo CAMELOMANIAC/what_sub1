@@ -28,7 +28,7 @@ const IngredientsRadarChart = ({ context }) => {
         setSugars(0);
         setSodium(0);
         context.map((contextItem) => {
-            let nutrientsItem = nutrientsArray.find(item => (item.name+" 추가") === contextItem || contextItem.includes(item.name));
+            let nutrientsItem = nutrientsArray.find(item => (item.name+" 추가") === contextItem || item.name === contextItem);
             if (nutrientsItem) {
                 setCalorie((prev) => prev + nutrientsItem!.kcal);
                 setProtein((prev) => prev + nutrientsItem!.protein);

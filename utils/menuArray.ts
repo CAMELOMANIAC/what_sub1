@@ -44,12 +44,12 @@ export type nutrientsArrayType = {
 }
 
 export const breadNutrientArray: nutrientsArrayType[] = [
-    { name: '화이트', weight: 71, kcal: 202, protein: 6.1, saturatedFats: 0.3, sugars: 2.8, sodium: 0.343 },
-    { name: '파마산 오레가노', weight: 74.5, kcal: 213, protein: 6.3, saturatedFats: 0.4, sugars: 3.2, sodium: 0.489 },
     { name: '위트', weight: 78, kcal: 192, protein: 8.4, saturatedFats: 0.5, sugars: 5, sodium: 0.257 },
-    { name: '허니오트', weight: 88.6, kcal: 235, protein: 8.8, saturatedFats: 0.6, sugars: 9.3, sodium: 0.306 },
-    { name: '하티', weight: 75, kcal: 210, protein: 7, saturatedFats: 1, sugars: 3, sodium: 0.340 },
+    { name: '파마산 오레가노', weight: 74.5, kcal: 213, protein: 6.3, saturatedFats: 0.4, sugars: 3.2, sodium: 0.489 },
     { name: '플랫브레드', weight: 86, kcal: 233.5, protein: 8.1, saturatedFats: 8.5, sugars: 1.45, sodium: 0.468 },
+    { name: '하티', weight: 75, kcal: 210, protein: 7, saturatedFats: 1, sugars: 3, sodium: 0.340 },
+    { name: '화이트', weight: 71, kcal: 202, protein: 6.1, saturatedFats: 0.3, sugars: 2.8, sodium: 0.343 },
+    { name: '허니오트', weight: 88.6, kcal: 235, protein: 8.8, saturatedFats: 0.6, sugars: 9.3, sodium: 0.306 },
 ]
 export const cheeseNutrientArray: nutrientsArrayType[] = [
     { name: '아메리칸', weight: 10, kcal: 35.3, protein: 1.8, saturatedFats: 1.9, sugars: 0.4, sodium: 0.193 },
@@ -92,4 +92,26 @@ export const menuNutrientArray: nutrientsArrayType[] = [
     { name: 'B.L.T', weight: 104, kcal: 108, protein: 7.5, saturatedFats: 3.2, sugars: 2.9, sodium: 0.409 },
     { name: '치킨 데리야끼', weight: 177, kcal: 122, protein: 18.1, saturatedFats: 0.7, sugars: 5.1, sodium: 0.441 },
     { name: '에그마요', weight: 160, kcal: 224, protein: 8.0, saturatedFats: 4.3, sugars: 2.7, sodium: 0.297 }
+]
+
+export const ingredientsArray = [
+    { name:'에그마요 재료'},
+    { name:'페퍼로니 재료'},
+    { name:'베이컨 재료'},
+    { name:'아보카도 재료'},
+    { name:'오믈렛 재료'},
+]
+
+export const vegetableArray = [
+    { name:'양상추'},
+    { name:'토마토'},
+    { name:'오이'},
+    { name:'피망'},
+    { name:'양파'},
+]
+
+export const pickleArray = [
+    { name:'피클'},
+    { name:'올리브'},
+    { name:'할라피뇨'},
 ]
