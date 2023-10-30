@@ -97,63 +97,64 @@ const AddRecipe = ({ param }) => {
 
     const handleClick = (e) => {
         if (recipeNameRef.current && e.currentTarget.id === 'recipeNameButton') {
-            recipeNameRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            recipeNameRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         else if (breadeRef.current && e.currentTarget.id === 'breadButton') {
-            breadeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            breadeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         else if (cheeseRef.current && e.currentTarget.id === 'cheeseButton') {
-            cheeseRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            cheeseRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         else if (toastingRef.current && e.currentTarget.id === 'toastingButton') {
-            toastingRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            toastingRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         else if (vegetableRef.current && e.currentTarget.id === 'vegetableButton') {
-            vegetableRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            vegetableRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         else if (sauceRef.current && e.currentTarget.id === 'sauceButton') {
-            sauceRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            sauceRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     };
 
     const [activeSection, setActiveSection] = useState<number>(0);
+    let observer;
 
     useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
+        observer = new IntersectionObserver((entries) => {
 
             //가장위에 있는 요소 탐지(IntersectionObserver는 요소를 여러개 감지하면 가장 마지막 요소만 entry.target에 저장하므로 가장위에것을 탐지하게하기 위해서)
             let firstEntry = entries.reduce((first, entry) => {
                 return (entry.boundingClientRect.top < first.boundingClientRect.top) ? entry : first;
             });
-            entries.forEach(() => {
-                if (firstEntry.isIntersecting) {
-                    switch (firstEntry.target.id) {
-                        case 'recipeName':
-                            setActiveSection(0)
-                            break;
-                        case 'bread':
-                            setActiveSection(1);
-                            break;
-                        case 'cheese':
-                            setActiveSection(2);
-                            break;
-                        case 'toasting':
-                            setActiveSection(3);
-                            break;
-                        case 'vegetable':
-                            setActiveSection(4);
-                            break;
-                        case 'sauce':
-                            setActiveSection(5);
-                            break;
-                        // ... (다른 case들)
-                        default:
-                            break;
-                    }
+            console.log(firstEntry.target.id);
+
+            if (firstEntry.isIntersecting) {
+                switch (firstEntry.target.id) {
+                    case 'recipeName':
+                        setActiveSection(0)
+                        break;
+                    case 'bread':
+                        setActiveSection(1);
+                        break;
+                    case 'cheese':
+                        setActiveSection(2);
+                        break;
+                    case 'toasting':
+                        setActiveSection(3);
+                        break;
+                    case 'vegetable':
+                        setActiveSection(4);
+                        break;
+                    case 'sauce':
+                        setActiveSection(5);
+                        break;
+                    // ... (다른 case들)
+                    default:
+                        break;
                 }
-            });
+            }
         }, {
-            threshold: 0.9, root: rootRef.current
+            threshold: [0.5, 1, 1]
         });
 
         // 요소들을 관찰합니다
@@ -193,13 +194,32 @@ const AddRecipe = ({ param }) => {
     const createArray = () => {
         const arr = [recipeName, param, addMeat, bread, cheese, AddCheese, String(isToasting), ...vegetable, ...pickle, ...sauce, ...addIngredient];
         setContext(arr.filter((item) => item !== ''));
-        console.log(context);
+        console.log(JSON.stringify(context));
+    }
+
+    const sendRecipe = async () => {
+        const response = await fetch('/api/addRecipe', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include',
+            body: JSON.stringify(context)
+        })
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    }
+
+    const onClickHandler = () =>{
+        sendRecipe().then(result => console.log(result))
     }
 
     return (
         <main className={'w-full max-w-screen-lg mx-auto mb-[80px] pt-2'}>
-            <div className='w-[1024px] h-[600px] grid grid-cols-6'>
-                <div className="col-span-3 h-[300px] mt-[10%]">
+            <div className='w-[1024px] grid grid-cols-6'>
+                <div className="col-span-3 h-[300px] mt-[10%] sticky top-[10%]">
                     <h2 className='text-2xl ml-8 '>{param}</h2>
                     <div className='whitespace-pre-line ml-8 text-sm'>{menuArray[index].summary}</div>
                     <img src={`/images/sandwich_menu/${param}.png`} alt={String(param)} className='object-contain object-right h-[350px] drop-shadow-lg'></img>
@@ -216,27 +236,28 @@ const AddRecipe = ({ param }) => {
 
                     <IngredientsRadarChart context={context} />
                 </div>
-                <div className={`col-span-3 mt-[10%] h-[120%] mb-[10%] overflow-y-auto`} ref={rootRef}>
+
+                <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={recipeNameRef} id='recipeName'>
-                        <h3>레시피 이름</h3>
-                        <input className='w-full' onChange={handleChange}></input>
+                        <h3 className='text-xl font-[seoul-metro]'>레시피 이름</h3>
+                        <input className='w-full font-[seoul-namsan]' onChange={handleChange}></input>
                     </div>
                     <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6">
                         <div className='m-2 mb-8'>
-                            <h3 className='text-xl font-bold'>주메뉴</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>주메뉴</h3>
                             <p className='p-2 flex items-center h-12'>{param}</p>
                         </div>
                         <div className='m-2'>
-                            <h3 className='text-xl font-bold'>미트추가</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>미트추가</h3>
                             <div className='p-2'>
                                 {isShowAddMeat === false && <button className='w-full' onClick={() => setIsShowAddMeat(true)}>추가하기</button>}
                                 <div className={isShowAddMeat ? 'max-h-[1000px] transition-all duration-500' : 'max-h-0 overflow-hidden transition-all duration-500'}>
                                     <div className='flex flex-row items-center h-12'>
-                                        <EmptyCheckBox section={'addMeat'} addContext={'미트 추가'} onChange={showAddMeatClickHandler}></EmptyCheckBox>
+                                        <EmptyRadioBox section={'addMeat'} addContext={'미트 추가'} getState={addMeat} onChange={showAddMeatClickHandler}></EmptyRadioBox>
                                     </div>
                                     {menuNutrientArray.filter(item => item.name !== '베지').map((item) => (
                                         <div key={item.name} className='flex flex-row items-center'>
-                                            <CheckBox item={item} section={'addMeat'} addContext={'추가'} getState={addMeat} setState={setAddMeat}></CheckBox>
+                                            <RadioBox item={item} section={'addMeat'} addContext={'추가'} getState={addMeat} setState={setAddMeat}></RadioBox>
                                         </div>
                                     ))}
                                 </div>
@@ -245,7 +266,7 @@ const AddRecipe = ({ param }) => {
                     </div>
                     <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6" ref={breadeRef} id='bread'>
                         <div className='m-2'>
-                            <h3 className='text-xl font-bold'>빵 선택</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>빵 선택</h3>
                             <div className='p-2'>
                                 {
                                     breadNutrientArray.map((item) => (
@@ -259,7 +280,7 @@ const AddRecipe = ({ param }) => {
                     </div>
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6 " ref={cheeseRef} id='cheese'>
                         <div className='m-2 mb-8'>
-                            <h3 className='text-xl font-bold'>치즈 선택</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>치즈 선택</h3>
                             <div className='p-2'>
                                 {
                                     cheeseNutrientArray.map((item) => (
@@ -274,7 +295,7 @@ const AddRecipe = ({ param }) => {
                             </div>
                         </div>
                         <div className='m-2'>
-                            <h3 className='text-xl font-bold'>치즈 추가</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>치즈 추가</h3>
                             <div className='p-2'>
                                 {isShowAddCheese === false && <button className='w-full' onClick={() => setIsShowAddCheese(true)}>추가하기</button>}
                                 <div className={isShowAddCheese ? 'max-h-[1000px] transition-all duration-500' : 'max-h-0 overflow-hidden transition-all duration-500'}>
@@ -296,7 +317,7 @@ const AddRecipe = ({ param }) => {
 
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6">
                         <div className='m-2'>
-                            <h3 className='text-xl font-bold'>추가재료</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>추가재료</h3>
                             <div className='p-2'>
                                 {isShowAddIngredient === false && <button className='w-full' onClick={() => setIsShowAddIngredient(true)}>추가하기</button>}
                                 <div className={isShowAddIngredient ? 'max-h-[1000px] transition-all duration-500' : 'max-h-0 overflow-hidden transition-all duration-500'}>
@@ -314,9 +335,9 @@ const AddRecipe = ({ param }) => {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={toastingRef} id='toasting'>
+                    <div className="bg-white rounded-md shadow-sm mb-2 p-6 h-[200px]" ref={toastingRef} id='toasting'>
                         <div className='m-2'>
-                            <h3 className='text-xl font-bold'>토스팅 여부</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>토스팅 여부</h3>
                             <div className='p-2'>
                                 <button onClick={() => setisToasting(true)} className={`${isToasting && 'bg-green-600 text-white'}`}>예</button>
                                 <button onClick={() => setisToasting(false)} className={`${isToasting === false && 'bg-green-600 text-white'}`}>아니오</button>
@@ -326,7 +347,7 @@ const AddRecipe = ({ param }) => {
 
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={vegetableRef} id='vegetable'>
                         <div className='m-2'>
-                            <h3 className='text-xl font-bold'>신선 채소 선택</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>신선 채소 선택</h3>
                             <div className='p-2 mb-8'>
                                 {vegetableArray.map((item) => (
                                     <div key={item.name} className='flex flex-row items-center'>
@@ -337,7 +358,7 @@ const AddRecipe = ({ param }) => {
                         </div>
 
                         <div className='m-2'>
-                            <h3 className='text-xl font-bold'>절임 채소 선택</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>절임 채소 선택</h3>
                             <div className='p-2'>
                                 {pickleArray.map((item) => (
                                     <div key={item.name} className='flex flex-row items-center'>
@@ -350,7 +371,7 @@ const AddRecipe = ({ param }) => {
 
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={sauceRef} id='sauce'>
                         <div className='m-2'>
-                            <h3 className='text-xl font-bold'>소스 선택</h3>
+                            <h3 className='text-xl font-[seoul-metro]'>소스 선택</h3>
                             <span>(최대3개)</span>
                             <div className='p-2'>
 
@@ -359,16 +380,16 @@ const AddRecipe = ({ param }) => {
                                         <CheckBox item={item} section={'sauce'} addContext={''} getState={sauce} onChange={sauceChagedHandler}></CheckBox>
                                     </div>
                                 ))}
-                                <div className='flex flex-row'>
-                                    <EmptyCheckBox section={'sauce'} addContext={'소스'} getState={sauce} setState={()=>setSauce([])}></EmptyCheckBox>
+                                <div className='flex flex-row h-12'>
+                                    <EmptyCheckBox section={'sauce'} addContext={'소스'} getState={sauce} setState={() => setSauce([])}></EmptyCheckBox>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-md shadow-sm p-6">
-                        <h3 className='text-xl font-bold'>작성완료</h3>
-                    </div>
+                    <button className="bg-white rounded-md shadow-sm p-6" onClick={onClickHandler}>
+                        <h3 className='text-xl font-[seoul-metro]'>작성완료</h3>
+                    </button>
 
                 </div>
             </div>

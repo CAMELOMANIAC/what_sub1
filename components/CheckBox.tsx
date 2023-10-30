@@ -32,7 +32,7 @@ export const CheckBox = ({ item, section, addContext, getState, setState, onChan
                     :
                     <img src={'/images/sandwich_menu/ingredients/' + item.name + '.jpg'} alt={item.name} className='object-cover w-12 aspect-square rounded-md mr-2'></img>
                 }
-                <span className=''>{item.name}{addContext}</span>
+                <span className='font-[noto-sans]'>{item.name}{addContext}</span>
             </label>
         </>
     );
@@ -51,7 +51,7 @@ export const EmptyCheckBox = ({ section, addContext, getState, setState, onChang
             <label className=''>
                 {
                     (setState && getState) &&
-                    <input type='radio' id={addContext} name={section} value={addContext} checked={(getState?.length>0 ? false:true)} onChange={() => setState([])} className='peer invisible absolute'></input>
+                    <input type='radio' id={addContext} name={section} value={addContext} checked={(getState?.length > 0 ? false : true)} onChange={() => setState([])} className='peer invisible absolute'></input>
                 }
                 {
                     onChange &&
@@ -72,12 +72,19 @@ export const RadioBox = ({ item, section, addContext, getState, setState }) => {
                 <FaDotCircle className='relative w-6 h-6 mr-2 text-white border rounded-full peer-checked:text-green-600 peer-checked:border-0'></FaDotCircle>
             </label>
             <label htmlFor={`${item.name} ${addContext}`} className='my-auto flex items-center'>
-                <img src={'/images/sandwich_menu/ingredients/' + item.name + '.jpg'} alt={item.name} className='object-cover w-12 aspect-square rounded-md mr-2'></img>
+                {section === 'addMeat' ?
+                    <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1 mr-2'>
+                        <img src={`/images/sandwich_menu/${item.name}.png`} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                    </div>
+                    :
+                    <img src={'/images/sandwich_menu/ingredients/' + item.name + '.jpg'} alt={item.name} className='object-cover w-12 aspect-square rounded-md mr-2'></img>
+                }
                 <span className=''>{item.name} {addContext}</span>
             </label>
         </>
     );
 };
+
 
 type EmptyRadioBoxType = {
     section: string,

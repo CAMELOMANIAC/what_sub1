@@ -6,17 +6,38 @@ html {
   box-sizing: border-box;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
 body {
-    display: flex;
-    justify-content: center;
-    @apply bg-gray-50;
+  display: flex;
+  justify-content: center;
+  @apply bg-gray-50;
+  
+  font-family: 'noto-sans';
 }
 
 /*인풋버튼 기본 내용제거버튼 숨기기*/
 .input-no-clear::-webkit-search-cancel-button {
-    @apply hidden;
+  @apply hidden;
+}
+
+
+@layer base {
+  @font-face {
+    font-family: 'seoul-metro';
+    src: url('/font/신지하철체.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'seoul-namsan';
+    src: url('/font/SeoulNamsanM.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'noto-sans';
+    src: url('/font/NotoSansKR-Regular.ttf') format('truetype');
+  }
 }
