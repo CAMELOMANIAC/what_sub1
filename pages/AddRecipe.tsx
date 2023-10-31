@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import IngredientsRadarChart from '../components/IngredientRadarChart';
 import { TbAlertCircle } from 'react-icons/tb';
 import { CheckBox, EmptyCheckBox, RadioBox, EmptyRadioBox } from '../components/CheckBox';
+import { useRouter } from 'next/router';
 
 
 const RecipeNav = styled.div`
@@ -211,9 +212,17 @@ const AddRecipe = ({ param }) => {
         }
         return response.json();
     }
-
+    
+    const router = useRouter();
     const onClickHandler = () =>{
-        sendRecipe().then(result => console.log(result))
+        sendRecipe().then(
+            result => {
+                console.log(result);
+                if (result.redirect){
+                    router.push(result.redirect)
+                }
+            },
+            error => console.log(error))
     }
 
     return (
@@ -240,7 +249,7 @@ const AddRecipe = ({ param }) => {
                 <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={recipeNameRef} id='recipeName'>
                         <h3 className='text-xl font-[seoul-metro]'>레시피 이름</h3>
-                        <input className='w-full font-[seoul-namsan]' onChange={handleChange}></input>
+                        <input className='w-full' onChange={handleChange}></input>
                     </div>
                     <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6">
                         <div className='m-2 mb-8'>
