@@ -32,16 +32,16 @@ const IndexPage = ({users}: {users: Post[]}) => {
   return (
     <main className=' w-full max-w-screen-xl mx-auto'>
       <SandwichBanner />
-      <div className='flex justify-center mx-auto mb-4'>
-        <Logo />
+      <div className='flex flex-col items-center justify-center mx-auto mb-4 rounded-full w-[50%]'>
+        <Logo/>
       </div>
-      {users.length >0 &&(users.map((post) => (
+      {/*users.length >0 &&(users.map((post) => (
         <div key={post.user_id}>
         <h3>{post.user_id}</h3>
           <h3>{post.user_pwd}</h3>
         </div>
       )))
-      }
+      */}
       <SearchBar className='pb-4' />
       <FrontPopularRecipe array={test} />
     </main>

@@ -8,12 +8,12 @@ import { menuArray } from '../utils/menuArray';
 import SearchBar from './SearchBar';
 import styled from 'styled-components';
 
-const StyleTag = styled.div`
+export const StyleTag = styled.div`
     height:100%;
     display:inline-block;
     border:1px solid gray;
     border-radius:9999px;
-    border-color:color: rgb(107 114 128);
+    border-color: rgb(107 114 128);
     margin-right:0.1rem;
     padding:0.1rem 0.5rem 0.1rem 0.5rem;
     font-size:0.875rem;

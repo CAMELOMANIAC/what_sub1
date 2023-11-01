@@ -12,11 +12,7 @@ import {checkSession} from '../utils/checkSession';
 const StyledDiv = styled.div`
     background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
 `;
-const StyledImg = styled.img`
-/*
-    -webkit-mask-image: linear-gradient(to left, black 70%, transparent 100%);
-    mask-image: linear-gradient(to left, black 70%, transparent 100%);*/
-`
+
 export async function getServerSideProps({ req }) {
     const cookie = req.headers.cookie;
     const sessionCheck = await checkSession(cookie);

@@ -5,6 +5,7 @@ import IngredientsRadarChart from '../components/IngredientRadarChart';
 import { TbAlertCircle } from 'react-icons/tb';
 import { CheckBox, EmptyCheckBox, RadioBox, EmptyRadioBox } from '../components/CheckBox';
 import { useRouter } from 'next/router';
+import { StyleTag } from '../components/RecipesBanner'
 
 
 const RecipeNav = styled.div`
@@ -27,7 +28,7 @@ const NavSandwich = styled.div<NavSandwichProps>`
     transition-duration: 500ms;
     `
 
-const AddRecipe = ({ param }) => {
+const AddRecipe = ({ param, data }) => {
     const index = menuArray.findIndex((item) => (item.name === param));
     const [recipeName, setRecipeName] = useState<string>('');
     const [bread, setBread] = useState<string>('위트');
@@ -40,6 +41,8 @@ const AddRecipe = ({ param }) => {
     const [addIngredient, setAddingredient] = useState<string[]>([]);
     const [addMeat, setAddMeat] = useState<string>('');
     const [isComplete, setIsComplete] = useState<boolean>(false);
+    const [tagInput,setTagInput] = useState<string>('');
+    const [tagArray, setTagArray] = useState<string[]>([]);
 
     const [isShowAddMeat, setIsShowAddMeat] = useState<boolean>(false);
     const [isShowAddCheese, setIsShowAddCheese] = useState<boolean>(false);
@@ -183,6 +186,11 @@ const AddRecipe = ({ param }) => {
         }
     };
 
+    //태그 추가 이벤트핸들러
+    const addTagHandler=()=>{
+        setTagArray(prev=>[...prev,tagInput])
+    }
+
     //서버에 작성한 레시피를 제출하거나 거미줄차트에 전달해줄 props상태 배열을 작성
     const [context, setContext] = useState<string[]>([]);
     useEffect(() => {
@@ -199,7 +207,7 @@ const AddRecipe = ({ param }) => {
     }
 
     const sendRecipe = async () => {
-        const response = await fetch('/api/addRecipe', {
+        const response = await fetch('/api/recipe', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -219,6 +227,7 @@ const AddRecipe = ({ param }) => {
             result => {
                 console.log(result);
                 if (result.redirect) {
+                    console.log(result.redirect)
                     router.push(result.redirect)
                 }
             },
@@ -254,7 +263,13 @@ const AddRecipe = ({ param }) => {
                         </div>
                         <div className='m-2'>
                             <h3 className='text-xl font-[seoul-metro]'>태그 추가</h3>
-                            <input className='w-full'></input>
+                            <div className='p-2'>
+                                {tagArray.map((item) =><StyleTag>#{item}</StyleTag>)}
+                                <div className='w-full'>
+                                    태그검색:<input onChange={(e)=>setTagInput(e.target.value)}></input>
+                                </div>
+                                추천태그: <StyleTag onClick={addTagHandler}>#{tagInput}</StyleTag>{data.tag && data.tag.map(item => <StyleTag key={item}>#{item}</StyleTag>)}
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6">
@@ -412,7 +427,7 @@ const AddRecipe = ({ param }) => {
 
 
 
-            <RecipeNav className='p-6 grid grid-cols-7 grid-rows-1'>
+            <RecipeNav className='p-6 grid grid-cols-7 grid-rows-1 font-[seoul-metro]'>
                 <NavSandwich $activesection={activeSection}>
                     <img src='/images/front_banner.png' className={`w-10`} />
                 </NavSandwich>
@@ -474,11 +489,11 @@ export default AddRecipe;
 export async function getServerSideProps(context) {
     // 서버에서 데이터를 불러올 수 있는 비동기 함수를 사용합니다.
     const param = context.query.param
-    const res = await fetch(`http://localhost:3000/api/loadRecipes?param=${param}`);
+    const res = await fetch(`http://localhost:3000/api/tag?param=${param}`);
     const data = await res.json();
     return {
         props: {
-            param,data
+            param, data
         },
     };
 }
