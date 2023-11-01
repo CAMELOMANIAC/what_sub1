@@ -212,13 +212,13 @@ const AddRecipe = ({ param }) => {
         }
         return response.json();
     }
-    
+
     const router = useRouter();
-    const onClickHandler = () =>{
+    const onClickHandler = () => {
         sendRecipe().then(
             result => {
                 console.log(result);
-                if (result.redirect){
+                if (result.redirect) {
                     router.push(result.redirect)
                 }
             },
@@ -248,8 +248,14 @@ const AddRecipe = ({ param }) => {
 
                 <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
                     <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={recipeNameRef} id='recipeName'>
-                        <h3 className='text-xl font-[seoul-metro]'>레시피 이름</h3>
-                        <input className='w-full' onChange={handleChange}></input>
+                        <div className='m-2 mb-8'>
+                            <h3 className='text-xl font-[seoul-metro]'>레시피 이름</h3>
+                            <input className='w-full' onChange={handleChange}></input>
+                        </div>
+                        <div className='m-2'>
+                            <h3 className='text-xl font-[seoul-metro]'>태그 추가</h3>
+                            <input className='w-full'></input>
+                        </div>
                     </div>
                     <div className="flex flex-col justify-start bg-white rounded-md shadow-sm mb-2 p-6">
                         <div className='m-2 mb-8'>
@@ -468,9 +474,11 @@ export default AddRecipe;
 export async function getServerSideProps(context) {
     // 서버에서 데이터를 불러올 수 있는 비동기 함수를 사용합니다.
     const param = context.query.param
+    const res = await fetch(`http://localhost:3000/api/loadRecipes?param=${param}`);
+    const data = await res.json();
     return {
         props: {
-            param
+            param,data
         },
     };
 }
