@@ -8,7 +8,7 @@ import { menuArray } from '../utils/menuArray';
 import SearchBar from './SearchBar';
 import styled from 'styled-components';
 
-export const StyleTag = styled.div`
+export const StyleTag = styled.button`
     height:100%;
     display:inline-block;
     border:1px solid gray;

@@ -3,6 +3,7 @@ import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrie
 import styled from 'styled-components';
 import IngredientsRadarChart from '../components/IngredientRadarChart';
 import { TbAlertCircle } from 'react-icons/tb';
+import { FiSearch } from 'react-icons/fi';
 import { CheckBox, EmptyCheckBox, RadioBox, EmptyRadioBox } from '../components/CheckBox';
 import { useRouter } from 'next/router';
 import { StyleTag } from '../components/RecipesBanner'
@@ -28,7 +29,7 @@ const NavSandwich = styled.div<NavSandwichProps>`
     transition-duration: 500ms;
     `
 
-const AddRecipe = ({ param, data }) => {
+const AddRecipe = ({ param }) => {
     const index = menuArray.findIndex((item) => (item.name === param));
     const [recipeName, setRecipeName] = useState<string>('');
     const [bread, setBread] = useState<string>('위트');
@@ -41,8 +42,9 @@ const AddRecipe = ({ param, data }) => {
     const [addIngredient, setAddingredient] = useState<string[]>([]);
     const [addMeat, setAddMeat] = useState<string>('');
     const [isComplete, setIsComplete] = useState<boolean>(false);
-    const [tagInput,setTagInput] = useState<string>('');
+    const [tagInput, setTagInput] = useState<string>('');
     const [tagArray, setTagArray] = useState<string[]>([]);
+    const [tagData, setTagData] = useState<string[]>([]);
 
     const [isShowAddMeat, setIsShowAddMeat] = useState<boolean>(false);
     const [isShowAddCheese, setIsShowAddCheese] = useState<boolean>(false);
@@ -176,6 +178,7 @@ const AddRecipe = ({ param, data }) => {
         };
     }, []);
 
+    //레시피 이름 입력 이벤트 핸들러
     const handleChange = (e) => {
         const value = e.target.value;
         setRecipeName(value);
@@ -186,10 +189,41 @@ const AddRecipe = ({ param, data }) => {
         }
     };
 
-    //태그 추가 이벤트핸들러
-    const addTagHandler=()=>{
-        setTagArray(prev=>[...prev,tagInput])
+    //인풋을 통한 태그 추가 이벤트 핸들러
+    const addInputHandler = () => {
+        //태그 중복금지 및 빈 문자열 금지
+        if (tagArray.every(item => item !== tagInput) && tagInput.replaceAll(' ', '') !== '') {
+            setTagArray(prev => [...prev, tagInput])
+        }
+    }//버튼을통한 태그 추가 이벤트 핸들러
+    const addTagHandler = (tag) => {
+        //태그 중복금지 및 빈 문자열 금지
+        if (tagArray.every(item => item !== tag) && tag.replaceAll(' ', '') !== '') {
+            setTagArray(prev => [...prev, tag])
+        }
     }
+
+    //태그검색
+    useEffect(() => {
+        const tagSearch = async () => {
+            const result = await fetch(`http://localhost:3000/api/tag?tag=${tagInput}`);
+            const data = await result.json();
+            setTagData(data.tag)
+            console.log(data.tag)
+        }
+        tagSearch();
+    }, [tagInput])
+
+    //태그 초기 검색
+    useEffect(() => {
+        const tagFirstSearch = async () => {
+            const res = await fetch(`http://localhost:3000/api/tag?param=${param}`);
+            const data = await res.json();
+            setTagData(data.tag);
+            console.log(data.tag);
+        }
+        tagFirstSearch();
+    }, [])
 
     //서버에 작성한 레시피를 제출하거나 거미줄차트에 전달해줄 props상태 배열을 작성
     const [context, setContext] = useState<string[]>([]);
@@ -201,7 +235,7 @@ const AddRecipe = ({ param, data }) => {
         createArray();
     }
     const createArray = () => {
-        const arr = [recipeName, param, addMeat, bread, cheese, AddCheese, String(isToasting), ...vegetable, ...pickle, ...sauce, ...addIngredient];
+        const arr = [recipeName, tagArray, param, addMeat, bread, cheese, AddCheese, String(isToasting), ...vegetable, ...pickle, ...sauce, ...addIngredient];
         setContext(arr.filter((item) => item !== ''));
         console.log(JSON.stringify(context));
     }
@@ -264,11 +298,24 @@ const AddRecipe = ({ param, data }) => {
                         <div className='m-2'>
                             <h3 className='text-xl font-[seoul-metro]'>태그 추가</h3>
                             <div className='p-2'>
-                                {tagArray.map((item) =><StyleTag>#{item}</StyleTag>)}
-                                <div className='w-full'>
-                                    태그검색:<input onChange={(e)=>setTagInput(e.target.value)}></input>
+                                {tagArray.map((item) => <StyleTag key={item} className='group' onClick={() => setTagArray(tagArray.filter(index => index !== item))}>
+                                    <span className='group-hover:hidden'>#</span>
+                                    <span className='hidden group-hover:inline'>-</span>
+                                    {item}
+                                </StyleTag>)}
+                                <div className='py-4'>
+                                    <div className='w-full'>
+                                        <div className="flex flex-row items-center border rounded-md placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
+                                            <FiSearch className='text-lg mx-1 text-gray-400' />
+                                            <input className='w-full outline-none' onChange={(e) => setTagInput(e.target.value)}></input>
+                                        </div>
+                                    </div>
+                                    <div className='p-2'>
+                                        추천태그:
+                                        {!tagData && <StyleTag onClick={addInputHandler}>+{tagInput}</StyleTag>}
+                                        {tagData && tagData.map(item => <StyleTag key={item} onClick={() => addTagHandler(item)}>+{item}</StyleTag>)}
+                                    </div>
                                 </div>
-                                추천태그: <StyleTag onClick={addTagHandler}>#{tagInput}</StyleTag>{data.tag && data.tag.map(item => <StyleTag key={item}>#{item}</StyleTag>)}
                             </div>
                         </div>
                     </div>
@@ -489,11 +536,9 @@ export default AddRecipe;
 export async function getServerSideProps(context) {
     // 서버에서 데이터를 불러올 수 있는 비동기 함수를 사용합니다.
     const param = context.query.param
-    const res = await fetch(`http://localhost:3000/api/tag?param=${param}`);
-    const data = await res.json();
     return {
         props: {
-            param, data
+            param
         },
     };
 }
