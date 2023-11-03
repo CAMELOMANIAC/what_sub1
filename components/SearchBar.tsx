@@ -1,8 +1,8 @@
-import React, { useState,useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IoSearchCircleSharp } from 'react-icons/io5';
 import { useRouter } from 'next/router';
 
-const SearchBar = (props: { className?: string }) => {
+const SearchBar = (props: { className?: string, filterState?: string[] }) => {
   const [search, setSearch] = useState('');
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -12,7 +12,14 @@ const SearchBar = (props: { className?: string }) => {
   };
 
   const handleSubmit = () => {
-    router.push(`/Recipes?query=${search}`);
+    //받은 필터를 쿼리스트링으로 변경해서 전달해야함
+    const filter = props.filterState
+    let filterQuery: string | undefined;
+    if (filter) {
+      filterQuery = filter.map(f => `filter=${f}`).join('&')
+      console.log('searchbar에서 전달하는 쿼리'+filterQuery)
+    }
+    router.push(`/Recipes?query=${search}`+'&'+filterQuery);
   }
 
   useEffect(() => {
@@ -20,10 +27,10 @@ const SearchBar = (props: { className?: string }) => {
     if (typeof query !== 'undefined') {
       setSearch(String(query))
       if (inputRef.current)
-        inputRef.current.value=String(query)
+        inputRef.current.value = String(query)
       console.log(query)
-  }
-  },[router.query])
+    }
+  }, [router.query])
 
   return (
     <div className={`group relative flex flex-wrap items-center focus-within:text-yellow-500 text-green-600 w-[50%] mx-auto ${props.className}`}>

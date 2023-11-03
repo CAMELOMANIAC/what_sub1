@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { PiHeartStraight } from 'react-icons/Pi';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { menuArray } from '../utils/menuArray';
 import SearchBar from './SearchBar';
 import styled from 'styled-components';
+import ReactDOM from 'react-dom';
+import { BsFillCheckSquareFill } from 'react-icons/bs';
 
 export const StyleTag = styled.button`
     height:100%;
@@ -24,7 +26,7 @@ type Props = {
     className?: string
 }
 
-//useRef를 컴포넌트 속성에 할당할 수 있도록 forwardRef를 사용해야함 그냥 타입에 넣어버리면 일반적인 속성이 되버림
+//타입스크립트에서 useRef를 컴포넌트 속성에 할당할 수 있도록 forwardRef를 사용해야함 그냥 타입에 넣어버리면 일반적인 속성이 되버림
 const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     const router = useRouter();
     type MenuItem = {
@@ -39,6 +41,11 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     }
     const recipesTop3: Array<string>[] = [['레드와인식초.jpg', '마요네즈.jpg'], ['레드와인식초.jpg', '마요네즈.jpg'], ['레드와인식초.jpg', '마요네즈.jpg']];
     const breadTop3: string[] = ['레드와인식초.jpg', '마요네즈.jpg', '아보카도.png'];
+    const [queryFilter, setQueryFilter] = useState<string[]>(['메뉴이름', '레시피제목', '작성자', '재료', '태그']);
+    const queryFilterArray = ['메뉴이름', '레시피제목', '작성자', '재료', '태그']
+    const [isFilter, setIsFilter] = useState<boolean>(false);
+
+    const filterRef = useRef(null);
 
     //next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
@@ -133,16 +140,39 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                     <div className='w-[1024px] mx-auto pt-4 pb-10'>
                         <div className='mb-4'>
                             <div className='flex flex-row justify-start items-center my-2'>
-                                <SearchBar className='ml-0 mr-2' />
-                                <button className='text-green-600 text-2xl bg-white rounded-full w-[42px] h-[42px] text-center align-middle flex justify-center items-center font-bold'><HiFilter/></button>
+                                <SearchBar className='ml-0 mr-2' filterState={queryFilter}/>
+                                <div className='relative' ref={filterRef}>
+                                    <button className='relative text-green-600 text-2xl w-[42px] h-[42px] text-center align-middle flex justify-center items-center z-20'
+                                        onClick={() => !isFilter ? setIsFilter(true) : setIsFilter(false)}>
+                                        <HiFilter />
+                                    </button>
+                                </div>
                             </div>
+                            {/*검색 필터옵션 */
+                                filterRef.current && ReactDOM.createPortal(
+                                    <div className={`absolute bg-white top-0 border ${isFilter ? '' : 'hidden'}`}>
+                                        <ul className='ml-8 mr-1 p-1'>
+                                            {queryFilterArray.map(item => <li key={item} className='text-sm flex flex-row p-1'>
+                                                <label>
+                                                    {<input type='checkbox' value={item} id={item} checked={queryFilter.includes((item))}
+                                                        onChange={() => (queryFilter.includes((item)) ? setQueryFilter(queryFilter.filter(filterItem => filterItem !== item))
+                                                            : setQueryFilter(prev => [...prev, item]))} className='peer invisible absolute'></input>}
+                                                    <BsFillCheckSquareFill className='relative w-6 h-6 mr-2 text-white border rounded peer-checked:text-green-600 peer-checked:border-0'></BsFillCheckSquareFill>
+                                                </label>
+                                                <label htmlFor={item} className='my-auto flex items-center w-max'>
+                                                    {item}
+                                                </label>
+                                            </li>)}
+                                        </ul>
+                                    </div>
+                                    , filterRef.current)}
+
                             <StyleTag>#짭조름</StyleTag>
                             <StyleTag>1위</StyleTag>
                             <StyleTag>로스티드 치킨</StyleTag>
                             <StyleTag>허니머스타드</StyleTag>
                             <span className='text-sm text-gray-500'>으로 검색해보세요</span>
                         </div>
-
                         <div className='grid grid-cols-2 grid-flow-row'>
                             <div className='border-l px-4'>
                                 <span className=' font-bold'>추천 검색어 top3</span>

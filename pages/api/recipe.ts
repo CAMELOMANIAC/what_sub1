@@ -2,8 +2,29 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
 
 
-const loadRecipes = async (searchQuery, offset, limit) => {
+const loadRecipes = async (searchQuery: string | string[] | undefined, offset: number, limit: number, filter: string | string[] | undefined) => {
     try {
+        let filterArray;
+        if (Array.isArray(filter)) {
+            filterArray = filter;
+        } else {
+            filterArray = [filter];
+        }
+
+        let filterQuery;
+        if (filterArray.length > 0) {
+            filterQuery = filterArray.map((item) => {
+                switch (item) {
+                    case '메뉴이름': return ' recipe_table.sandwich_table_sandwich_name LIKE ? ';
+                    case '레시피제목': return ' recipe_table.recipe_name LIKE ? ';
+                    case '작성자': return ' recipe_table.user_table_user_id LIKE ? ';
+                    case '재료': return ' recipe_ingredients LIKE ? ';
+                    case '태그': return ' tag LIKE ? ';
+                }
+            })
+        }
+        console.log(filterQuery)
+
         const query = `SELECT 
         recipe_table.recipe_name, 
         GROUP_CONCAT(DISTINCT recipe_ingredients_table.recipe_ingredients) AS recipe_ingredients, 
@@ -25,21 +46,22 @@ const loadRecipes = async (searchQuery, offset, limit) => {
         recipe_table.recipe_name, 
         recipe_table.user_table_user_id, 
         recipe_table.sandwich_table_sandwich_name
-        HAVING recipe_table.sandwich_table_sandwich_name LIKE ? 
-          OR recipe_table.recipe_name LIKE ? 
-          OR recipe_table.user_table_user_id LIKE ? 
-          OR recipe_ingredients LIKE ? 
-          OR tag LIKE ? 
+        HAVING ${String(filterQuery).replaceAll(',','OR')}
         LIMIT ? OFFSET ?;
         `
+        const sanitizedQueryArray: string[] = [];
+        const sanitizedQuery = '%' + searchQuery + '%';
+        filterArray.forEach(() => {
+            sanitizedQueryArray.push(sanitizedQuery);
+        });
 
-        const sanitizedQuery = '%' + searchQuery + '%'; // Like 키워드를 사용하기위한 검색 쿼리 전처리
+        console.log(query)
         const offsetQuery = offset;
         const limitQuery = limit;
 
         const results = await executeQuery({
             query: query,
-            values: [sanitizedQuery,sanitizedQuery,sanitizedQuery,sanitizedQuery,sanitizedQuery,offsetQuery,limitQuery]
+            values: [...sanitizedQueryArray, offsetQuery, limitQuery]
         });
 
         if (results.length === 0) {
@@ -86,16 +108,16 @@ const loginCheck = async (cookie) => {
 
 //실제 레시피 테이블에 저장하는 함수
 const insertRecipe = async (checkedUser, recipe) => {
-    const recipeName = (recipe.find((item,index) => index === 0));
-    const recipeTag = (recipe.find((item,index) => index === 1));
-    const recipeMenu = (recipe.find((item,index) => index === 2));
-    console.log('받은 레시피태그'+recipeTag)
+    const recipeName = (recipe.find((item, index) => index === 0));
+    const recipeTag = (recipe.find((item, index) => index === 1));
+    const recipeMenu = (recipe.find((item, index) => index === 2));
+    console.log('받은 레시피태그' + recipeTag)
     const tagPlaceholders = recipeTag.map(() => '(?)').join(',');
     const recipeTagPlaceholders = recipeTag.map(() => '(@last_recipe_id, ?)').join(',');
     const recipeIngredients = recipe.slice(3);
     const ingredientsPlaceholders = recipeIngredients.map(() => '(@last_recipe_id, ?)').join(',');
     console.log(ingredientsPlaceholders)
-    console.log([recipeName,checkedUser,recipeMenu,...recipeIngredients])
+    console.log([recipeName, checkedUser, recipeMenu, ...recipeIngredients])
     const query = `BEGIN;
     INSERT INTO recipe_table (recipe_name, user_table_user_id, sandwich_table_sandwich_name) VALUES (?, ?, ?);
     SET @last_recipe_id = LAST_INSERT_ID();
@@ -106,7 +128,7 @@ const insertRecipe = async (checkedUser, recipe) => {
     console.log(query)
     try {
         const results = await executeQuery(
-            { query: query, values: [recipeName,checkedUser,recipeMenu,...recipeIngredients,...recipeTag,...recipeTag] }
+            { query: query, values: [recipeName, checkedUser, recipeMenu, ...recipeIngredients, ...recipeTag, ...recipeTag] }
         );
         console.log(results)
         return true;
@@ -122,6 +144,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const query = req.query.query;
         const limitQueryParam = req.query.limit;
         const offsetQueryParam = req.query.offset;
+        const filter = req.query.filter;
+        console.log('필터쿼리' + filter)
+
         let offset = 0;
         if (typeof offsetQueryParam !== 'undefined') {
             if (Array.isArray(offsetQueryParam)) {
@@ -139,34 +164,34 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         }
         try {
-            const recipe = await loadRecipes(query, limit, offset);
+            const recipe = await loadRecipes(query, limit, offset, filter);
             res.status(200).json(recipe)
         } catch (err) {
             res.status(500).json({ statusCode: 500, message: err.message });
         }
 
-    }else if (req.method === 'POST') {
+    } else if (req.method === 'POST') {
         //포스트 요청시
         let checkedUser;
-        const recipe = req.body.map(item =>item);
-        const recipeName = (recipe.find((item,index) => index === 0));
+        const recipe = req.body.map(item => item);
+        const recipeName = (recipe.find((item, index) => index === 0));
         if (req.headers.cookie) {
             checkedUser = await loginCheck(req.headers.cookie);
             if (checkedUser) {
                 console.log('유저맞음')
                 const insertResult = await insertRecipe(checkedUser, recipe);
-                if (insertResult){
+                if (insertResult) {
                     console.log('저장성공')
-                    res.status(200).json({message:'저장성공',redirect:'/Recipes?param='+recipeName})
+                    res.status(200).json({ message: '저장성공', redirect: '/Recipes?param=' + recipeName })
                 }
-            
-            } else{
-                res.status(405).json({message:'유저확인실패'})
+
+            } else {
+                res.status(405).json({ message: '유저확인실패' })
                 console.log('유저확인실패')
             }
         }
-        else{
-            res.status(200).json({message:'쿠키가 전달되지 않았거나 생성되지(로그인되지) 않았음'})
+        else {
+            res.status(200).json({ message: '쿠키가 전달되지 않았거나 생성되지(로그인되지) 않았음' })
             console.log('쿠키없음')
         }
     } else {

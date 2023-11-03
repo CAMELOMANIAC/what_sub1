@@ -32,15 +32,25 @@ const IndexPage = ({ users }: { users: Post[] }) => {
 
   return (
     <main className=' w-full max-w-screen-xl mx-auto'>
-      <SandwichBanner />
       <div className='flex flex-col items-center justify-center mx-auto mb-4 rounded-full w-[100%]'>
-        <div className='w-auto bg-white border-[15px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center'>
-          <span className='flex justify-center items-center w-[80px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square mr-6'><FaSearch/></span>
-          <div className='flex flex-col flex-nowrap justify-center items-center mr-6'>
+        <SandwichBanner />
+        {
+          <div className='w-auto bg-white border-[12px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center'>
+            <span className='flex justify-center items-center w-[70px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square mr-6'><FaSearch /></span>
+            <div className='flex flex-col flex-nowrap justify-center items-center mr-6 my-2 text-5xl'>
+              <Logo />
+              <div className='font-[seoul-metro] text-gray-600 text-lg'>넌 뭐먹어?</div>
+            </div>
+          </div>
+        }
+        {/*
+        <div className='w-auto bg-white border-[30px] border-green-600 rounded-full px-6 py-2 mt-10 flex flex-row justify-center items-center aspect-square'>
+          <div className='flex flex-col flex-nowrap justify-center items-center'>
             <Logo />
             <div className='font-[seoul-metro] text-gray-600 text-lg'>넌 뭐먹어?</div>
           </div>
-        </div>
+      </div>
+      <SearchBar></SearchBar>*/}
       </div>
       {/*users.length >0 &&(users.map((post) => (
         <div key={post.user_id}>
