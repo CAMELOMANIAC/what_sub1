@@ -55,6 +55,8 @@ const Recipes = () => {
             filterArray = [filter];
         }
         const filterQuery = filterArray.join('&filter=')
+        console.log('레시피페이지에서 받는 필터쿼리')
+        console.log(filterQuery)
         fetch('/api/recipe?query=' + encodeURIComponent(query) + `&offset=${offset}&limit=${limit}&filter=${filterQuery}`)
             .then(response => {
                 if (!response.ok) {

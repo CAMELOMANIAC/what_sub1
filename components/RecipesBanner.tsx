@@ -9,6 +9,7 @@ import SearchBar from './SearchBar';
 import styled from 'styled-components';
 import ReactDOM from 'react-dom';
 import { BsFillCheckSquareFill } from 'react-icons/bs';
+import { useDispatch } from 'react-redux';
 
 export const StyleTag = styled.button`
     height:100%;
@@ -44,8 +45,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     const [queryFilter, setQueryFilter] = useState<string[]>(['메뉴이름', '레시피제목', '작성자', '재료', '태그']);
     const queryFilterArray = ['메뉴이름', '레시피제목', '작성자', '재료', '태그']
     const [isFilter, setIsFilter] = useState<boolean>(false);
-
     const filterRef = useRef(null);
+    const dispatch = useDispatch();
+
+    dispatch({type:'ACTION_FILTER_HANDLER'});
 
     //next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
@@ -54,7 +57,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     return (
         <>
             {router.isReady && selected.length !== 0 ? (
-                <div className={`absolute flex justify-center w-screen right-0 bg-white border-gray-200 border-b`} ref={ref}>
+                <div className={`absolute flex justify-center w-screen right-0 min-w-[1024px] bg-white border-gray-200 border-b`} ref={ref}>
                     <Link href={'/Recipes'} className='py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-lg h-1/2' /></Link>
                     <div className="flex flex-col justify-start pt-4 pb-10 w-[1024px] max-w-[1024px]">
                         <div className='flex flex-row pb-5 pl-4 border-l'>
@@ -140,7 +143,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                     <div className='w-[1024px] mx-auto pt-4 pb-10'>
                         <div className='mb-4'>
                             <div className='flex flex-row justify-start items-center my-2'>
-                                <SearchBar className='ml-0 mr-2' filterState={queryFilter}/>
+                                <SearchBar className='ml-0 mr-2' filterState={queryFilter} />
                                 <div className='relative' ref={filterRef}>
                                     <button className='relative text-green-600 text-2xl w-[42px] h-[42px] text-center align-middle flex justify-center items-center z-20'
                                         onClick={() => !isFilter ? setIsFilter(true) : setIsFilter(false)}>
@@ -165,7 +168,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                             </li>)}
                                         </ul>
                                     </div>
-                                    , filterRef.current)}
+                                    , filterRef.current
+                                )
+                            }
 
                             <StyleTag>#짭조름</StyleTag>
                             <StyleTag>1위</StyleTag>

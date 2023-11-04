@@ -4,9 +4,13 @@ import executeQuery from '../../lib/db'
 
 const loadRecipes = async (searchQuery: string | string[] | undefined, offset: number, limit: number, filter: string | string[] | undefined) => {
     try {
+        console.log(filter)
         let filterArray;
         if (Array.isArray(filter)) {
             filterArray = filter;
+        }
+        else if (filter === '') {
+            filterArray = ['메뉴이름']
         } else {
             filterArray = [filter];
         }
@@ -23,7 +27,6 @@ const loadRecipes = async (searchQuery: string | string[] | undefined, offset: n
                 }
             })
         }
-        console.log(filterQuery)
 
         const query = `SELECT 
         recipe_table.recipe_name, 
@@ -46,7 +49,7 @@ const loadRecipes = async (searchQuery: string | string[] | undefined, offset: n
         recipe_table.recipe_name, 
         recipe_table.user_table_user_id, 
         recipe_table.sandwich_table_sandwich_name
-        HAVING ${String(filterQuery).replaceAll(',','OR')}
+        HAVING ${String(filterQuery).replaceAll(',', 'OR')}
         LIMIT ? OFFSET ?;
         `
         const sanitizedQueryArray: string[] = [];
@@ -55,7 +58,6 @@ const loadRecipes = async (searchQuery: string | string[] | undefined, offset: n
             sanitizedQueryArray.push(sanitizedQuery);
         });
 
-        console.log(query)
         const offsetQuery = offset;
         const limitQuery = limit;
 
@@ -111,13 +113,10 @@ const insertRecipe = async (checkedUser, recipe) => {
     const recipeName = (recipe.find((item, index) => index === 0));
     const recipeTag = (recipe.find((item, index) => index === 1));
     const recipeMenu = (recipe.find((item, index) => index === 2));
-    console.log('받은 레시피태그' + recipeTag)
     const tagPlaceholders = recipeTag.map(() => '(?)').join(',');
     const recipeTagPlaceholders = recipeTag.map(() => '(@last_recipe_id, ?)').join(',');
     const recipeIngredients = recipe.slice(3);
     const ingredientsPlaceholders = recipeIngredients.map(() => '(@last_recipe_id, ?)').join(',');
-    console.log(ingredientsPlaceholders)
-    console.log([recipeName, checkedUser, recipeMenu, ...recipeIngredients])
     const query = `BEGIN;
     INSERT INTO recipe_table (recipe_name, user_table_user_id, sandwich_table_sandwich_name) VALUES (?, ?, ?);
     SET @last_recipe_id = LAST_INSERT_ID();
@@ -125,7 +124,6 @@ const insertRecipe = async (checkedUser, recipe) => {
     INSERT IGNORE INTO tag_table (tag_name) VALUES ${tagPlaceholders};
     INSERT IGNORE INTO recipe_tag_table (recipe_table_recipe_id, tag_table_tag_name) VALUES ${recipeTagPlaceholders};
     COMMIT;`
-    console.log(query)
     try {
         const results = await executeQuery(
             { query: query, values: [recipeName, checkedUser, recipeMenu, ...recipeIngredients, ...recipeTag, ...recipeTag] }
@@ -145,7 +143,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const limitQueryParam = req.query.limit;
         const offsetQueryParam = req.query.offset;
         const filter = req.query.filter;
-        console.log('필터쿼리' + filter)
 
         let offset = 0;
         if (typeof offsetQueryParam !== 'undefined') {
@@ -165,6 +162,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
         try {
             const recipe = await loadRecipes(query, limit, offset, filter);
+            console.log(recipe);
             res.status(200).json(recipe)
         } catch (err) {
             res.status(500).json({ statusCode: 500, message: err.message });
