@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useRef } from 'react';
+import React, { forwardRef, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { PiHeartStraight } from 'react-icons/Pi';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -9,7 +9,8 @@ import SearchBar from './SearchBar';
 import styled from 'styled-components';
 import ReactDOM from 'react-dom';
 import { BsFillCheckSquareFill } from 'react-icons/bs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { set_filter_action,add_Filter_action } from '../redux/reducer/pageReducer'
 
 export const StyleTag = styled.button`
     height:100%;
@@ -42,13 +43,23 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     }
     const recipesTop3: Array<string>[] = [['레드와인식초.jpg', '마요네즈.jpg'], ['레드와인식초.jpg', '마요네즈.jpg'], ['레드와인식초.jpg', '마요네즈.jpg']];
     const breadTop3: string[] = ['레드와인식초.jpg', '마요네즈.jpg', '아보카도.png'];
-    const [queryFilter, setQueryFilter] = useState<string[]>(['메뉴이름', '레시피제목', '작성자', '재료', '태그']);
     const queryFilterArray = ['메뉴이름', '레시피제목', '작성자', '재료', '태그']
     const [isFilter, setIsFilter] = useState<boolean>(false);
     const filterRef = useRef(null);
     const dispatch = useDispatch();
-
-    dispatch({type:'ACTION_FILTER_HANDLER'});
+    const filterState = useSelector((state: any) => state.page.FILTER_ARRAY);
+    const setFilter=(filter)=>{
+        dispatch(set_filter_action(filter));
+    }
+    const addFilter=(filter)=>{
+        dispatch(add_Filter_action(filter));
+    }
+    useEffect(()=>{
+        setFilter(queryFilterArray);
+    },[])
+    useEffect(()=>{
+        console.log(filterState)
+    },[filterState])
 
     //next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
@@ -143,7 +154,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                     <div className='w-[1024px] mx-auto pt-4 pb-10'>
                         <div className='mb-4'>
                             <div className='flex flex-row justify-start items-center my-2'>
-                                <SearchBar className='ml-0 mr-2' filterState={queryFilter} />
+                                <SearchBar className='ml-0 mr-2' />
                                 <div className='relative' ref={filterRef}>
                                     <button className='relative text-green-600 text-2xl w-[42px] h-[42px] text-center align-middle flex justify-center items-center z-20'
                                         onClick={() => !isFilter ? setIsFilter(true) : setIsFilter(false)}>
@@ -157,9 +168,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                         <ul className='ml-8 mr-1 p-1'>
                                             {queryFilterArray.map(item => <li key={item} className='text-sm flex flex-row p-1'>
                                                 <label>
-                                                    {<input type='checkbox' value={item} id={item} checked={queryFilter.includes((item))}
-                                                        onChange={() => (queryFilter.includes((item)) ? setQueryFilter(queryFilter.filter(filterItem => filterItem !== item))
-                                                            : setQueryFilter(prev => [...prev, item]))} className='peer invisible absolute'></input>}
+                                                    {<input type='checkbox' value={item} id={item} checked={filterState.includes((item))}
+                                                        onChange={() => (filterState.includes((item)) ? setFilter(filterState.filter(filterItem => filterItem !== item))
+                                                            : addFilter(item))} className='peer invisible absolute'></input>}
                                                     <BsFillCheckSquareFill className='relative w-6 h-6 mr-2 text-white border rounded peer-checked:text-green-600 peer-checked:border-0'></BsFillCheckSquareFill>
                                                 </label>
                                                 <label htmlFor={item} className='my-auto flex items-center w-max'>

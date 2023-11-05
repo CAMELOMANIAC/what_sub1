@@ -13,14 +13,7 @@ const SearchBar = (props: { className?: string, filterState?: string[] }) => {
 
   const handleSubmit = () => {
     //받은 필터를 쿼리스트링으로 변경해서 전달해야함
-    const filter = props.filterState
-    console.log(filter)
-    let filterQuery: string | undefined;
-    if (filter) {
-      filterQuery = filter.map(f => `filter=${f}`).join('&')
-      console.log('searchbar에서 전달하는 쿼리'+filterQuery)
-    }
-    router.push(`/Recipes?query=${search}`+'&'+filterQuery);
+    router.push(`/Recipes?query=${search}`);
   }
 
   useEffect(() => {

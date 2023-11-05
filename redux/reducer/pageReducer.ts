@@ -1,5 +1,6 @@
 // 액션 타입 정의
-const ACTION_FILTER_HANDLER = 'ACTION_FILTER_HANDLER';
+const SET_FILTER_TYPE = 'ACTION_SET_FILTER_TYPE';
+const ADD_FILTER_TYPE = 'ACTION_ADD_FILTER_TYPE';
 
 // 초기 상태 정의
 const initialState = {
@@ -9,19 +10,29 @@ const initialState = {
 // 리듀서 정의
 const pageReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ACTION_FILTER_HANDLER:
+    case SET_FILTER_TYPE:
       return {
         ...state,
-        SEARCH_HANDLER: action.payload
+        FILTER_ARRAY: action.payload
       };
+      case ADD_FILTER_TYPE:
+        return {
+          ...state,
+          FILTER_ARRAY: [...state.FILTER_ARRAY,action.payload]
+        };
     default:
       return state;
   }
 };
 
-export const actionFilterHandler = (handler) => ({
-  type: ACTION_FILTER_HANDLER,
-  payload: handler
+export const set_filter_action = (filter) => ({
+  type: SET_FILTER_TYPE,
+  payload: filter
 })
+export const add_Filter_action = (filter) => ({
+  type: ADD_FILTER_TYPE,
+  payload: filter
+})
+
 
 export default pageReducer;

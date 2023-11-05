@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Card from '../components/Card';
 import EmptyCard from '../components/EmptyCard';
 import RecipesBanner from '../components/RecipesBanner';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
 const Recipes = () => {
     const bannerRef = useRef<HTMLDivElement>(null);
@@ -11,7 +12,7 @@ const Recipes = () => {
     const router = useRouter();
     const [param, setParam] = React.useState<string | string[]>(router.query.param)
     const [query, setQuery] = React.useState<string | string[]>(router.query.query)
-    const [filter, setFilter] = React.useState<string | string[]>(router.query.filter)
+    const filter = useSelector((state:any)=>state.page.FILTER_ARRAY)
 
     //배너랑 글로벌네비 높이 여백계산(router.query가 변경되면 bannerRef의 높이가 변경되므로 의존성배열에 추가함)
     useEffect(() => {
@@ -28,7 +29,6 @@ const Recipes = () => {
         setQuery(router.query.query)
         //param 쿼리스트링은 배너 간단 정보
         setParam(router.query.param)
-        setFilter(String(router.query.filter).split(','))
 
 
         if (Object.keys(router.query).length !== 0) {
@@ -48,13 +48,7 @@ const Recipes = () => {
     const getRecipes = (query = '', offset = 0, limit = 3) => {
         //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩함수안써도됨
-        let filterArray;
-        if (Array.isArray(filter)) {
-            filterArray = filter;
-        } else {
-            filterArray = [filter];
-        }
-        const filterQuery = filterArray.join('&filter=')
+        const filterQuery = filter.join('&filter=')
         console.log('레시피페이지에서 받는 필터쿼리')
         console.log(filterQuery)
         fetch('/api/recipe?query=' + encodeURIComponent(query) + `&offset=${offset}&limit=${limit}&filter=${filterQuery}`)
