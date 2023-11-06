@@ -8,13 +8,11 @@ const Card = ({recipe}) => {
     if (recipe.tag) {
         const tag = recipe.tag.split(',');
         recipeTag.push(...tag);
-        console.log(recipeTag)
     }
     const ingredients: string[] =[];
     if (recipe.recipe_ingredients) {
         const ingredient = recipe.recipe_ingredients.split(',');
         ingredients.push(...ingredient);
-        console.log(ingredients)
     }
 
     return (

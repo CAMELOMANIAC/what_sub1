@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import ReactDOM from 'react-dom';
 import { BsFillCheckSquareFill } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
-import { set_filter_action,add_Filter_action } from '../redux/reducer/pageReducer'
+import { set_filter_action, add_Filter_action } from '../redux/reducer/pageReducer'
 
 export const StyleTag = styled.button`
     height:100%;
@@ -41,25 +41,47 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
         const { param } = router.query;
         selected = menuArray.filter((item) => (item.name == String(param).replaceAll('+', ' ')));//쿼리로 값을 전달할때 뛰어쓰기는 +기호로 치환되므로 적절히 조치해야함
     }
-    const recipesTop3: Array<string>[] = [['레드와인식초.jpg', '마요네즈.jpg'], ['레드와인식초.jpg', '마요네즈.jpg'], ['레드와인식초.jpg', '마요네즈.jpg']];
-    const breadTop3: string[] = ['레드와인식초.jpg', '마요네즈.jpg', '아보카도.png'];
+
     const queryFilterArray = ['메뉴이름', '레시피제목', '작성자', '재료', '태그']
     const [isFilter, setIsFilter] = useState<boolean>(false);
     const filterRef = useRef(null);
     const dispatch = useDispatch();
     const filterState = useSelector((state: any) => state.page.FILTER_ARRAY);
-    const setFilter=(filter)=>{
+    const setFilter = (filter) => {
         dispatch(set_filter_action(filter));
     }
-    const addFilter=(filter)=>{
+    const addFilter = (filter) => {
         dispatch(add_Filter_action(filter));
     }
-    useEffect(()=>{
+    
+    //추천 브레드 및 추천 소스관련내용
+    const [breadTop,setBreadTop] = useState<string[]>(['레시피 데이터가 부족해요','레시피 데이터가 부족해요','레시피 데이터가 부족해요']);
+    const [sauceTop,setSauceTop] = useState<string[][]>([['레시피 데이터가 부족해요'],['레시피 데이터가 부족해요'],['레시피 데이터가 부족해요']]);
+    const test = async (query, topIngredients) => {
+        const response = await fetch(`/api/recipe?query=${query}&topIngredients=${topIngredients}`);
+        return await response.json();
+    }
+    //컴포넌트 준비완료시 
+    useEffect(() => {
         setFilter(queryFilterArray);
-    },[])
+    }, [])
+    //쿼리스트링 변경시
     useEffect(()=>{
-        console.log(filterState)
-    },[filterState])
+        if (router.isReady) {
+            const { param } = router.query;
+            if (router.isReady && selected.length !== 0 ) {
+                test(String(param).replaceAll('+', ' '), 'bread').then(result => setBreadTop(result));
+                test(String(param).replaceAll('+', ' '), 'sauce').then(result => {
+                    const parsedResult = result.map(item => item.split(', '));
+                    setSauceTop(parsedResult);
+                  });
+            }
+        }
+    },[router.query])
+    useEffect(()=>{
+        console.log(breadTop)
+        console.log(sauceTop)
+    },[breadTop,sauceTop])
 
     //next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
@@ -105,11 +127,11 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>평균 좋아요</span>
                                 </div>
-                                {breadTop3.map((item) => (
+                                {breadTop.map((item) => (
                                     <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <img
-                                                src={'images/sandwich_menu/ingredients/' + item}
+                                                src={'images/sandwich_menu/ingredients/' + item +'.jpg'}
                                                 alt={item}
                                                 className='w-12 aspect-square inline object-cover'
                                             />
@@ -126,14 +148,14 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>평균 좋아요</span>
                                 </div>
-                                {recipesTop3.map((item, index) => (
+                                {sauceTop.map((item, index) => (
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>{
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
                                                 <React.Fragment key={subIndex}>
                                                     {subIndex % 2 === 1 ? '+' : null}
                                                     <img
-                                                        src={'images/sandwich_menu/ingredients/' + subItem}
+                                                        src={'images/sandwich_menu/ingredients/' + subItem+'.jpg'}
                                                         alt={subItem}
                                                         className='w-12 aspect-square inline object-cover'
                                                     />
@@ -197,7 +219,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>평균 좋아요</span>
                                 </div>
-                                {breadTop3.map((item, index) => (
+                                {/*breadTop.map((item) => (
                                     <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <img
@@ -209,7 +231,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>10%</span>
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>103</span>
                                     </div>
-                                ))}
+                                ))*/}
                             </div>
                             <div className='border-l px-4'>
                                 <span className=' font-bold'>추천 레시피 top3</span>
@@ -218,7 +240,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>평균 좋아요</span>
                                 </div>
-                                {recipesTop3.map((item, index) => (
+                                {/*sauceTop.map((item, index) => (
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>{
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
@@ -236,7 +258,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>10%</span>
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>103</span>
                                     </div>
-                                ))}
+                                    ))*/}
                             </div>
                         </div>
                     </div>
