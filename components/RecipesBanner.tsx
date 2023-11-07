@@ -55,9 +55,13 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     }
     
     //추천 브레드 및 추천 소스관련내용
-    const [breadTop,setBreadTop] = useState<string[]>(['레시피 데이터가 부족해요','레시피 데이터가 부족해요','레시피 데이터가 부족해요']);
-    const [sauceTop,setSauceTop] = useState<string[][]>([['레시피 데이터가 부족해요'],['레시피 데이터가 부족해요'],['레시피 데이터가 부족해요']]);
-    const test = async (query, topIngredients) => {
+    const [breadTop,setBreadTop] = useState<string[]>(['1','2','3']);
+    const [breadTopLike,setBreadTopLike] = useState<string[]>(['1','2','3']);
+    const [breadTopOccurrence,setBreadTopOccurrence] = useState<string[]>(['1','2','3']);
+    const [sauceTop,setSauceTop] = useState<string[][]>([['1'],['2'],['3']]);
+    const [sauceTopLike, setSauceTopLike] = useState<string[][]>([['1'],['2'],['3']]);
+    const [sauceTopOccurrence, setSauceTopOccurrence] = useState<string[][]>([['1'],['2'],['3']]);
+    const loadTopIngredients = async (query, topIngredients) => {
         const response = await fetch(`/api/recipe?query=${query}&topIngredients=${topIngredients}`);
         return await response.json();
     }
@@ -70,10 +74,21 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
         if (router.isReady) {
             const { param } = router.query;
             if (router.isReady && selected.length !== 0 ) {
-                test(String(param).replaceAll('+', ' '), 'bread').then(result => setBreadTop(result));
-                test(String(param).replaceAll('+', ' '), 'sauce').then(result => {
-                    const parsedResult = result.map(item => item.split(', '));
+                loadTopIngredients(String(param).replaceAll('+', ' '), 'bread').then(result => {
+                    let parsedResult = result.map(item => item.recipe_ingredients);
+                    setBreadTop(parsedResult);
+                    parsedResult = result.map(item => item.likes);
+                    setBreadTopLike(parsedResult);
+                    parsedResult = result.map(item => item.occurrence);
+                    setBreadTopOccurrence(parsedResult);
+                });
+                loadTopIngredients(String(param).replaceAll('+', ' '), 'sauce').then(result => {
+                    let parsedResult = result.map(item => item.combined_ingredients.split(', '));
                     setSauceTop(parsedResult);
+                    parsedResult = result.map(item => item.likes);
+                    setSauceTopLike(parsedResult);
+                    parsedResult = result.map(item => item.occurrence);
+                    setSauceTopOccurrence(parsedResult);
                   });
             }
         }
@@ -127,7 +142,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>평균 좋아요</span>
                                 </div>
-                                {breadTop.map((item) => (
+                                {breadTop.map((item,index) => (
                                     <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <img
@@ -135,14 +150,15 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                                 alt={item}
                                                 className='w-12 aspect-square inline object-cover'
                                             />
+                                            {item}
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>10%</span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>103</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{breadTopOccurrence[index]}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{breadTopLike[index]}</span>
                                     </div>
                                 ))}
                             </div>
                             <div className='border-l px-4'>
-                                <span className=' font-bold'>추천재료 top3</span>
+                                <span className=' font-bold'>추천 소스 top3</span>
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
                                     <span className='col-span-5 text-left'>조합법</span>
                                     <span className='col-span-2'>조합 선택율</span>
@@ -152,8 +168,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>{
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
-                                                <React.Fragment key={subIndex}>
-                                                    {subIndex % 2 === 1 ? '+' : null}
+                                                <React.Fragment key={subItem+index}>
+                                                    {subIndex !== 0 && '+'}
                                                     <img
                                                         src={'images/sandwich_menu/ingredients/' + subItem+'.jpg'}
                                                         alt={subItem}
@@ -163,8 +179,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                             ))
                                         }
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>10%</span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>103</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopOccurrence[index]}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopLike[index]}</span>
                                     </div>
                                 ))}
                             </div>

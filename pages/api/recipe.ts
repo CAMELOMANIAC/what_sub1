@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
 import { breadNutrientArray, sauceNutrientArray } from '../../utils/menuArray'
-import { error } from 'console'
 
 //일반적인 레시피 불러오기
 const loadRecipes = async (searchQuery: string | string[] | undefined, offset: number, limit: number, filter: string | string[] | undefined) => {
@@ -87,15 +86,21 @@ const loadRecipes = async (searchQuery: string | string[] | undefined, offset: n
 const topIngredientsLoad = async (sandwichMenu: string, ingredientsType: string) => {
     const sandwichQuery = sandwichMenu;
 
-    const query = `SELECT recipe_ingredients_table.recipe_ingredients FROM recipe_ingredients_table 
-    LEFT JOIN recipe_table ON recipe_table.recipe_id = recipe_ingredients_table.recipe_table_recipe_id 
-    WHERE recipe_table.sandwich_table_sandwich_name = ? 
-     AND NOT recipe_ingredients_table.recipe_ingredients = 'true'
-     AND NOT recipe_ingredients_table.recipe_ingredients = 'false' 
-     ${ingredientsType === 'bread' ? String(breadNutrientArray.map(() => 'OR recipe_ingredients_table.recipe_ingredients = ? ')).replaceAll(',', '') :
-            ingredientsType === 'sauce' ? String(sauceNutrientArray.map(() => 'OR recipe_ingredients_table.recipe_ingredients = ? ')).replaceAll(',', '') : ''}
-    group by recipe_ingredients 
-    ORDER BY count(*) DESC
+    const query = `SELECT recipe_ingredients_table.recipe_ingredients, count(*) as occurrence,
+        (SELECT count(*) FROM recipe_like_table WHERE recipe_like_table.recipe_table_recipe_id = ANY_VALUE(recipe_table.recipe_id)) as likes 
+    FROM 
+        recipe_ingredients_table 
+    LEFT JOIN 
+        recipe_table 
+    ON 
+        recipe_table.recipe_id = recipe_ingredients_table.recipe_table_recipe_id 
+    WHERE 
+        recipe_table.sandwich_table_sandwich_name = ? 
+        AND recipe_ingredients_table.recipe_ingredients IN (${ingredientsType === 'bread' ? String(breadNutrientArray.map(() => ' ? ')) : ingredientsType === 'sauce' ? String(sauceNutrientArray.map(() => ' ? ')) : ''}) 
+    GROUP BY 
+        recipe_ingredients_table.recipe_ingredients 
+    ORDER BY 
+        occurrence DESC 
     LIMIT 3;
     `
     try {
@@ -109,7 +114,12 @@ const topIngredientsLoad = async (sandwichMenu: string, ingredientsType: string)
             query: query,
             values: [sandwichQuery, ...dynamicValues]
         });
-        return results.map(item => item.recipe_ingredients)
+        console.log('topIngredientsLoad results')
+        console.log(results)
+        console.log('topIngredientsLoad results.json')
+        console.log(JSON.stringify(results))
+
+        return results
 
     } catch (err) {
         throw new Error('검색실패: ' + err.message);
@@ -118,19 +128,26 @@ const topIngredientsLoad = async (sandwichMenu: string, ingredientsType: string)
 
 const recipeIngredientsLoad = async (sandwichMenu, ingredientsType: string) => {
     const sandwichQuery = sandwichMenu;
-    const query = `SELECT combined_ingredients, COUNT(*) as occurrence 
-    FROM ( 
+    const query = `SELECT subquery.combined_ingredients, COUNT(*) as occurrence, IFNULL(MAX(likes_table.likes), 0) as likes 
+    FROM (
         SELECT recipe_ingredients_table.recipe_table_recipe_id, GROUP_CONCAT(recipe_ingredients_table.recipe_ingredients SEPARATOR ', ') as combined_ingredients 
         FROM recipe_ingredients_table 
         LEFT JOIN recipe_table ON recipe_table.recipe_id = recipe_ingredients_table.recipe_table_recipe_id 
-        where recipe_table.sandwich_table_sandwich_name = ?  
-        AND(
-            ${ingredientsType === 'bread' ? String(breadNutrientArray.map(() => 'recipe_ingredients_table.recipe_ingredients = ? ')).replaceAll(',', 'OR ') :
-            ingredientsType === 'sauce' ? String(sauceNutrientArray.map(() => 'recipe_ingredients_table.recipe_ingredients = ? ')).replaceAll(',', 'OR ') : ''})
+        WHERE recipe_table.sandwich_table_sandwich_name = ? 
+        AND(recipe_ingredients_table.recipe_ingredients IN (${ingredientsType === 'sauce' ? String(sauceNutrientArray.map(() => ' ? ')) : ''}) )
         GROUP BY recipe_ingredients_table.recipe_table_recipe_id 
     ) as subquery
-    GROUP BY combined_ingredients
-    HAVING COUNT(*) > 1;`
+    LEFT JOIN (
+        SELECT recipe_table_recipe_id, COUNT(*) as likes 
+        FROM recipe_like_table 
+        GROUP BY recipe_table_recipe_id 
+    ) as likes_table ON likes_table.recipe_table_recipe_id = subquery.recipe_table_recipe_id 
+    GROUP BY subquery.combined_ingredients 
+    HAVING COUNT(*) > 1 
+    ORDER BY 
+        occurrence DESC
+        LIMIT 3;
+    `
 
     try {
         let dynamicValues: string[] = [];
@@ -143,8 +160,12 @@ const recipeIngredientsLoad = async (sandwichMenu, ingredientsType: string) => {
             query: query,
             values: [sandwichQuery, ...dynamicValues]
         });
-        return results.map(item => item.combined_ingredients)
+        console.log('recipeIngredientsLoad2의 results')
+        console.log(results)
+        console.log('recipeIngredientsLoad2의 results.json')
+        console.log(JSON.stringify(results))
 
+        return results
     } catch (err) {
         throw new Error('검색실패: ' + err.message);
     }
@@ -195,7 +216,7 @@ const insertRecipe = async (checkedUser, recipe) => {
         const results = await executeQuery(
             { query: query, values: [recipeName, checkedUser, recipeMenu, ...recipeIngredients, ...recipeTag, ...recipeTag] }
         );
-        return true;
+        return results;
     } catch (err) {
         console.log(err.message)
         return false;
@@ -238,7 +259,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     else if (topIngredients === 'sauce') {
                         recipe = await recipeIngredientsLoad(query, topIngredients);
                     }
-                    console.log(recipe);
                     res.status(200).json(recipe)
                 } else {
                     console.log('문자열외 값을 요청받을 수 없음' + query + ',' + topIngredients);
@@ -246,7 +266,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 }
             } else {//일반적인 레시피 요청시
                 const recipe = await loadRecipes(query, limit, offset, filter);
-                console.log(recipe);
                 res.status(200).json(recipe)
             }
         } catch (err) {
