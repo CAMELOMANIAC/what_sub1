@@ -53,16 +53,23 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     const addFilter = (filter) => {
         dispatch(add_Filter_action(filter));
     }
-    
+
     //추천 브레드 및 추천 소스관련내용
-    const [breadTop,setBreadTop] = useState<string[]>(['1','2','3']);
-    const [breadTopLike,setBreadTopLike] = useState<string[]>(['1','2','3']);
-    const [breadTopOccurrence,setBreadTopOccurrence] = useState<string[]>(['1','2','3']);
-    const [sauceTop,setSauceTop] = useState<string[][]>([['1'],['2'],['3']]);
-    const [sauceTopLike, setSauceTopLike] = useState<string[][]>([['1'],['2'],['3']]);
-    const [sauceTopOccurrence, setSauceTopOccurrence] = useState<string[][]>([['1'],['2'],['3']]);
+    const [breadTop, setBreadTop] = useState<string[]>(['1', '2', '3']);
+    const [breadTopLike, setBreadTopLike] = useState<string[]>(['1', '2', '3']);
+    const [breadTopOccurrence, setBreadTopOccurrence] = useState<string[]>(['1', '2', '3']);
+    const [sauceTop, setSauceTop] = useState<string[][]>([['1'], ['2'], ['3']]);
+    const [sauceTopLike, setSauceTopLike] = useState<string[]>(['1', '2', '3']);
+    const [sauceTopOccurrence, setSauceTopOccurrence] = useState<string[]>(['1', '2', '3']);
+    const [menuLike, setMenuLike] = useState<string>();
+    const [menuRecipe, setMenuRecipe] = useState<string>();
+    const [recipeLike, setRecipeLike] = useState<string>();
     const loadTopIngredients = async (query, topIngredients) => {
-        const response = await fetch(`/api/recipe?query=${query}&topIngredients=${topIngredients}`);
+        const response = await fetch(`/api/menu?query=${query}&topIngredients=${topIngredients}`);
+        return await response.json();
+    }
+    const loadMenuInfo = async (query) => {
+        const response = await fetch(`/api/menu?query=${query}`);
         return await response.json();
     }
     //컴포넌트 준비완료시 
@@ -70,10 +77,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
         setFilter(queryFilterArray);
     }, [])
     //쿼리스트링 변경시
-    useEffect(()=>{
+    useEffect(() => {
         if (router.isReady) {
             const { param } = router.query;
-            if (router.isReady && selected.length !== 0 ) {
+            if (router.isReady && selected.length !== 0) {
                 loadTopIngredients(String(param).replaceAll('+', ' '), 'bread').then(result => {
                     let parsedResult = result.map(item => item.recipe_ingredients);
                     setBreadTop(parsedResult);
@@ -89,14 +96,18 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                     setSauceTopLike(parsedResult);
                     parsedResult = result.map(item => item.occurrence);
                     setSauceTopOccurrence(parsedResult);
-                  });
+                });
+                loadMenuInfo(String(param).replaceAll('+', ' ')).then(result => {
+                    setMenuLike(result[0].like_count);
+                    setMenuRecipe(result[0].recipe_count);
+                    setRecipeLike(result[0].recipe_like_count);
+                });
             }
         }
-    },[router.query])
+    }, [router.query])
     useEffect(()=>{
-        console.log(breadTop)
-        console.log(sauceTop)
-    },[breadTop,sauceTop])
+        console.log(sauceTopOccurrence)
+    },[sauceTopOccurrence])
 
     //next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
@@ -120,15 +131,15 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                 <div className='flex flex-row text-sm m-2'>
                                     <div className='border-l w-28 px-3'>
                                         <div className='text-gray-500'>메뉴 좋아요</div>
-                                        <div className='font-bold'>12313</div>
+                                        <div className='font-bold'>{menuLike}</div>
+                                    </div>
+                                    <div className='border-l w-28 px-3'>
+                                        <div className='text-gray-500'>레시피 좋아요</div>
+                                        <div className='font-bold'>{recipeLike}</div>
                                     </div>
                                     <div className='border-l w-28 px-3'>
                                         <div className='text-gray-500'>레시피 수</div>
-                                        <div className='font-bold'>12313</div>
-                                    </div>
-                                    <div className='border-l w-28 px-3'>
-                                        <div className='text-gray-500'>레시피 평균</div>
-                                        <div className='font-bold'>12313</div>
+                                        <div className='font-bold'>{menuRecipe}</div>
                                     </div>
                                 </div>
                             </div>
@@ -140,19 +151,19 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
                                     <span className='col-span-5 text-left'>브레드</span>
                                     <span className='col-span-2'>조합 선택율</span>
-                                    <span className='col-span-2'>평균 좋아요</span>
+                                    <span className='col-span-2'>좋아요 수</span>
                                 </div>
-                                {breadTop.map((item,index) => (
+                                {breadTop.map((item, index) => (
                                     <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <img
-                                                src={'images/sandwich_menu/ingredients/' + item +'.jpg'}
+                                                src={'images/sandwich_menu/ingredients/' + item + '.jpg'}
                                                 alt={item}
                                                 className='w-12 aspect-square inline object-cover'
                                             />
                                             {item}
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{breadTopOccurrence[index]}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{Math.round((parseInt(breadTopOccurrence[index])/parseInt(menuRecipe!))*100)}%</span>
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{breadTopLike[index]}</span>
                                     </div>
                                 ))}
@@ -162,16 +173,16 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
                                     <span className='col-span-5 text-left'>조합법</span>
                                     <span className='col-span-2'>조합 선택율</span>
-                                    <span className='col-span-2'>평균 좋아요</span>
+                                    <span className='col-span-2'>좋아요 수</span>
                                 </div>
                                 {sauceTop.map((item, index) => (
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>{
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
-                                                <React.Fragment key={subItem+index}>
+                                                <React.Fragment key={subItem + index}>
                                                     {subIndex !== 0 && '+'}
                                                     <img
-                                                        src={'images/sandwich_menu/ingredients/' + subItem+'.jpg'}
+                                                        src={'images/sandwich_menu/ingredients/' + subItem + '.jpg'}
                                                         alt={subItem}
                                                         className='w-12 aspect-square inline object-cover'
                                                     />
@@ -179,7 +190,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                             ))
                                         }
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopOccurrence[index]}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{Math.round((parseInt(sauceTopOccurrence[index])/parseInt(menuRecipe!))*100)}%</span>
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopLike[index]}</span>
                                     </div>
                                 ))}
@@ -221,10 +232,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                                 )
                             }
 
-                            <StyleTag>#짭조름</StyleTag>
-                            <StyleTag>1위</StyleTag>
-                            <StyleTag>로스티드 치킨</StyleTag>
-                            <StyleTag>허니머스타드</StyleTag>
+                            <Link href={`/Recipes?query=달콤`}><StyleTag>#달콤</StyleTag></Link>
+                            <Link href={`/Recipes?query=로스티드 치킨`}><StyleTag>로스티드 치킨</StyleTag></Link>
+                            <Link href={`/Recipes?query=허니머스타드`}><StyleTag>허니머스타드</StyleTag></Link>
                             <span className='text-sm text-gray-500'>으로 검색해보세요</span>
                         </div>
                         <div className='grid grid-cols-2 grid-flow-row'>

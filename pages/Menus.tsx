@@ -7,7 +7,7 @@ import { PiHeartStraight } from 'react-icons/Pi';
 import { RiPencilFill } from 'react-icons/ri';
 import styled from 'styled-components';
 import { menuArray, menuArrayType } from '../utils/menuArray';
-import {checkSession} from '../utils/checkSession';
+import { checkSession } from '../utils/checkSession';
 
 const StyledDiv = styled.div`
     background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
@@ -17,17 +17,31 @@ export async function getServerSideProps({ req }) {
     const cookie = req.headers.cookie;
     const sessionCheck = await checkSession(cookie);
 
+    const loadTotalMenuInfo = async() =>{
+        const result = await fetch(process.env.URL + '/api/menu?isTotal=true')
+        return result.json();
+    }
+    const totalMenuInfo = await loadTotalMenuInfo();
+
     return {
         props: {
             sessionCheck,
+            totalMenuInfo
         },
     };
 }
 
-const Menus = ({sessionCheck}) => {
-    console.log(sessionCheck)
-    const arrayTemplate: { name: string, favorit: string, recipes: string, avgRecipe: string, matches: string } = {
-        name: '메뉴 이름', favorit: '메뉴 좋아요', recipes: '레시피 수', avgRecipe: '레시피 평균', matches: '더 하면 좋은 재료'
+const Menus = ({ sessionCheck, totalMenuInfo }) => {
+    const fixedMenuArray : menuArrayType[] = menuArray;
+    fixedMenuArray.map(menuArray=>{
+        totalMenuInfo.find(infoArray=>infoArray.sandwich_name === menuArray.name)
+            ? ( menuArray.recipes = totalMenuInfo.find(infoArray=>infoArray.sandwich_name === menuArray.name).recipe_count,
+             menuArray.favorit = totalMenuInfo.find(infoArray=>infoArray.sandwich_name === menuArray.name).like_count ,
+             menuArray.likeRecipe = totalMenuInfo.find(infoArray=>infoArray.sandwich_name === menuArray.name).recipe_like_count )
+            : null
+    })
+    const arrayTemplate: { name: string, favorit: string, recipes: string, likeRecipe: string, matches: string } = {
+        name: '메뉴 이름', favorit: '메뉴 좋아요', recipes: '레시피 수', likeRecipe: '레시피 좋아요', matches: '더 하면 좋은 재료'
     }
     const [selected, setSelected] = useState<menuArrayType>(menuArray[0]);
     const [menuType, setMenuType] = useState(0);
@@ -66,16 +80,16 @@ const Menus = ({sessionCheck}) => {
         });
     }
 
-    const orderChangeAvgRecipes = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const orderChangeLikeRecipes = (e: React.MouseEvent<HTMLButtonElement>) => {
         const id = e.currentTarget.id;
         setOrder(prevOrder => {
-            if (id === 'avgRecipe' && prevOrder === 'avgRecipe') {
-                return 'reverseAvgRecipe';
+            if (id === 'likeRecipe' && prevOrder === 'likeRecipe') {
+                return 'reverselikeRecipe';
             }
-            else if (id === 'avgRecipe' && prevOrder === 'reverseAvgRecipe') {
-                return 'avgRecipe';
+            else if (id === 'likeRecipe' && prevOrder === 'reverselikeRecipe') {
+                return 'likeRecipe';
             }
-            return 'avgRecipe';
+            return 'likeRecipe';
         });
     }
 
@@ -92,10 +106,10 @@ const Menus = ({sessionCheck}) => {
             sorted.sort((a, b) => (b.recipes - a.recipes));
         if (order === 'reverseRecipes')
             sorted.sort((a, b) => (a.recipes - b.recipes));
-        if (order === 'avgRecipe')
-            sorted.sort((a, b) => (b.avgRecipe - a.avgRecipe));
-        if (order === 'reverseAvgRecipe')
-            sorted.sort((a, b) => (a.avgRecipe - b.avgRecipe));
+        if (order === 'likeRecipe')
+            sorted.sort((a, b) => (b.likeRecipe - a.likeRecipe));
+        if (order === 'reverselikeRecipe')
+            sorted.sort((a, b) => (a.likeRecipe - b.likeRecipe));
         setSortedArray(sorted);
     }, [order]);
 
@@ -109,7 +123,7 @@ const Menus = ({sessionCheck}) => {
                 <div className="col-span-3 whitespace-pre-line flex flex-col justify-center">
                     <div className='flex flex-row items-center text-white pb-4'>
                         <h1 className='font-bold text-3xl mr-4'>{selected.name}</h1>
-                        <button className='flex items-center text-xl'><PiHeartStraight className='inline-block'/>12</button>
+                        <button className='flex items-center text-xl'><PiHeartStraight className='inline-block' />12</button>
                     </div>
                     <div className='text-white/70 mb-2'>{selected.summary}</div>
                     <div className='flex flex-row'>{selected.ingredients.map((item) =>
@@ -118,7 +132,7 @@ const Menus = ({sessionCheck}) => {
                     <div className='flex flex-row'>
                         <Link href={{
                             pathname: '/Recipes',  // 이동할 페이지의 경로
-                            query: { param: selected.name, query:selected.name }  /* URL에 전달할 쿼리 매개변수*/
+                            query: { param: selected.name, query: selected.name }  /* URL에 전달할 쿼리 매개변수*/
                         }}
                             className='font-bold rounded-full px-3 py-2 mr-2 text-black bg-yellow-500 flex justify-center items-center'>자세히 보기<IoIosArrowForward className='inline-block text-xl' /></Link>
                         <Link href={{
@@ -175,15 +189,16 @@ const Menus = ({sessionCheck}) => {
 
                     {/*메뉴 순위 */}
                     <div className="col-span-4 border bg-white relative w-full divide-y text-sm">
+                        {/*위쪽 라벨 */}
                         <div className='flex items-center bg-slate-100 text-gray-400'>
                             <span className="inline-block w-[10%] text-center">순위</span>
                             <span className="inline-block w-[30%]">{arrayTemplate.name}</span><span className='inline-block w-10'></span>
                             <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'favorit' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseFavorit' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
                                 id='favorit' onClick={orderChangeFavorit}>{arrayTemplate.favorit}</button>
+                            <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'likeRecipe' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverselikeRecipe' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
+                                id='likeRecipe' onClick={orderChangeLikeRecipes}>{arrayTemplate.likeRecipe}</button>
                             <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'recipes' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseRecipes' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
                                 id='recipes' onClick={orderChangeRecipes}>{arrayTemplate.recipes}</button>
-                            <button className={`inline-block w-[15%] text-center py-1 ` + `${order === 'avgRecipe' && ' border-b-4 border-green-600 text-green-600 '}` + `${order === 'reverseAvgRecipe' && ' border-t-4 border-yellow-500 text-yellow-500'}`}
-                                id='avgRecipe' onClick={orderChangeAvgRecipes}>{arrayTemplate.avgRecipe}</button>
                             <span className="inline-block w-[30%] text-center">{arrayTemplate.matches}</span>
                         </div>
                         {sortedArray?.map((item, index) => (
@@ -194,8 +209,8 @@ const Menus = ({sessionCheck}) => {
                                 </div>
                                 <span className="flex justify-start items-center  w-[30%] font-bold pl-2">{item.name}</span>
                                 <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'favorit') || (order === 'reverseFavorit')) && 'bg-gray-100 '}`}>{item.favorit}</span>
+                                <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'likeRecipe') || (order === 'reverselikeRecipe')) && 'bg-gray-100 '}`}>{item.likeRecipe}</span>
                                 <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'recipes') || (order === 'reverseRecipes')) && 'bg-gray-100 '}`}>{item.recipes}</span>
-                                <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'avgRecipe') || (order === 'reverseAvgRecipe')) && 'bg-gray-100 '}`}>{item.avgRecipe}</span>
                                 <span className="flex justify-center items-center  w-[30%] text-center">{item.matches}</span>
                             </button>
                         ))}
