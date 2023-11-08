@@ -241,7 +241,7 @@ const AddRecipe = ({ param }) => {
     }
 
     const sendRecipe = async () => {
-        const response = await fetch('/api/recipe', {
+        const response = await fetch('/api/recipe?insert=recipe', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",

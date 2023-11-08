@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
+
 //일반적인 레시피 불러오기
 const loadRecipes = async (searchQuery: string | string[] | undefined, offset: number, limit: number, filter: string | string[] | undefined) => {
     try {
@@ -26,6 +27,7 @@ const loadRecipes = async (searchQuery: string | string[] | undefined, offset: n
         }
 
         const query = `SELECT 
+        recipe_table.recipe_id, 
         recipe_table.recipe_name, 
         GROUP_CONCAT(DISTINCT recipe_ingredients_table.recipe_ingredients) AS recipe_ingredients, 
         recipe_table.user_table_user_id, 
@@ -67,6 +69,7 @@ const loadRecipes = async (searchQuery: string | string[] | undefined, offset: n
             console.log('검색 결과 없음');
         }
         return results.map((index) => ({
+            recipe_id: index.recipe_id,
             recipe_name: index.recipe_name,
             recipe_ingredients: index.recipe_ingredients,
             user_id: index.user_table_user_id,
@@ -131,6 +134,66 @@ const insertRecipe = async (checkedUser, recipe) => {
         return false;
     }
 }
+//레피시 좋아요 추가
+const insertRecipeLike = async (recipeId, userId) => {
+    const query = `INSERT INTO recipe_like_table(recipe_table_recipe_id,user_table_user_id) VALUES (?,?);`
+    const recipeIdValue = recipeId;
+    const userIdValue = userId;
+    try {
+        const results = await executeQuery(
+            { query: query, values: [recipeIdValue, userIdValue] }
+        );
+        if (results.affectedRows === 1)
+            return true;
+        else {
+            return false
+        }
+    } catch (err) {
+        console.log(err.message)
+        return false;
+    }
+}
+//레피시 좋아요 제거
+const deleteRecipeLike = async (recipeId, userId) => {
+    const query = `DELETE FROM recipe_like_table WHERE recipe_table_recipe_id = ? AND user_table_user_id = ?;`
+    const recipeIdValue = recipeId;
+    const userIdValue = userId;
+    try {
+        const results = await executeQuery(
+            { query: query, values: [recipeIdValue, userIdValue] }
+        );
+        
+        if (results.affectedRows === 1)
+            return true;
+        else {
+            return false
+        }
+    } catch (err) {
+        console.log(err.message)
+        return false;
+    }
+}
+//레시피 좋아요 했었는지 체크
+const checkRecipeLike = async (recipeId, userId) => {
+    const query = `SELECT count(*) as count FROM recipe_like_table 
+    WHERE recipe_like_table.recipe_table_recipe_id = ? 
+    AND user_table_user_id = ?;`
+    const recipeIdValue = recipeId;
+    const userIdValue = userId;
+    try {
+        const results = await executeQuery(
+            { query: query, values: [recipeIdValue, userIdValue] }
+        );
+        if (results.map(item=>item.count) > 0)
+            return true;
+        else {
+            return false
+        }
+    } catch (err) {
+        console.log(err.message)
+        return false;
+    }
+}
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //get요청시
@@ -167,18 +230,46 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (req.method === 'POST') {
         //post 요청시
         let checkedUser;
-        const recipe = req.body.map(item => item);
-        const recipeName = (recipe.find((item, index) => index === 0));
+        const insert = req.query.insert
         if (req.headers.cookie) {
             checkedUser = await loginCheck(req.headers.cookie);
             if (checkedUser) {
                 console.log('유저맞음')
-                const insertResult = await insertRecipe(checkedUser, recipe);
-                if (insertResult) {
-                    console.log('저장성공')
-                    res.status(200).json({ message: '저장성공', redirect: '/Recipes?query=' + recipeName })
+                if (insert === 'recipe') {
+                    const recipe = req.body
+                    const recipeName = (recipe.find((item, index) => index === 0));
+                    const insertRecipeResult = await insertRecipe(checkedUser, recipe);
+                    if (insertRecipeResult) {
+                        console.log('저장성공')
+                        res.status(200).json({ message: '저장성공', redirect: '/Recipes?query=' + recipeName })
+                    } else {
+                        res.status(500).json({ message: '저장실패' })
+                        console.log('저장실패')
+                    }
+                } else if (insert === 'recipeLike') {
+                    const recipe = req.body
+                    const checkRecipeLikeResult = await checkRecipeLike(recipe, checkedUser);
+                    console.log(checkRecipeLikeResult)
+                    if (checkRecipeLikeResult === false) {
+                        const insertRecipeLikeResult = await insertRecipeLike(recipe, checkedUser);
+                        if (insertRecipeLikeResult) {
+                            console.log('저장성공')
+                            res.status(200).json('insertRecipeLike성공')
+                        } else {
+                            res.status(500).json({ message: '저장실패' })
+                            console.log('저장실패')
+                        }
+                    } else if (checkRecipeLikeResult === true){
+                        const deleteRecipeLikeResult = await deleteRecipeLike(recipe, checkedUser);
+                        if (deleteRecipeLikeResult) {
+                            console.log('제거성공')
+                            res.status(200).json('deleteRecipeLike성공')
+                        } else {
+                            res.status(500).json({ message: '제거실패' })
+                            console.log('제거실패')
+                        }
+                    }
                 }
-
             } else {
                 res.status(405).json({ message: '유저확인실패' })
                 console.log('유저확인실패')
