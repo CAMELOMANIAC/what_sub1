@@ -9,7 +9,7 @@ const EmptyCard = () => {
     const param = router.query.param
 
     const clickHandler = ()=>(
-        router.push(`/AddRecipe?param=${param}`)
+        router.push(`/AddRecipe?param=${encodeURIComponent(String(param))}`)
     )
 
     return (

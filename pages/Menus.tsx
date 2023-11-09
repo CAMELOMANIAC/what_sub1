@@ -132,7 +132,7 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
                     <div className='flex flex-row'>
                         <Link href={{
                             pathname: '/Recipes',  // 이동할 페이지의 경로
-                            query: { param: selected.name, query: selected.name }  /* URL에 전달할 쿼리 매개변수*/
+                            query: { param: selected.name }  /* URL에 전달할 쿼리 매개변수*/
                         }}
                             className='font-bold rounded-full px-3 py-2 mr-2 text-black bg-yellow-500 flex justify-center items-center'>자세히 보기<IoIosArrowForward className='inline-block text-xl' /></Link>
                         <Link href={{

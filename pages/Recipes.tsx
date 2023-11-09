@@ -30,7 +30,6 @@ const Recipes = () => {
         //param 쿼리스트링은 배너 간단 정보
         setParam(router.query.param)
 
-
         if (Object.keys(router.query).length !== 0) {
             console.log(router.query)
             if (query)
@@ -51,6 +50,7 @@ const Recipes = () => {
         const filterQuery = filter.join('&filter=')
         console.log('레시피페이지에서 받는 필터쿼리')
         console.log(filterQuery)
+        console.log(encodeURIComponent(query))
         fetch('/api/recipe?query=' + encodeURIComponent(query) + `&offset=${offset}&limit=${limit}&filter=${filterQuery}`)
             .then(response => {
                 if (!response.ok) {

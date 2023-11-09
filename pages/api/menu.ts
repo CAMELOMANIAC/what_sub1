@@ -142,7 +142,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const topIngredients :string | string[] | undefined = req.query.topIngredients;
         const query :string | string[] | undefined = req.query.query;
         const isTotal :string | string[] | undefined = req.query.isTotal;
-
+        console.log(query)
         try {
             //topIngredients 요청시
             if (topIngredients) {

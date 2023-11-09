@@ -53,7 +53,7 @@ const Card = ({ recipe }) => {
                     <img src={`/images/sandwich_menu/${recipe.sandwich_name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]' alt='Card_sandwich_type'></img>
                 </div>
                 <div className='flex flex-col w-full'>
-                    <Link href={`/Recipes?param=${recipe.sandwich_name}`} className='text-sm text-gray-400'>{recipe.sandwich_name}</Link>
+                    <Link href={`/Recipes?param=${encodeURIComponent(recipe.sandwich_name)}`} className='text-sm text-gray-400'>{recipe.sandwich_name}</Link>
                     <h2 className='text-xl font-bold text-ellipsis overflow-hidden whitespace-nowrap w-[220px]'>{recipe.recipe_name}</h2>
                 </div>
             </div>

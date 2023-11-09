@@ -208,8 +208,6 @@ const AddRecipe = ({ param }) => {
         const tagSearch = async () => {
             const result = await fetch(`http://localhost:3000/api/tag?tag=${tagInput}`);
             const data = await result.json();
-            setTagData(data.tag)
-            console.log(data.tag)
         }
         tagSearch();
     }, [tagInput])
@@ -217,7 +215,7 @@ const AddRecipe = ({ param }) => {
     //태그 초기 검색
     useEffect(() => {
         const tagFirstSearch = async () => {
-            const res = await fetch(`http://localhost:3000/api/tag?param=${param}`);
+            const res = await fetch(`http://localhost:3000/api/tag?param=${encodeURIComponent(param)}`);
             const data = await res.json();
             setTagData(data.tag);
             console.log(data.tag);
