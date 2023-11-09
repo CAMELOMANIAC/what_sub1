@@ -199,10 +199,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
                 <div className={`absolute w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
                     <div className='w-[1024px] mx-auto pt-4 pb-10'>
                         <div className='mb-4'>
-                            <div className='flex flex-row justify-start items-center my-2'>
+                            <div className='flex flex-row justify-start items-center my-2 sticky'>
                                 <SearchBar className='ml-0 mr-2' />
                                 <div className='relative' ref={filterRef}>
-                                    <button className='relative text-green-600 text-2xl w-[42px] h-[42px] text-center align-middle flex justify-center items-center z-20'
+                                    <button className='relative text-green-600 text-2xl w-[42px] h-[42px] text-center align-middle flex justify-center items-center z-10'
                                         onClick={() => !isFilter ? setIsFilter(true) : setIsFilter(false)}>
                                         <HiFilter />
                                     </button>

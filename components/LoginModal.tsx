@@ -1,14 +1,14 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { actionLoginChangeId,actionSetRecipeLike} from "../redux/reducer/userReducer";
+import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from "../redux/reducer/userReducer";
 import { RootState } from '../redux/store'
-import { loadRecipeLike } from "../utils/publicFunction";
+import { loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
 
 const LoginModal = ({ handleClose }) => {
   const disptach = useDispatch();
   const userName = useSelector((state: RootState) => state.user.userName);
-  const likeRecipe : string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
+  const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
   const router = useRouter();
   const handleKakaoLogin = () => {
     router.push(`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=http://localhost:3000/api/socialLogIn&client_secret=${process.env.KAKAO_CLIENT_SECRET}`)
@@ -17,7 +17,7 @@ const LoginModal = ({ handleClose }) => {
 
   //일반 로그인
   const handleLogin = () => {
-    fetch('/api/Login', {
+    fetch('/api/login', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -29,15 +29,22 @@ const LoginModal = ({ handleClose }) => {
     }).then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
-      }else{
+      } else {
         return response.json();
       }
     }).then((data) => {
+      //로그인 정보를 전역 상태값으로 저장
       disptach(actionLoginChangeId(data.userId));
-        loadRecipeLike().then(data=>{
-            disptach(actionSetRecipeLike(data))
-            console.log(data)
-        })
+      //레시피 좋아요 정보를 전역 상태값으로 저장
+      loadRecipeLike().then(data => {
+        disptach(actionSetRecipeLike(data))
+        console.log(data)
+      })
+      //메뉴좋아요 정보를 전역 상태값으로 저장
+      loadMenuLike().then(data => {
+        disptach(actionSetMenuLike(data))
+        console.log(data)
+      })
       console.log('로그인 성공')
       handleClose();
     }).catch(error => console.error('Error:', error));
@@ -61,8 +68,8 @@ const LoginModal = ({ handleClose }) => {
       <button onClick={handleClose}>닫기</button>
       리덕스로 받아온 유저이름:{userName}
       <ul>
-      리덕스로 받아온 좋아요 레시피 번호:
-        {likeRecipe.map(item=><li key={item}>{item}</li>)}
+        리덕스로 받아온 좋아요 레시피 번호:
+        {likeRecipe.map(item => <li key={item}>{item}</li>)}
       </ul>
     </div>
   );

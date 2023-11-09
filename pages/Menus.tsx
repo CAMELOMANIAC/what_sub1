@@ -3,11 +3,14 @@ import MenusSelectorGridItem from '../components/MenusSelectorGridItem';
 import Link from 'next/link';
 import { FiSearch } from 'react-icons/fi';
 import { IoIosArrowForward } from 'react-icons/io';
-import { PiHeartStraight } from 'react-icons/Pi';
+import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/Pi';
 import { RiPencilFill } from 'react-icons/ri';
 import styled from 'styled-components';
 import { menuArray, menuArrayType } from '../utils/menuArray';
 import { checkSession } from '../utils/checkSession';
+import { getCookieValue, loadMenuLike } from '../utils/publicFunction';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionSetMenuLike } from '../redux/reducer/userReducer';
 
 const StyledDiv = styled.div`
     background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
@@ -113,6 +116,20 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
         setSortedArray(sorted);
     }, [order]);
 
+    const disptach = useDispatch();
+    //새로고침시 정보 불러오는용
+    useEffect(() => {
+        if (getCookieValue('user').length > 0) {//로그인 정보가 있을경우
+            loadMenuLike().then(data => {//메뉴 좋아요 정보 가져와서 전역 상태값에 저장
+                disptach(actionSetMenuLike(data))
+                console.log(data)
+            })
+        }
+    }, [])
+
+    
+    const menuLikeArray = useSelector((state: any) => state.user.menuLikeArray)
+
     return (
         <>
             <StyledDiv className="absolute w-screen min-w-[1024px] right-0 mx-auto h-[300px] grid grid-cols-6 bg-white overflow-hidden">
@@ -123,7 +140,9 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
                 <div className="col-span-3 whitespace-pre-line flex flex-col justify-center">
                     <div className='flex flex-row items-center text-white pb-4'>
                         <h1 className='font-bold text-3xl mr-4'>{selected.name}</h1>
-                        <button className='flex items-center text-xl'><PiHeartStraight className='inline-block' />12</button>
+                        <button className='flex items-center text-xl'>
+                            { menuLikeArray.includes(selected.name) ? <PiHeartStraightFill className='inline-block'/>:<PiHeartStraight className='inline-block'/>}12
+                        </button>
                     </div>
                     <div className='text-white/70 mb-2'>{selected.summary}</div>
                     <div className='flex flex-row'>{selected.ingredients.map((item) =>
@@ -140,11 +159,7 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
                             query: { param: selected.name }  /* URL에 전달할 쿼리 매개변수*/
                         }}
                             className='font-bold rounded-full px-3 py-2 mr-2 text-white underline decoration-1 underline-offset-3 flex justify-center items-center'>레시피 작성<RiPencilFill className='inline-block text-xl' /></Link>
-                    </div>{/*
-                    <div className='flex flex-row'>
-                        <button className='border-2 font-bold rounded-full px-3 py-1 mr-2 text-white flex justify-center items-center'>보러가기<AiOutlineArrowRight className='inline-block text-xl' /></button>
-                        <button className='border-2 font-bold rounded-full px-3 py-1 mr-2 text-white flex justify-center items-center'>작성하기<RiPencilFill className='inline-block text-xl' /></button>
-                    </div> */}
+                    </div>
                 </div>
             </StyledDiv>
 

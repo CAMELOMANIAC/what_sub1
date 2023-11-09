@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
+import { loginCheck } from './Login';
 
 //일반적인 레시피 불러오기
 const loadRecipes = async (searchQuery: string | string[] | undefined, offset: number, limit: number, filter: string | string[] | undefined) => {
@@ -97,30 +98,6 @@ export const loadRecipeLike = async (userId) => {
     }
 }
 
-//쿠키를 통해 로그인 세션여부를 체크하는 함수
-const loginCheck = async (cookie) => {
-    //받은 쿠키를 공백제거하고 배열로 만들고 다시 객체로 변환한다.
-    const cookies = cookie.replaceAll(' ', '').split(';').map((item) => {
-        let key = item.split('=')[0]
-        let value = item.split('=')[1]
-        return { key, value }
-    });
-    const userIdCookie = cookies.find(item => item.key === 'user');
-    const userSessionCookie = cookies.find(item => item.key === 'session');
-
-    const query = 'SELECT user_id FROM user_table WHERE BINARY user_id = ? AND BINARY user_session = ?'
-
-    try {
-        const results = await executeQuery(
-            { query: query, values: [userIdCookie.value, userSessionCookie.value] }
-        );
-        if (results.length > 0)
-            return results[0].user_id
-        else throw new Error('쿠키에 저장된 유저 정보가 올바르지 않습니다.')
-    } catch (err) {
-        console.log(err.message)
-    }
-}
 //실제 레시피 테이블에 저장하는 함수
 const insertRecipe = async (checkedUser, recipe) => {
     const recipeName = (recipe.find((item, index) => index === 0));
@@ -211,12 +188,11 @@ const checkRecipeLike = async (recipeId, userId) => {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //get요청시
     if (req.method === 'GET') {
-        const query = req.query.query;
-        const limitQueryParam = req.query.limit;
-        const offsetQueryParam = req.query.offset;
-        const filter = req.query.filter;
-        const likeMenu = req.query.likeMenu;
-        const likeRecipe = req.query.likeRecipe;
+        const query : string | string[] | undefined = req.query.query;
+        const limitQueryParam : string | string[] | undefined = req.query.limit;
+        const offsetQueryParam : string | string[] | undefined = req.query.offset;
+        const filter : string | string[] | undefined = req.query.filter;
+        const likeRecipe : string | string[] | undefined = req.query.likeRecipe;
 
         let offset = 0;
         if (typeof offsetQueryParam !== 'undefined') {
@@ -235,7 +211,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         }
         try {
-            if (likeRecipe) {
+            if (likeRecipe) {//레시피 좋아요정보
                 if (req.headers.cookie) {
                     const checkedUser = await loginCheck(req.headers.cookie);
                     if (checkedUser) {
@@ -244,7 +220,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         res.status(200).json(results)
                     }
                 }
-            } else {
+            } else {//일반적인 레시피 정보
                 const recipe = await loadRecipes(query, limit, offset, filter);
                 res.status(200).json(recipe)
             }

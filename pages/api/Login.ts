@@ -32,6 +32,31 @@ const updateSession = async (userId) => {
     }
 }
 
+//쿠키를 통해 로그인 세션여부를 체크하는 함수
+export const loginCheck = async (cookie) => {
+    //받은 쿠키를 공백제거하고 배열로 만들고 다시 객체로 변환한다.
+    const cookies = cookie.replaceAll(' ', '').split(';').map((item) => {
+        let key = item.split('=')[0]
+        let value = item.split('=')[1]
+        return { key, value }
+    });
+    const userIdCookie = cookies.find(item => item.key === 'user');
+    const userSessionCookie = cookies.find(item => item.key === 'session');
+
+    const query = 'SELECT user_id FROM user_table WHERE BINARY user_id = ? AND BINARY user_session = ?'
+
+    try {
+        const results = await executeQuery(
+            { query: query, values: [userIdCookie.value, userSessionCookie.value] }
+        );
+        if (results.length > 0)
+            return results[0].user_id
+        else throw new Error('쿠키에 저장된 유저 정보가 올바르지 않습니다.')
+    } catch (err) {
+        console.log(err.message)
+    }
+}
+
 const handler = async (req:NextApiRequest, res:NextApiResponse) => {
     if (req.method === 'POST') {
         const id = req.body.id;

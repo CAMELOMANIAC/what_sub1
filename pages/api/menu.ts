@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
 import { breadNutrientArray, sauceNutrientArray } from '../../utils/menuArray'
+import { loginCheck } from './Login'
 
 //menu관련 정보 불러오기
 const loadTotalMenuInfo = async () => {
@@ -131,21 +132,82 @@ const loadMenuLike = async (userId) => {
             query: query,
             values: [userIdValue]
         });
-        return results.map((item:{sandwich_table_sandwich_name:string}) => item.sandwich_table_sandwich_name);
+        return results.map((item: { sandwich_table_sandwich_name: string }) => item.sandwich_table_sandwich_name);
     } catch (err) {
         throw new Error('검색실패: ' + err.message);
     }
 }
 
+//메뉴 좋아요 추가
+const insertRecipeLike = async (recipeId, userId) => {
+    const query = `INSERT INTO recipe_like_table(recipe_table_recipe_id,user_table_user_id) VALUES (?,?);`
+    const recipeIdValue = recipeId;
+    const userIdValue = userId;
+    try {
+        const results = await executeQuery(
+            { query: query, values: [recipeIdValue, userIdValue] }
+        );
+        if (results.affectedRows === 1)
+            return true;
+        else {
+            return false
+        }
+    } catch (err) {
+        console.log(err.message)
+        return false;
+    }
+}
+//메뉴 좋아요 제거
+const deleteRecipeLike = async (recipeId, userId) => {
+    const query = `DELETE FROM recipe_like_table WHERE recipe_table_recipe_id = ? AND user_table_user_id = ?;`
+    const recipeIdValue = recipeId;
+    const userIdValue = userId;
+    try {
+        const results = await executeQuery(
+            { query: query, values: [recipeIdValue, userIdValue] }
+        );
+
+        if (results.affectedRows === 1)
+            return true;
+        else {
+            return false
+        }
+    } catch (err) {
+        console.log(err.message)
+        return false;
+    }
+}
+//메뉴 좋아요 했었는지 체크
+const checkRecipeLike = async (recipeId, userId) => {
+    const query = `SELECT count(*) as count FROM recipe_like_table 
+    WHERE recipe_like_table.recipe_table_recipe_id = ? 
+    AND user_table_user_id = ?;`
+    const recipeIdValue = recipeId;
+    const userIdValue = userId;
+    try {
+        const results = await executeQuery(
+            { query: query, values: [recipeIdValue, userIdValue] }
+        );
+        if (results.map(item => item.count) > 0)
+            return true;
+        else {
+            return false
+        }
+    } catch (err) {
+        console.log(err.message)
+        return false;
+    }
+}
+
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'GET') {
-        const topIngredients :string | string[] | undefined = req.query.topIngredients;
-        const query :string | string[] | undefined = req.query.query;
-        const isTotal :string | string[] | undefined = req.query.isTotal;
-        console.log(query)
+        const topIngredients: string | string[] | undefined = req.query.topIngredients;
+        const query: string | string[] | undefined = req.query.query;
+        const isTotal: string | string[] | undefined = req.query.isTotal;
+        const likeMenu: string | string[] | undefined = req.query.likeMenu;
         try {
-            //topIngredients 요청시
-            if (topIngredients) {
+            if (topIngredients) {//top3 조합법 요청시
                 if (typeof query === 'string' && typeof topIngredients === 'string') {
                     let recipe;
                     if (topIngredients === 'bread') {
@@ -159,7 +221,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     console.log('문자열외 값을 요청받음' + query + ',' + topIngredients);
                     res.status(500).json({ statusCode: 500, message: '문자열외에 쿼리스트링은 사용할수없음' })
                 }
-            } else if (query) {
+            } else if (query) {//메뉴관련 정보 요청시
                 if (typeof query === 'string') {
                     const results = await loadMenuInfo(query)
                     res.status(200).json(results);
@@ -167,15 +229,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     console.log('문자열외 값을 요청받음' + query + ',' + topIngredients);
                     res.status(500).json({ statusCode: 500, message: '문자열외에 쿼리스트링은 사용할수없음' })
                 }
-            } else if (isTotal){
-                if (typeof isTotal === 'string') {
-                    const results = await loadTotalMenuInfo()
-                    res.status(200).json(results);
-                } else {
-                    console.log('문자열외 값을 요청받음' + query + ',' + topIngredients);
-                    res.status(500).json({ statusCode: 500, message: '문자열외에 쿼리스트링은 사용할수없음' })
-                }
-
+            } else if (isTotal) {//각 메뉴 관련 정보를 모두 요청시
+                const results = await loadTotalMenuInfo()
+                res.status(200).json(results);
+            } else if (likeMenu) {//유저의 메뉴 좋아요 정보 요청시
+                const user_id = await loginCheck(req.headers.cookie);
+                const results = await loadMenuLike(user_id)
+                res.status(200).json(results);
             }
 
         } catch (err: any) {
