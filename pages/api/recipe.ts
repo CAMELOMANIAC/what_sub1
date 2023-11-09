@@ -83,7 +83,7 @@ const loadRecipes = async (searchQuery: string | string[] | undefined, offset: n
     }
 }
 //좋아요 레시피 검색
-const loadRecipeLike = async (userId) => {
+export const loadRecipeLike = async (userId) => {
     const query = `SELECT recipe_table_recipe_id FROM recipe_like_table WHERE user_table_user_id = ?;`
     const userIdValue = userId;
     try {

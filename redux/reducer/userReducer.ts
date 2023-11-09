@@ -60,7 +60,7 @@ export const actionRemoveRecipeLike = (recipeId: string) => ({
   type: ACTION_REMOVE_RECIPE_LIKE,
   payload: recipeId
 })
-export const actionSetRecipeLike = (recipeId: string) => ({
+export const actionSetRecipeLike = (recipeId: string[]) => ({
   type: ACTION_SET_RECIPE_LIKE,
   payload: recipeId
 })

@@ -8,25 +8,7 @@ import LoginModal from "./LoginModal";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../redux/store";
 import { actionLoginChangeId } from '../redux/reducer/userReducer';
-
-//id쿠키에서 id값 가져오는 함수
-const getCookieValue = (key) => {
-    let cookieKey = key + "=";
-    let result = "";
-    const cookieArr = document.cookie.split(";");
-
-    for (let i = 0; i < cookieArr.length; i++) {
-        if (cookieArr[i][0] === " ") {
-            cookieArr[i] = cookieArr[i].substring(1);
-        }
-
-        if (cookieArr[i].indexOf(cookieKey) === 0) {
-            result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
-            return result;
-        }
-    }
-    return result;
-}
+import { getCookieValue } from "../utils/publicFunction";
 
 const GlobalNav = () => {
     const router = useRouter()

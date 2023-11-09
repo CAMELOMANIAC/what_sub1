@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { actionLoginChangeId,actionSetRecipeLike} from "../redux/reducer/userReducer";
 import { RootState } from '../redux/store'
+import { loadRecipeLike } from "../utils/publicFunction";
 
 const LoginModal = ({ handleClose }) => {
   const disptach = useDispatch();
@@ -13,15 +14,6 @@ const LoginModal = ({ handleClose }) => {
     router.push(`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=http://localhost:3000/api/socialLogIn&client_secret=${process.env.KAKAO_CLIENT_SECRET}`)
   }
 
-  //로그인시 좋아요 목록을 전역상태로 저장하기 위한 함수
-  const loadRecipeLike = async () => {
-    const response = await fetch('/api/recipe?likeRecipe=true', {
-      method: 'GET',
-      credentials: 'include',
-    });
-    return await response.json();;
-  }
-  
 
   //일반 로그인
   const handleLogin = () => {

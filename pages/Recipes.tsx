@@ -3,7 +3,9 @@ import Card from '../components/Card';
 import EmptyCard from '../components/EmptyCard';
 import RecipesBanner from '../components/RecipesBanner';
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { actionSetRecipeLike } from '../redux/reducer/userReducer';
+import { loadRecipeLike } from '../utils/publicFunction';
 
 const Recipes = () => {
     const bannerRef = useRef<HTMLDivElement>(null);
@@ -14,6 +16,14 @@ const Recipes = () => {
     const [query, setQuery] = React.useState<string | string[]>(router.query.query)
     const filter = useSelector((state:any)=>state.page.FILTER_ARRAY)
 
+    const disptach = useDispatch();
+    //새로고침시 좋아요 정보 불러오기
+    useEffect(() => {
+        loadRecipeLike().then(data=>{
+            disptach(actionSetRecipeLike(data))
+            console.log(data)
+        })
+    },[])
     //배너랑 글로벌네비 높이 여백계산(router.query가 변경되면 bannerRef의 높이가 변경되므로 의존성배열에 추가함)
     useEffect(() => {
         if (bannerRef.current) {
@@ -48,9 +58,6 @@ const Recipes = () => {
         //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩함수안써도됨
         const filterQuery = filter.join('&filter=')
-        console.log('레시피페이지에서 받는 필터쿼리')
-        console.log(filterQuery)
-        console.log(encodeURIComponent(query))
         fetch('/api/recipe?query=' + encodeURIComponent(query) + `&offset=${offset}&limit=${limit}&filter=${filterQuery}`)
             .then(response => {
                 if (!response.ok) {
