@@ -5,7 +5,7 @@ import RecipesBanner from '../components/RecipesBanner';
 import { useRouter } from 'next/router';
 import { useSelector,useDispatch } from 'react-redux';
 import { actionSetRecipeLike } from '../redux/reducer/userReducer';
-import { loadRecipeLike } from '../utils/publicFunction';
+import { getCookieValue, loadRecipeLike } from '../utils/publicFunction';
 
 const Recipes = () => {
     const bannerRef = useRef<HTMLDivElement>(null);
@@ -19,10 +19,12 @@ const Recipes = () => {
     const disptach = useDispatch();
     //새로고침시 좋아요 정보 불러오기
     useEffect(() => {
-        loadRecipeLike().then(data=>{
-            disptach(actionSetRecipeLike(data))
-            console.log(data)
-        })
+        if (getCookieValue('user').length > 0){
+            loadRecipeLike().then(data=>{
+                disptach(actionSetRecipeLike(data))
+                console.log(data)
+            })
+        }
     },[])
     //배너랑 글로벌네비 높이 여백계산(router.query가 변경되면 bannerRef의 높이가 변경되므로 의존성배열에 추가함)
     useEffect(() => {
@@ -47,7 +49,6 @@ const Recipes = () => {
             if (param)
                 getRecipes(String(param), 0, 8)
         } else {
-            console.log(router.query)
             getRecipes('', 0, 9)
         }
 

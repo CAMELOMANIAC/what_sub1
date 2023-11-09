@@ -34,9 +34,12 @@ const LoginModal = ({ handleClose }) => {
       }
     }).then((data) => {
       disptach(actionLoginChangeId(data.userId));
-      handleClose();
+        loadRecipeLike().then(data=>{
+            disptach(actionSetRecipeLike(data))
+            console.log(data)
+        })
       console.log('로그인 성공')
-      loadRecipeLike().then(data=>disptach(actionSetRecipeLike(data)));
+      handleClose();
     }).catch(error => console.error('Error:', error));
   }
 
