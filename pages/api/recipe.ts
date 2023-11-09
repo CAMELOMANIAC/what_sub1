@@ -82,8 +82,22 @@ const loadRecipes = async (searchQuery: string | string[] | undefined, offset: n
         throw new Error('검색실패: ' + err.message);
     }
 }
+//좋아요 레시피 검색
+const loadRecipeLike = async (userId) => {
+    const query = `SELECT recipe_table_recipe_id FROM recipe_like_table WHERE user_table_user_id = ?;`
+    const userIdValue = userId;
+    try {
+        const results = await executeQuery({
+            query: query,
+            values: [userIdValue]
+        });
+        return results.map((item:{recipe_table_recipe_id:string}) => item.recipe_table_recipe_id);
+    } catch (err) {
+        throw new Error('검색실패: ' + err.message);
+    }
+}
 
-
+//쿠키를 통해 로그인 세션여부를 체크하는 함수
 const loginCheck = async (cookie) => {
     //받은 쿠키를 공백제거하고 배열로 만들고 다시 객체로 변환한다.
     const cookies = cookie.replaceAll(' ', '').split(';').map((item) => {
@@ -107,7 +121,6 @@ const loginCheck = async (cookie) => {
         console.log(err.message)
     }
 }
-
 //실제 레시피 테이블에 저장하는 함수
 const insertRecipe = async (checkedUser, recipe) => {
     const recipeName = (recipe.find((item, index) => index === 0));
@@ -162,7 +175,7 @@ const deleteRecipeLike = async (recipeId, userId) => {
         const results = await executeQuery(
             { query: query, values: [recipeIdValue, userIdValue] }
         );
-        
+
         if (results.affectedRows === 1)
             return true;
         else {
@@ -184,7 +197,7 @@ const checkRecipeLike = async (recipeId, userId) => {
         const results = await executeQuery(
             { query: query, values: [recipeIdValue, userIdValue] }
         );
-        if (results.map(item=>item.count) > 0)
+        if (results.map(item => item.count) > 0)
             return true;
         else {
             return false
@@ -202,6 +215,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const limitQueryParam = req.query.limit;
         const offsetQueryParam = req.query.offset;
         const filter = req.query.filter;
+        const likeMenu = req.query.likeMenu;
+        const likeRecipe = req.query.likeRecipe;
 
         let offset = 0;
         if (typeof offsetQueryParam !== 'undefined') {
@@ -220,9 +235,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         }
         try {
-            const recipe = await loadRecipes(query, limit, offset, filter);
-            res.status(200).json(recipe)
-
+            if (likeRecipe) {
+                if (req.headers.cookie) {
+                    const checkedUser = await loginCheck(req.headers.cookie);
+                    if (checkedUser) {
+                        console.log('유저맞음')
+                        const results = await loadRecipeLike(checkedUser);
+                        res.status(200).json(results)
+                    }
+                }
+            } else {
+                const recipe = await loadRecipes(query, limit, offset, filter);
+                res.status(200).json(recipe)
+            }
         } catch (err) {
             res.status(500).json({ statusCode: 500, message: err.message });
         }
@@ -259,7 +284,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             res.status(500).json({ message: '저장실패' })
                             console.log('저장실패')
                         }
-                    } else if (checkRecipeLikeResult === true){
+                    } else if (checkRecipeLikeResult === true) {
                         const deleteRecipeLikeResult = await deleteRecipeLike(recipe, checkedUser);
                         if (deleteRecipeLikeResult) {
                             console.log('제거성공')
@@ -276,7 +301,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         }
         else {
-            res.status(200).json({ message: '쿠키가 전달되지 않았거나 생성되지(로그인되지) 않았음' })
+            res.status(200).json({ message: '쿠키가 전달되지 않았거나 생성되지(로그인하지) 않았음' })
             console.log('쿠키없음')
         }
     } else {

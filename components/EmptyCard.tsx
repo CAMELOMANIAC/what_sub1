@@ -13,7 +13,7 @@ const EmptyCard = () => {
     )
 
     return (
-        <article onClick={clickHandler} className='col-span-2 aspect-[4/3] bg-white rounded-xl hover:shadow-lg flex justify-center items-center shadow-sm'>
+        <article onClick={clickHandler} className='col-span-2 aspect-[4/3] bg-white rounded-xl hover:shadow-lg flex justify-center items-center shadow-sm hover:scale-105 transition-transform'>
             <div className='text-gray-200 text-8xl text-center'><HiPlus></HiPlus></div>
         </article>
     );

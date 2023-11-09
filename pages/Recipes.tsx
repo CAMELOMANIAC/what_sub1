@@ -21,7 +21,7 @@ const Recipes = () => {
                 mainRef.current.style.marginTop = bannerRef.current.offsetHeight + 50 + 'px';
             }
         }
-    }, [bannerRef.current, router.query]);
+    }, [bannerRef.current && bannerRef.current.offsetHeight]);
 
     //보여줄 레시피불러오기
     useEffect(() => {

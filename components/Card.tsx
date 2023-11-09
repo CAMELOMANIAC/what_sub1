@@ -1,12 +1,16 @@
-import { PiHeartStraight } from 'react-icons/Pi';
+import { PiHeartStraight,PiHeartStraightFill } from 'react-icons/Pi';
 import { HiOutlineChatBubbleLeft } from 'react-icons/Hi2';
 import Link from 'next/link';
 import { useState } from 'react';
-
+import { useSelector,useDispatch } from 'react-redux';
+import { RootState } from '../redux/store';
+import { actionAddRecipeLike,actionRemoveRecipeLike } from "../redux/reducer/userReducer";
 
 const Card = ({ recipe }) => {
     const [likeCount, setLikeCount] = useState<number>(recipe.like_count);
     const recipeTag: string[] = [];
+    const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
+    const dispatch = useDispatch();
     if (recipe.tag) {
         const tag = recipe.tag.split(',');
         recipeTag.push(...tag);
@@ -17,7 +21,7 @@ const Card = ({ recipe }) => {
         ingredients.push(...ingredient);
     }
 
-    const insertRecipeLike = async(recipe_id:string)=>{
+    const insertRecipeLike = async (recipe_id: string) => {
         const response = await fetch('/api/recipe?insert=recipeLike', {
             method: 'POST',
             headers: {
@@ -28,18 +32,22 @@ const Card = ({ recipe }) => {
         })
         return response.json();
     }
-    const recipeLikeHandler = async(recipe_id:string) => {
+
+    const recipeLikeHandler = async (recipe_id: string) => {
         const result = await insertRecipeLike(recipe_id);
-        if (result === 'insertRecipeLike성공')
-            setLikeCount(prev=>prev+1)
-        else if (result === 'deleteRecipeLike성공')
-            setLikeCount(prev=>prev-1)
+        if (result === 'insertRecipeLike성공'){
+            setLikeCount(prev => prev + 1)
+            dispatch(actionAddRecipeLike(recipe_id))
+        }
+        else if (result === 'deleteRecipeLike성공'){
+            setLikeCount(prev => prev - 1)
+            dispatch(actionRemoveRecipeLike(recipe_id))
+        }
         console.log(result);
     }
 
     return (
-        <article className='col-span-2 aspect-[4/3] bg-white rounded-xl p-6 hover:shadow-lg flex flex-col shadow-sm'>
-            {/**/}
+        <article className='col-span-2 aspect-[4/3] bg-white rounded-xl p-6 shadow-sm hover:shadow-lg flex flex-col hover:scale-105 transition-transform'>
             <div className='flex flex-row items-center'>
                 <div className='inline-block w-[60px] overflow-hidden relative rounded-md aspect-square mr-2'>
                     <img src={`/images/sandwich_menu/${recipe.sandwich_name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]' alt='Card_sandwich_type'></img>
@@ -50,14 +58,16 @@ const Card = ({ recipe }) => {
                 </div>
             </div>
             <div className='flex flex-row justify-end text-sm w-full text-gray-400'>
-                {recipeTag.map((item, index) => <span key={index}>{'#' + item}</span>)}
+                {recipeTag.map((item, index) => <span key={index} className={index !== 0 ? 'ml-1' : ''}>{'#' + item}</span>)}
             </div>
             <section className='flex flex-row overflow-hidden flex-wrap'>{ingredients.map((item) =>
                 <img src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></img>
             )}</section>
             <div className='flex flex-row justify-end mt-auto text-gray-400'>
                 <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_id}</div>
-                <button className='flex items-center mr-2 hover:text-green-600' onClick={()=>recipeLikeHandler(recipe.recipe_id)}><PiHeartStraight className='m-1' />{likeCount}</button>
+                <button className='flex items-center mr-2 hover:text-green-600 active:scale-150 transition-transform' onClick={() => recipeLikeHandler(recipe.recipe_id)}>
+                    {likeRecipe.find(item=>item == recipe.recipe_id) ? <PiHeartStraightFill className='m-1 text-green-600'/>:<PiHeartStraight className='m-1'/>}{likeCount}
+                </button>
                 <button className='flex items-center mr-2 hover:text-green-600'><HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}</button>
             </div>
 

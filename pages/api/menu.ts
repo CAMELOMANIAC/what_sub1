@@ -23,8 +23,6 @@ const loadTotalMenuInfo = async () => {
         throw new Error('검색실패: ' + err.message);
     }
 }
-
-
 //menu관련 정보 불러오기
 const loadMenuInfo = async (sandwichMenu: string) => {
     const sandwichQuery = sandwichMenu;
@@ -46,8 +44,6 @@ const loadMenuInfo = async (sandwichMenu: string) => {
         throw new Error('검색실패: ' + err.message);
     }
 }
-
-
 //top재료 불러오기
 const loadTopIngredients = async (sandwichMenu: string, ingredientsType: string) => {
     const sandwichQuery = sandwichMenu;
@@ -86,7 +82,7 @@ const loadTopIngredients = async (sandwichMenu: string, ingredientsType: string)
         throw new Error('검색실패: ' + err.message);
     }
 }
-
+//조합재료 불러오기
 const loadRecipeIngredients = async (sandwichMenu, ingredientsType: string) => {
     const sandwichQuery = sandwichMenu;
     const query = `SELECT subquery.combined_ingredients, COUNT(*) as occurrence, IFNULL(MAX(likes_table.likes), 0) as likes 
@@ -126,7 +122,20 @@ const loadRecipeIngredients = async (sandwichMenu, ingredientsType: string) => {
         throw new Error('검색실패: ' + err.message);
     }
 }
-
+//좋아요 메뉴 검색
+const loadMenuLike = async (userId) => {
+    const query = `SELECT sandwich_table_sandwich_name FROM sandwich_like_table WHERE user_table_user_id = ?;`
+    const userIdValue = userId;
+    try {
+        const results = await executeQuery({
+            query: query,
+            values: [userIdValue]
+        });
+        return results.map((item:{sandwich_table_sandwich_name:string}) => item.sandwich_table_sandwich_name);
+    } catch (err) {
+        throw new Error('검색실패: ' + err.message);
+    }
+}
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'GET') {
