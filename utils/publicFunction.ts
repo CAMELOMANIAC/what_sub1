@@ -8,7 +8,7 @@ export const loadRecipeLike = async () => {
 }
 //메뉴 좋아요 목록을 통신해서 반환하는 함수
 export const loadMenuLike = async () => {
-    const response = await fetch('/api/menu?likeMenu=true', {
+    const response = await fetch('/api/menu?isLikeMenu=true', {
         method: 'GET',
         credentials: 'include',
     });

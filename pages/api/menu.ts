@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
 import { breadNutrientArray, sauceNutrientArray } from '../../utils/menuArray'
-import { loginCheck } from './Login'
+import { loginCheck } from './login'
+import { Result } from 'postcss'
 
 //menu관련 정보 불러오기
 const loadTotalMenuInfo = async () => {
@@ -139,13 +140,13 @@ const loadMenuLike = async (userId) => {
 }
 
 //메뉴 좋아요 추가
-const insertRecipeLike = async (recipeId, userId) => {
-    const query = `INSERT INTO recipe_like_table(recipe_table_recipe_id,user_table_user_id) VALUES (?,?);`
-    const recipeIdValue = recipeId;
+const insertMenuLike = async (menuName, userId) => {
+    const query = `INSERT INTO sandwich_like_table(sandwich_table_sandwich_name,user_table_user_id) values (?,?);`
+    const menuNameValue = menuName;
     const userIdValue = userId;
     try {
         const results = await executeQuery(
-            { query: query, values: [recipeIdValue, userIdValue] }
+            { query: query, values: [menuNameValue, userIdValue] }
         );
         if (results.affectedRows === 1)
             return true;
@@ -158,13 +159,13 @@ const insertRecipeLike = async (recipeId, userId) => {
     }
 }
 //메뉴 좋아요 제거
-const deleteRecipeLike = async (recipeId, userId) => {
-    const query = `DELETE FROM recipe_like_table WHERE recipe_table_recipe_id = ? AND user_table_user_id = ?;`
-    const recipeIdValue = recipeId;
+const deleteMenuLike = async (menuName, userId) => {
+    const query = `DELETE FROM sandwich_like_table WHERE sandwich_table_sandwich_name = ? AND user_table_user_id = ?;`
+    const menuNameValue = menuName;
     const userIdValue = userId;
     try {
         const results = await executeQuery(
-            { query: query, values: [recipeIdValue, userIdValue] }
+            { query: query, values: [menuNameValue, userIdValue] }
         );
 
         if (results.affectedRows === 1)
@@ -178,21 +179,35 @@ const deleteRecipeLike = async (recipeId, userId) => {
     }
 }
 //메뉴 좋아요 했었는지 체크
-const checkRecipeLike = async (recipeId, userId) => {
-    const query = `SELECT count(*) as count FROM recipe_like_table 
-    WHERE recipe_like_table.recipe_table_recipe_id = ? 
+const checkMenuLike = async (menuName, userId) => {
+    const query = `SELECT count(*) as count FROM sandwich_like_table 
+    WHERE sandwich_table_sandwich_name = ? 
     AND user_table_user_id = ?;`
-    const recipeIdValue = recipeId;
+    const menuNameValue = menuName;
     const userIdValue = userId;
     try {
         const results = await executeQuery(
-            { query: query, values: [recipeIdValue, userIdValue] }
+            { query: query, values: [menuNameValue, userIdValue] }
         );
         if (results.map(item => item.count) > 0)
             return true;
         else {
             return false
         }
+    } catch (err) {
+        console.log(err.message)
+        return false;
+    }
+}
+const countMenuLike = async (menuName) => {
+    const query = `SELECT count(*) as count FROM sandwich_like_table 
+    WHERE sandwich_table_sandwich_name = ? ;`
+    const menuNameValue = menuName;
+    try {
+        const result = await executeQuery(
+            { query: query, values: [menuNameValue] }
+        );
+        return result.map(item=>item.count);
     } catch (err) {
         console.log(err.message)
         return false;
@@ -205,7 +220,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const topIngredients: string | string[] | undefined = req.query.topIngredients;
         const query: string | string[] | undefined = req.query.query;
         const isTotal: string | string[] | undefined = req.query.isTotal;
-        const likeMenu: string | string[] | undefined = req.query.likeMenu;
+        const isLikeMenu: string | string[] | undefined = req.query.isLikeMenu;
+        const likeMenuCount: string | string[] | undefined = req.query.likeMenuCount;
         try {
             if (topIngredients) {//top3 조합법 요청시
                 if (typeof query === 'string' && typeof topIngredients === 'string') {
@@ -232,10 +248,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             } else if (isTotal) {//각 메뉴 관련 정보를 모두 요청시
                 const results = await loadTotalMenuInfo()
                 res.status(200).json(results);
-            } else if (likeMenu) {//유저의 메뉴 좋아요 정보 요청시
+            } else if (isLikeMenu) {//유저의 메뉴 좋아요 정보 요청시
+                console.log(isLikeMenu)
                 const user_id = await loginCheck(req.headers.cookie);
                 const results = await loadMenuLike(user_id)
                 res.status(200).json(results);
+            } else if (likeMenuCount){//메뉴 좋아요 갯수 정보 요청시
+                const result = await countMenuLike(likeMenuCount)
+                res.status(200).json(result);
             }
 
         } catch (err: any) {
@@ -245,11 +265,38 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 
     } else if (req.method === 'POST') {
-        // POST 요청 처리
-    } else if (req.method === 'PUT') {
-        // PUT 요청 처리
-    } else if (req.method === 'DELETE') {
-        // DELETE 요청 처리
+        let checkedUser;
+        const insert = req.query.insert
+        if (req.headers.cookie) {//유저 확인
+            checkedUser = await loginCheck(req.headers.cookie);
+            if (checkedUser) {
+                console.log('유저맞음')
+                if (insert === 'menuLike') {//메뉴 좋아요 클릭시 실행되는 부분
+                    const menu = req.body
+                    const checkMenuLikeResult = await checkMenuLike(menu, checkedUser);
+                    console.log(checkMenuLikeResult)
+                    if (checkMenuLikeResult === false) {
+                        const insertRecipeLikeResult = await insertMenuLike(menu, checkedUser);
+                        if (insertRecipeLikeResult) {
+                            console.log('저장성공')
+                            res.status(200).json('insertMenuLike성공')
+                        } else {
+                            res.status(500).json({ message: '저장실패' })
+                            console.log('저장실패')
+                        }
+                    } else if (checkMenuLikeResult === true) {
+                        const deleteMenuLikeResult = await deleteMenuLike(menu, checkedUser);
+                        if (deleteMenuLikeResult) {
+                            console.log('제거성공')
+                            res.status(200).json('deleteMenuLike성공')
+                        } else {
+                            res.status(500).json({ message: '제거실패' })
+                            console.log('제거실패')
+                        }
+                    }
+                }
+            }
+        }
     } else {
         // 그 외의 HTTP 메서드 처리
         res.status(405).send({ message: 'Method Not Allowed' });

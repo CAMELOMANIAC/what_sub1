@@ -10,7 +10,7 @@ import { menuArray, menuArrayType } from '../utils/menuArray';
 import { checkSession } from '../utils/checkSession';
 import { getCookieValue, loadMenuLike } from '../utils/publicFunction';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionSetMenuLike } from '../redux/reducer/userReducer';
+import { actionAddMenuLike, actionRemoveMenuLike, actionSetMenuLike } from '../redux/reducer/userReducer';
 
 const StyledDiv = styled.div`
     background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
@@ -53,6 +53,7 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
         setSearchQuery(e.target.value);
     }
     const searchResult = menuArray.filter((item: { name: string }) => item.name.includes(searchQuery))
+    const menuLikeArray = useSelector((state: any) => state.user.menuLikeArray)
 
     //정렬
     const [order, setOrder] = useState('favorit');
@@ -116,19 +117,50 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
         setSortedArray(sorted);
     }, [order]);
 
-    const disptach = useDispatch();
+    const dispatch = useDispatch();
     //새로고침시 정보 불러오는용
     useEffect(() => {
         if (getCookieValue('user').length > 0) {//로그인 정보가 있을경우
             loadMenuLike().then(data => {//메뉴 좋아요 정보 가져와서 전역 상태값에 저장
-                disptach(actionSetMenuLike(data))
+                dispatch(actionSetMenuLike(data))
                 console.log(data)
             })
         }
     }, [])
 
-    
-    const menuLikeArray = useSelector((state: any) => state.user.menuLikeArray)
+    const [menuLike,setMenuLike] = useState<number>(0);
+    //메뉴선택시 메뉴 좋아요 갯수 정보 불러오는용
+    useEffect(() => {
+        fetch(`/api/menu?likeMenuCount=${selected.name}`).then(
+            response => response.json()
+        ).then(
+            data => setMenuLike(parseInt(data))
+        )
+    }, [selected])
+
+    const insertMenuLike = async (menuName: string) => {
+        const response = await fetch('/api/menu?insert=menuLike', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include',
+            body: JSON.stringify(menuName)
+        })
+        return response.json();
+    }
+
+    const menuLikeHandler = async (menuName: string) => {
+        const result = await insertMenuLike(menuName);
+        if (result === 'insertMenuLike성공'){
+            dispatch(actionAddMenuLike(menuName))
+            setMenuLike(prev => prev+1)
+        }
+        else if (result === 'deleteMenuLike성공'){
+            dispatch(actionRemoveMenuLike(menuName))
+            setMenuLike(prev => prev-1)
+        }
+    }
 
     return (
         <>
@@ -140,8 +172,8 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
                 <div className="col-span-3 whitespace-pre-line flex flex-col justify-center">
                     <div className='flex flex-row items-center text-white pb-4'>
                         <h1 className='font-bold text-3xl mr-4'>{selected.name}</h1>
-                        <button className='flex items-center text-xl'>
-                            { menuLikeArray.includes(selected.name) ? <PiHeartStraightFill className='inline-block'/>:<PiHeartStraight className='inline-block'/>}12
+                        <button className='flex items-center text-xl' onClick={()=>menuLikeHandler(selected.name)}>
+                            { menuLikeArray.includes(selected.name) ? <PiHeartStraightFill className='inline-block'/>:<PiHeartStraight className='inline-block'/>}{menuLike}
                         </button>
                     </div>
                     <div className='text-white/70 mb-2'>{selected.summary}</div>

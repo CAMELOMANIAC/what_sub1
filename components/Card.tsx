@@ -65,14 +65,16 @@ const Card = ({ recipe }) => {
             )}</section>
             <div className='flex flex-row justify-end mt-auto text-gray-400'>
                 <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_id}</div>
+                <button className='flex items-center mr-2 hover:text-green-600'><HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}</button>
                 <button className='flex items-center mr-2 hover:text-green-600 active:scale-150 transition-transform' onClick={() => recipeLikeHandler(recipe.recipe_id)}>
                     {likeRecipe.find(item=>item == recipe.recipe_id) ? <PiHeartStraightFill className='m-1 text-green-600'/>:<PiHeartStraight className='m-1'/>}{likeCount}
                 </button>
-                <button className='flex items-center mr-2 hover:text-green-600'><HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}</button>
             </div>
 
         </article>
     );
 };
-
+///나중에 React.memo를 사용해서 최적화해야함
+// 전역상태값 likeRecipe를 부모 페이지 컴포넌트로부터 prop로 받도록 바꿔서 likeRecipe를 사용하는 모든 카드 컴포넌트가 재렌더링하지 않도록
+// 부모 페이지 컴포넌트가 재랜더링이 필요한 컴포넌트에만 props값을 변경해서 전달하게끔 해야됨
 export default Card;
