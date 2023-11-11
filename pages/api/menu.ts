@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
 import { breadNutrientArray, sauceNutrientArray } from '../../utils/menuArray'
 import { loginCheck } from './login'
-import { Result } from 'postcss'
 
 //menu관련 정보 불러오기
 const loadTotalMenuInfo = async () => {
@@ -258,8 +257,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 res.status(200).json(result);
             }
 
-        } catch (err: any) {
-            res.status(500).json({ statusCode: 500, message: err.message })
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                res.status(500).json({ statusCode: 500, message: err.message });
+            }
         }
 
 

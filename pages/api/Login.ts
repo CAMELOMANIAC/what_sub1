@@ -36,8 +36,8 @@ const updateSession = async (userId) => {
 export const loginCheck = async (cookie) => {
     //받은 쿠키를 공백제거하고 배열로 만들고 다시 객체로 변환한다.
     const cookies = cookie.replaceAll(' ', '').split(';').map((item) => {
-        let key = item.split('=')[0]
-        let value = item.split('=')[1]
+        const key = item.split('=')[0]
+        const value = item.split('=')[1]
         return { key, value }
     });
     const userIdCookie = cookies.find(item => item.key === 'user');

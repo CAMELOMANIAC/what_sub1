@@ -11,9 +11,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       } else {
         res.status(200).json(results);
       }
-    } catch (err: any) {
-      res.status(500).json({ statusCode: 500, message: err.message })
-    }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+          res.status(500).json({ statusCode: 500, message: err.message });
+      }
+  }
   } else if (req.method === 'POST') {
     // POST 요청 처리
   } else if (req.method === 'PUT') {
