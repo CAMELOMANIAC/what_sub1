@@ -30,7 +30,7 @@ const NavSandwich = styled.div<NavSandwichProps>`
     transition-duration: 500ms;
     `
 
-const AddRecipe = ({ param }) => {
+const AddRecipe = ({ param }: { param: string }) => {
     const index = menuArray.findIndex((item) => (item.name === param));
     const [recipeName, setRecipeName] = useState<string>('');
     const [bread, setBread] = useState<string>('위트');
@@ -130,7 +130,7 @@ const AddRecipe = ({ param }) => {
         observer = new IntersectionObserver((entries) => {
 
             //가장위에 있는 요소 탐지(IntersectionObserver는 요소를 여러개 감지하면 가장 마지막 요소만 entry.target에 저장하므로 가장위에것을 탐지하게하기 위해서)
-            let firstEntry = entries.reduce((first, entry) => {
+            const firstEntry = entries.reduce((first, entry) => {
                 return (entry.boundingClientRect.top < first.boundingClientRect.top) ? entry : first;
             });
             console.log(firstEntry.target.id);
@@ -209,6 +209,7 @@ const AddRecipe = ({ param }) => {
         const tagSearch = async () => {
             const result = await fetch(`http://localhost:3000/api/tag?tag=${tagInput}`);
             const data = await result.json();
+            setTagData(data.tag)
         }
         tagSearch();
     }, [tagInput])
@@ -234,7 +235,7 @@ const AddRecipe = ({ param }) => {
         createArray();
     }
     const createArray = () => {
-        const arr = [recipeName, tagArray, param, addMeat, bread, cheese, AddCheese, String(isToasting), ...vegetable, ...pickle, ...sauce, ...addIngredient];
+        const arr:string[] = [recipeName, String(tagArray), param, addMeat, bread, cheese, AddCheese, String(isToasting), ...vegetable, ...pickle, ...sauce, ...addIngredient];
         setContext(arr.filter((item) => item !== ''));
         console.log(JSON.stringify(context));
     }

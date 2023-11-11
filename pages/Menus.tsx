@@ -11,6 +11,8 @@ import { checkSession } from '../utils/checkSession';
 import { getCookieValue, loadMenuLike } from '../utils/publicFunction';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionAddMenuLike, actionRemoveMenuLike, actionSetMenuLike } from '../redux/reducer/userReducer';
+import { totalMenuInfoType } from '../pages/api/menu';
+import { RootState } from '../redux/store';
 
 const StyledDiv = styled.div`
     background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
@@ -20,7 +22,7 @@ export async function getServerSideProps({ req }) {
     const cookie = req.headers.cookie;
     const sessionCheck = await checkSession(cookie);
 
-    const loadTotalMenuInfo = async() =>{
+    const loadTotalMenuInfo = async () => {
         const result = await fetch(process.env.URL + '/api/menu?isTotal=true')
         return result.json();
     }
@@ -34,13 +36,13 @@ export async function getServerSideProps({ req }) {
     };
 }
 
-const Menus = ({ sessionCheck, totalMenuInfo }) => {
-    const fixedMenuArray : menuArrayType[] = menuArray;
-    fixedMenuArray.map(menuArray=>{
-        totalMenuInfo.find(infoArray=>infoArray.sandwich_name === menuArray.name)
-            ? ( menuArray.recipes = totalMenuInfo.find(infoArray=>infoArray.sandwich_name === menuArray.name).recipe_count,
-             menuArray.favorit = totalMenuInfo.find(infoArray=>infoArray.sandwich_name === menuArray.name).like_count ,
-             menuArray.likeRecipe = totalMenuInfo.find(infoArray=>infoArray.sandwich_name === menuArray.name).recipe_like_count )
+const Menus = ({ totalMenuInfo }: { totalMenuInfo: totalMenuInfoType[] }) => {
+    const fixedMenuArray: menuArrayType[] = menuArray;
+    fixedMenuArray.map(menuArray => {
+        totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)
+            ? ( menuArray.recipes = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.recipeCount ?? '0'),
+                menuArray.favorit = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.likeCount ?? '0'),
+                menuArray.likeRecipe = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.recipeLikeCount ?? '0'))
             : null
     })
     const arrayTemplate: { name: string, favorit: string, recipes: string, likeRecipe: string, matches: string } = {
@@ -53,7 +55,7 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
         setSearchQuery(e.target.value);
     }
     const searchResult = menuArray.filter((item: { name: string }) => item.name.includes(searchQuery))
-    const menuLikeArray = useSelector((state: any) => state.user.menuLikeArray)
+    const menuLikeArray = useSelector((state: RootState) => state.user.menuLikeArray)
 
     //정렬
     const [order, setOrder] = useState('favorit');
@@ -101,7 +103,7 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
     const [sortedArray, setSortedArray] = useState<menuArrayType[]>([...menuArray]);
 
     useEffect(() => {
-        let sorted = [...menuArray];
+        const sorted = [...menuArray];
         if (order === 'favorit')
             sorted.sort((a, b) => (b.favorit - a.favorit));
         if (order === 'reverseFavorit')
@@ -128,7 +130,7 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
         }
     }, [])
 
-    const [menuLike,setMenuLike] = useState<number>(0);
+    const [menuLike, setMenuLike] = useState<number>(0);
     //메뉴선택시 메뉴 좋아요 갯수 정보 불러오는용
     useEffect(() => {
         fetch(`/api/menu?likeMenuCount=${selected.name}`).then(
@@ -152,13 +154,13 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
 
     const menuLikeHandler = async (menuName: string) => {
         const result = await insertMenuLike(menuName);
-        if (result === 'insertMenuLike성공'){
+        if (result === 'insertMenuLike성공') {
             dispatch(actionAddMenuLike(menuName))
-            setMenuLike(prev => prev+1)
+            setMenuLike(prev => prev + 1)
         }
-        else if (result === 'deleteMenuLike성공'){
+        else if (result === 'deleteMenuLike성공') {
             dispatch(actionRemoveMenuLike(menuName))
-            setMenuLike(prev => prev-1)
+            setMenuLike(prev => prev - 1)
         }
     }
 
@@ -172,8 +174,8 @@ const Menus = ({ sessionCheck, totalMenuInfo }) => {
                 <div className="col-span-3 whitespace-pre-line flex flex-col justify-center">
                     <div className='flex flex-row items-center text-white pb-4'>
                         <h1 className='font-bold text-3xl mr-4'>{selected.name}</h1>
-                        <button className='flex items-center text-xl' onClick={()=>menuLikeHandler(selected.name)}>
-                            { menuLikeArray.includes(selected.name) ? <PiHeartStraightFill className='inline-block'/>:<PiHeartStraight className='inline-block'/>}{menuLike}
+                        <button className='flex items-center text-xl' onClick={() => menuLikeHandler(selected.name)}>
+                            {menuLikeArray.includes(selected.name) ? <PiHeartStraightFill className='inline-block' /> : <PiHeartStraight className='inline-block' />}{menuLike}
                         </button>
                     </div>
                     <div className='text-white/70 mb-2'>{selected.summary}</div>

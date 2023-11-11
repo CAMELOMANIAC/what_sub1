@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Card from '../components/Card';
 import EmptyCard from '../components/EmptyCard';
 import RecipesBanner from '../components/RecipesBanner';
@@ -6,15 +6,17 @@ import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
 import { getCookieValue, loadMenuLike, loadRecipeLike } from '../utils/publicFunction';
+import { RootState } from '../redux/store';
+import { recipeType } from './api/recipe';
 
 const Recipes = () => {
     const bannerRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
-    const [recipes, setRecipes] = React.useState<any[]>([]);
+    const [recipes, setRecipes] = useState<recipeType[]>([]);
     const router = useRouter();
-    const [param, setParam] = React.useState<string | string[]>(router.query.param)
-    const [query, setQuery] = React.useState<string | string[]>(router.query.query)
-    const filter = useSelector((state: any) => state.page.FILTER_ARRAY)
+    const [param, setParam] = useState<string | string[]>(router.query.param)
+    const [query, setQuery] = useState<string | string[]>(router.query.query)
+    const filter = useSelector((state: RootState) => state.page.FILTER_ARRAY)
 
     const disptach = useDispatch();
     //새로고침시 정보 불러오는용

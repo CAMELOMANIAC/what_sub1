@@ -17,7 +17,7 @@ const SearchBar = (props: { className?: string, filterState?: string[] }) => {
   }
 
   useEffect(() => {
-    let query = router.query.query;
+    const query = router.query.query;
     if (typeof query !== 'undefined') {
       setSearch(String(query))
       if (inputRef.current)

@@ -63,8 +63,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             console.log(error)
 
         }
-
-    } else if (req.method === 'POST') {
     } else {
         res.status(405).send({ message: '허용되지 않은 메서드' });
     }

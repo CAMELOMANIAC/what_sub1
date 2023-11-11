@@ -11,6 +11,7 @@ import ReactDOM from 'react-dom';
 import { BsFillCheckSquareFill } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import { set_filter_action, add_Filter_action } from '../redux/reducer/pageReducer'
+import { RootState } from '../redux/store';
 
 export const StyleTag = styled.button`
     height:100%;
@@ -29,7 +30,7 @@ type Props = {
 }
 
 //타입스크립트에서 useRef를 컴포넌트 속성에 할당할 수 있도록 forwardRef를 사용해야함 그냥 타입에 넣어버리면 일반적인 속성이 되버림
-const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
+const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
     const router = useRouter();
     type MenuItem = {
         name: string;
@@ -46,7 +47,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     const [isFilter, setIsFilter] = useState<boolean>(false);
     const filterRef = useRef(null);
     const dispatch = useDispatch();
-    const filterState = useSelector((state: any) => state.page.FILTER_ARRAY);
+    const filterState = useSelector((state: RootState) => state.page.FILTER_ARRAY);
     const setFilter = (filter) => {
         dispatch(set_filter_action(filter));
     }
@@ -261,5 +262,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>((props, ref) => {
     );
 
 });
+
+//eslint가 규칙상 displayname이없으면 오류를 뿜어냄
+RecipesBanner.displayName = 'RecipesBanner'
 
 export default RecipesBanner;

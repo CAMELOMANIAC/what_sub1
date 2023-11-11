@@ -3,6 +3,13 @@ import executeQuery from '../../lib/db'
 import { breadNutrientArray, sauceNutrientArray } from '../../utils/menuArray'
 import { loginCheck } from './login'
 
+export type totalMenuInfoType = {
+    sandwichName:string,
+    likeCount: string,
+    recipeCount: string,
+    recipeLikeCount: string
+}
+
 //menu관련 정보 불러오기
 const loadTotalMenuInfo = async () => {
     const query = `SELECT 
@@ -18,8 +25,16 @@ const loadTotalMenuInfo = async () => {
             query: query,
             values: []
         });
-
-        return results;
+        console.log(results)
+        return results.map((item)=>{
+            return {
+                sandwichName: item.sandwich_name,
+                likeCount: item.like_count,
+                recipeCount: item.recipe_count,
+                recipeLikeCount: item.recipe_like_count
+            }
+        
+        });
     } catch (err) {
         throw new Error('검색실패: ' + err.message);
     }

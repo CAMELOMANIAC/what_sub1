@@ -2,6 +2,17 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
 import { loginCheck } from './login';
 
+export type recipeType = {
+    recipe_id: string,
+    recipe_name: string,
+    recipe_ingredients: string,
+    user_id: string,
+    sandwich_name: string,
+    tag: string,
+    reply_count: string,
+    like_count: string,
+}
+
 //일반적인 레시피 불러오기
 const loadRecipes = async (searchQuery: string | string[] | undefined, offset: number, limit: number, filter: string | string[] | undefined) => {
     try {
@@ -92,7 +103,7 @@ export const loadRecipeLike = async (userId) => {
             query: query,
             values: [userIdValue]
         });
-        return results.map((item:{recipe_table_recipe_id:string}) => item.recipe_table_recipe_id);
+        return results.map((item: { recipe_table_recipe_id: string }) => item.recipe_table_recipe_id);
     } catch (err) {
         throw new Error('검색실패: ' + err.message);
     }
@@ -101,10 +112,11 @@ export const loadRecipeLike = async (userId) => {
 //실제 레시피 테이블에 저장하는 함수
 const insertRecipe = async (checkedUser, recipe) => {
     const recipeName = (recipe.find((item, index) => index === 0));
-    const recipeTag = (recipe.find((item, index) => index === 1));
+    const recipeTag = recipe.find((item, index) => index === 1);
+    const tagArray = recipeTag && recipeTag.split(',');
     const recipeMenu = (recipe.find((item, index) => index === 2));
-    const tagPlaceholders = recipeTag.map(() => '(?)').join(',');
-    const recipeTagPlaceholders = recipeTag.map(() => '(@last_recipe_id, ?)').join(',');
+    const tagPlaceholders = tagArray.map(() => '(?)').join(',');
+    const recipeTagPlaceholders = tagArray.map(() => '(@last_recipe_id, ?)').join(',');
     const recipeIngredients = recipe.slice(3);
     const ingredientsPlaceholders = recipeIngredients.map(() => '(@last_recipe_id, ?)').join(',');
     const query = `BEGIN;
@@ -116,7 +128,7 @@ const insertRecipe = async (checkedUser, recipe) => {
     COMMIT;`
     try {
         const results = await executeQuery(
-            { query: query, values: [recipeName, checkedUser, recipeMenu, ...recipeIngredients, ...recipeTag, ...recipeTag] }
+            { query: query, values: [recipeName, checkedUser, recipeMenu, ...recipeIngredients, ...tagArray, ...tagArray] }
         );
         return results;
     } catch (err) {
@@ -188,11 +200,11 @@ const checkRecipeLike = async (recipeId, userId) => {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //get요청시
     if (req.method === 'GET') {
-        const query : string | string[] | undefined = req.query.query;
-        const limitQueryParam : string | string[] | undefined = req.query.limit;
-        const offsetQueryParam : string | string[] | undefined = req.query.offset;
-        const filter : string | string[] | undefined = req.query.filter;
-        const likeRecipe : string | string[] | undefined = req.query.likeRecipe;
+        const query: string | string[] | undefined = req.query.query;
+        const limitQueryParam: string | string[] | undefined = req.query.limit;
+        const offsetQueryParam: string | string[] | undefined = req.query.offset;
+        const filter: string | string[] | undefined = req.query.filter;
+        const likeRecipe: string | string[] | undefined = req.query.likeRecipe;
 
         let offset = 0;
         if (typeof offsetQueryParam !== 'undefined') {
