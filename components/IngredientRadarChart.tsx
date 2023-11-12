@@ -12,7 +12,7 @@ export const useIsServerSide = () => {
     return isServerSide;
 };
 
-const IngredientsRadarChart = ({ context }) => {
+const IngredientsRadarChart = ({ context } : {context:string[]}) => {
     const isServerSide = useIsServerSide();
     const [calorie, setCalorie] = useState<number>(0);
     const [protein, setProtein] = useState<number>(0);
@@ -28,7 +28,7 @@ const IngredientsRadarChart = ({ context }) => {
         setSugars(0);
         setSodium(0);
         context.map((contextItem) => {
-            let nutrientsItem = nutrientsArray.find(item => (item.name+" 추가") === contextItem || item.name === contextItem);
+            const nutrientsItem = nutrientsArray.find(item => (item.name+" 추가") === contextItem || item.name === contextItem);
             if (nutrientsItem) {
                 setCalorie((prev) => prev + nutrientsItem!.kcal);
                 setProtein((prev) => prev + nutrientsItem!.protein);
@@ -80,10 +80,9 @@ const IngredientsRadarChart = ({ context }) => {
     );
 };
 
-
 export default IngredientsRadarChart;
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label }:{active:boolean, payload:[{value:number}], label:string}) => {
     if (active && payload && payload.length) {
         return (
             <div className="custom-tooltip">

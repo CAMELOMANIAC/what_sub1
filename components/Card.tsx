@@ -5,9 +5,10 @@ import { useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { actionAddRecipeLike,actionRemoveRecipeLike } from "../redux/reducer/userReducer";
+import { recipeType } from '../pages/api/recipe';
 
-const Card = ({ recipe }) => {
-    const [likeCount, setLikeCount] = useState<number>(recipe.like_count);
+const Card = ({ recipe } : {recipe:recipeType}) => {
+    const [likeCount, setLikeCount] = useState<number>(parseInt(recipe.like_count));
     const recipeTag: string[] = [];
     const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
     const dispatch = useDispatch();

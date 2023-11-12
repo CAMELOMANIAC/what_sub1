@@ -14,7 +14,7 @@ const GlobalNav = () => {
     const router = useRouter()
     const [currentPath, setCurrentPath] = useState(router.pathname)//pathname속성은 현재 경로만 저장되는 속성
     const [isLoginModal, setLoginModal] = useState(false)
-    let userName = useSelector((state: RootState) => state.user.userName);
+    const userName = useSelector((state: RootState) => state.user.userName);
 
     //router.events는 라우터 이벤트로 이벤트객체가 변경될때(=주소창 경로가 바뀔때) 상태값을 변경하는 이벤트핸들러 추가
     useEffect(() => {

@@ -5,7 +5,7 @@ import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from "../
 import { RootState } from '../redux/store'
 import { loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
 
-const LoginModal = ({ handleClose }) => {
+const LoginModal = ({ handleClose }:{handleClose:() => void}) => {
   const disptach = useDispatch();
   const userName = useSelector((state: RootState) => state.user.userName);
   const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);

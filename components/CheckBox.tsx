@@ -38,14 +38,14 @@ export const CheckBox = ({ item, section, addContext, getState, setState, onChan
     );
 };
 
-type EmptyCheckBoxType = {
+type emptyCheckBoxType = {
     section: string,
     addContext: string,
     getState?: string[],
     setState?: Dispatch<SetStateAction<string[]>>,
     onChange?: () => void
 }
-export const EmptyCheckBox = ({ section, addContext, getState, setState, onChange }: EmptyCheckBoxType) => {
+export const EmptyCheckBox = ({ section, addContext, getState, setState, onChange }: emptyCheckBoxType) => {
     return (
         <>
             <label className=''>
@@ -64,7 +64,14 @@ export const EmptyCheckBox = ({ section, addContext, getState, setState, onChang
     );
 };
 
-export const RadioBox = ({ item, section, addContext, getState, setState }) => {
+type radioBoxType = {
+    item: { name: string },
+    section: string,
+    addContext: string,
+    getState?: string,
+    setState: Dispatch<SetStateAction<string>>
+}
+export const RadioBox = ({ item, section, addContext, getState, setState }:radioBoxType) => {
     return (
         <>
             <label>

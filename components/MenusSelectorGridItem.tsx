@@ -26,7 +26,7 @@ type MenusSelectorGridItemProps = {
     className?: string;
 };
 
-const MenusSelectorGridItem: React.FC<MenusSelectorGridItemProps> = ({ menuName, src, clickHandler, className }) => {
+const MenusSelectorGridItem: React.FC<MenusSelectorGridItemProps> = ({ menuName, src, clickHandler, className } : MenusSelectorGridItemProps) => {
     return (
         <button className="col-span-1" onClick={clickHandler}>
             <Marquee>

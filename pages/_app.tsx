@@ -3,8 +3,9 @@ import Head from 'next/head'
 import GlobalNav from '../components/GlobalNav';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
+import { AppProps } from 'next/app';
 // 전역적으로 사용되는 부분
-export default function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }:AppProps) {
   return (
     <>
       <Head>

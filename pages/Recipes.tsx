@@ -10,10 +10,10 @@ import { RootState } from '../redux/store';
 import { recipeType } from './api/recipe';
 
 const Recipes = () => {
+    const router = useRouter();
     const bannerRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
     const [recipes, setRecipes] = useState<recipeType[]>([]);
-    const router = useRouter();
     const [param, setParam] = useState<string | string[]>(router.query.param)
     const [query, setQuery] = useState<string | string[]>(router.query.query)
     const filter = useSelector((state: RootState) => state.page.FILTER_ARRAY)
