@@ -5,7 +5,7 @@ export type menuArrayType = {
     recipes: number,
     likeRecipe: number,
     ingredients: Array<string>,
-    matches?: Array<any>,
+    matches?: Array<string>,
     type: number,
     summary: string
 }

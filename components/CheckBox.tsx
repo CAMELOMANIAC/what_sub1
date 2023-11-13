@@ -2,7 +2,6 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { BsFillCheckSquareFill } from 'react-icons/bs';
 import { FaDotCircle } from 'react-icons/fa';
 
-
 type checkBoxType = {
     item: { name: string }
     section: string,
@@ -71,7 +70,7 @@ type radioBoxType = {
     getState?: string,
     setState: Dispatch<SetStateAction<string>>
 }
-export const RadioBox = ({ item, section, addContext, getState, setState }:radioBoxType) => {
+export const RadioBox = ({ item, section, addContext, getState, setState }: radioBoxType) => {
     return (
         <>
             <label>
