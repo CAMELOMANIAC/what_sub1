@@ -1,15 +1,21 @@
-import { useState, useRef, useEffect, Dispatch, SetStateAction } from 'react';
-import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrientArray, menuArray, ingredientsArray, vegetableArray, pickleArray } from "../utils/menuArray"
+import { useState, useRef, useEffect } from 'react';
+import { menuArray} from "../utils/menuArray"
 import styled from 'styled-components';
 import IngredientsRadarChart from '../components/IngredientRadarChart';
 import { TbAlertCircle } from 'react-icons/tb';
 import { FiSearch } from 'react-icons/fi';
-import { CheckBox, EmptyCheckBox, RadioBox, EmptyRadioBox } from '../components/CheckBox';
 import { useRouter } from 'next/router';
 import { StyleTag } from '../components/RecipesBanner'
 import Head from 'next/head'
-import AddRecipeProgressBar from '../components/AddRecipeProgressBar';
-import AddRecipeIngredientsSection from '../components/AddRecipeIngredientsSection';
+import ProgressBar from '../components/AddRecipe/ProgressBar';
+import IngredientsSection from '../components/AddRecipe/template/IngredientsSection';
+import BreadSection from '../components/AddRecipe/BreadSection';
+import CheeseSection from '../components/AddRecipe/CheeseSection';
+import AddIngredientsSection from '../components/AddRecipe/AddIngredientsSection';
+import AddMeatSection from '../components/AddRecipe/AddMeatSection';
+import VegetableSection from '../components/AddRecipe/VegetableSection';
+import SauceSection from '../components/AddRecipe/SauceSection';
+import ToastingSection from '../components/AddRecipe/ToastingSection';
 
 
 const RecipeNav = styled.div`
@@ -35,23 +41,10 @@ const NavSandwich = styled.div<NavSandwichProps>`
 const AddRecipe = ({ param }: { param: string }) => {
     const index = menuArray.findIndex((item) => (item.name === param));
     const [recipeName, setRecipeName] = useState<string>('');
-    const [bread, setBread] = useState<string>('위트');
-    const [isToasting, setisToasting] = useState<boolean>(true);
-    const [cheese, setCheese] = useState<string>('아메리칸');
-    const [AddCheese, setAddCheese] = useState<string>('');
-    const [vegetable, setVegetable] = useState<string[]>(['양상추', '토마토', '오이', '피망', '양파']);
-    const [pickle, setPickle] = useState<string[]>(['피클', '올리브', '할라피뇨']);
-    const [sauce, setSauce] = useState<string[]>([]);
-    const [addIngredient, setAddingredient] = useState<string[]>([]);
-    const [addMeat, setAddMeat] = useState<string>('');
     const [isComplete, setIsComplete] = useState<boolean>(false);
     const [tagInput, setTagInput] = useState<string>('');
     const [tagArray, setTagArray] = useState<string[]>([]);
     const [tagData, setTagData] = useState<string[]>([]);
-
-    const [isShowAddMeat, setIsShowAddMeat] = useState<boolean>(false);
-    const [isShowAddCheese, setIsShowAddCheese] = useState<boolean>(false);
-    const [isShowAddIngredient, setIsShowAddIngredient] = useState<boolean>(false);
 
     const progressBarButtons = [
         { id: 'recipeNameButton', text: '레시피 이름' },
@@ -61,52 +54,41 @@ const AddRecipe = ({ param }: { param: string }) => {
         { id: 'vegetableButton', text: '채소 선택' },
         { id: 'sauceButton', text: '소스 선택' },
     ];
+    
+    const useCheckInput = () => {
+        const [array, setArray]=useState<string[]>([]);
+        const onChange = (e) => { e.target.value === '' ? setArray([]) : (array.includes(e.target.value) ? setArray(prev => prev.filter(item => item !== e.target.value)) : setArray(prev => [...prev, e.target.value])) };
+        return { onChange, array, setArray };
+    };
+    const useRadioInput = () => {
+        const [state, setState]=useState<string>('');
+        const onChange = (e) => { setState(e.target.value) };
+        return { onChange, state };
+    };
+    const addMeat = useRadioInput();
+    const bread = useRadioInput();
+    const cheese = useRadioInput();
+    const addCheese = useRadioInput();
+    const addIngredient = useCheckInput();
+    const vegetable = useCheckInput();
+    const pickledVegetable = useCheckInput();
+    const sauce = useCheckInput();
+    const [isToasting,setIsToasting]=useState<boolean>(true);
+    const toasting = {state:isToasting,setState:setIsToasting};
 
-    const vegetableChagedHandler = (e) => {
-        if (e.target.checked) {
-            setVegetable([...vegetable, e.target.value]);
-        } else {
-            setVegetable(vegetable.filter(item => item !== e.target.value));
+    const sauceOnChange = (e) => {
+        if (sauce.array.length < 3){
+            sauce.setArray(prev=>[...prev,e.target.value])   
         }
-    }
-    const pickleChagedHandler = (e) => {
-        if (e.target.checked) {
-            setPickle([...pickle, e.target.value]);
-        } else {
-            setPickle(pickle.filter(item => item !== e.target.value));
+        if (sauce.array.includes(e.target.value)){
+            sauce.setArray(prev=>prev.filter(item=>item!==e.target.value))
         }
-    }
-    const sauceChagedHandler = (e) => {
-        if (e.target.checked && sauce.length < 3) {
-            setSauce([...sauce, e.target.value]);
-        } else {
-            setSauce(sauce.filter(item => item !== e.target.value));
-        }
-    }
+      };
+    sauce.onChange = sauceOnChange;//sauce는 3개 제한때문에 핸들러함수 만들어서 재 할당
 
-    const addIngredientChagedHandler = (e) => {
-        if (e.target.checked) {
-            setAddingredient([...addIngredient, e.target.value]);
-        } else {
-            setAddingredient(addIngredient.filter(item => item !== e.target.value));
-        }
-    }
-
-    const showAddMeatClickHandler = () => {
-        setIsShowAddMeat(false);
-        setAddMeat('')
-    }
-    const showAddCheeseClickHandler = () => {
-        setIsShowAddCheese(false);
-        setAddCheese('')
-    }
-    const showAddIngredientClickHandler = () => {
-        setIsShowAddIngredient(false);
-        setAddingredient([])
-    }
 
     const recipeNameRef = useRef<HTMLDivElement | null>(null);
-    const breadeRef = useRef<HTMLDivElement | null>(null);
+    const breadRef = useRef<HTMLDivElement | null>(null);
     const cheeseRef = useRef<HTMLDivElement | null>(null);
     const toastingRef = useRef<HTMLDivElement | null>(null);
     const vegetableRef = useRef<HTMLDivElement | null>(null);
@@ -117,8 +99,8 @@ const AddRecipe = ({ param }: { param: string }) => {
         if (recipeNameRef.current && e.currentTarget.id === 'recipeNameButton') {
             recipeNameRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        else if (breadeRef.current && e.currentTarget.id === 'breadButton') {
-            breadeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        else if (breadRef.current && e.currentTarget.id === 'breadButton') {
+            breadRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         else if (cheeseRef.current && e.currentTarget.id === 'cheeseButton') {
             cheeseRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -177,7 +159,7 @@ const AddRecipe = ({ param }: { param: string }) => {
 
         // 요소들을 관찰합니다
         if (recipeNameRef.current) observer.observe(recipeNameRef.current);
-        if (breadeRef.current) observer.observe(breadeRef.current);
+        if (breadRef.current) observer.observe(breadRef.current);
         if (cheeseRef.current) observer.observe(cheeseRef.current);
         if (toastingRef.current) observer.observe(toastingRef.current);
         if (vegetableRef.current) observer.observe(vegetableRef.current);
@@ -240,13 +222,13 @@ const AddRecipe = ({ param }: { param: string }) => {
     const [context, setContext] = useState<string[]>([]);
     useEffect(() => {
         createArray();
-    }, [recipeName, param, addMeat, bread, cheese, AddCheese, isToasting, vegetable, pickle, sauce, addIngredient])
+    }, [recipeName, param, addMeat.state, bread.state, cheese.state, addCheese.state, toasting.state, vegetable.array, pickledVegetable.array, sauce.array, addIngredient.array])
 
     const handleSubmit = () => {
         createArray();
     }
     const createArray = () => {
-        const arr: string[] = [recipeName, String(tagArray), param, addMeat, bread, cheese, AddCheese, String(isToasting), ...vegetable, ...pickle, ...sauce, ...addIngredient];
+        const arr: string[] = [recipeName, String(tagArray), param, addMeat.state, bread.state, cheese.state, addCheese.state, String(isToasting), ...vegetable.array, ...pickledVegetable.array, ...sauce.array, ...addIngredient.array];
         setContext(arr.filter((item) => item !== ''));
         console.log(JSON.stringify(context));
     }
@@ -279,19 +261,6 @@ const AddRecipe = ({ param }: { param: string }) => {
             error => console.log(error))
     }
 
-    //커스텀 후크 테스트
-    const useCheckInput = (array: string[], setArray: Dispatch<SetStateAction<string[]>>) => {
-        const onChange = (e) => { array.includes(e.target.value) ? setArray(prev => prev.filter(item => item !== e.target.value)) : setArray(prev => [...prev, e.target.value]) };
-        return { onChange, array };
-    };
-    const [cheeseArray, setCheeseArray] = useState<string[]>([]);
-    const cheese2 = useCheckInput(cheeseArray, setCheeseArray)
-    /*
-        const useRadioInput = (array: string[], setArray: Dispatch<SetStateAction<string[]>>) => {
-            const onChange = (e) => { setArray(e.target.value) };
-            return { onChange, array };
-        };*/
-
     return (
         <>
             <Head>
@@ -319,14 +288,13 @@ const AddRecipe = ({ param }: { param: string }) => {
 
                     <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
 
-                        <AddRecipeIngredientsSection ref={recipeNameRef} id='recipeName'>
+                        <IngredientsSection ref={recipeNameRef} id='recipeName'>
                             <h3 className='text-xl font-[seoul-metro]'>레시피 이름</h3>
                             <div className='p-2'>
                                 <div className="flex flex-row items-center border rounded-md placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
                                     <input className='w-full outline-none' onChange={handleChange}></input>
                                 </div>
                             </div>
-
                             <h3 className='text-xl font-[seoul-metro]'>태그 추가</h3>
                             <div className='p-2'>
                                 {tagArray.map((item) =>
@@ -347,129 +315,17 @@ const AddRecipe = ({ param }: { param: string }) => {
                                     {tagData && tagData.map(item => <StyleTag key={item} onClick={() => addTagHandler(item)}>+{item}</StyleTag>)}
                                 </div>
                             </div>
-                        </AddRecipeIngredientsSection>
+                        </IngredientsSection>
 
-                        <AddRecipeIngredientsSection>
-                            <div className='p-2'>
-                                <h3 className='text-xl font-[seoul-metro]'>주메뉴</h3>
-                                <p className='p-2 flex items-center h-12'>{param}</p>
-                            </div>
-                            <div className='p-2'>
-                                {isShowAddMeat === false && <button className='w-full' onClick={() => setIsShowAddMeat(true)}>추가하기</button>}
-                                <ul className={isShowAddMeat ? 'max-h-[1000px] transition-all duration-500' : 'max-h-0 overflow-hidden transition-all duration-500'}>
-                                    <li className='flex flex-row items-center h-12'>
-                                        <EmptyRadioBox section={'addMeat'} addContext={'미트 추가'} getState={addMeat} onChange={showAddMeatClickHandler}></EmptyRadioBox>
-                                    </li>
-                                    {menuNutrientArray.filter(item => item.name !== '베지').map((item) => (
-                                        <li key={item.name} className='flex flex-row items-center'>
-                                            <RadioBox item={item} section={'addMeat'} addContext={'추가'} getState={addMeat} setState={setAddMeat}></RadioBox>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </AddRecipeIngredientsSection>
 
-                        <AddRecipeIngredientsSection ref={breadeRef} id='bread'>
-                            <h3 className='text-xl font-[seoul-metro]'>빵 선택</h3>
-                            <div className='p-2'>
-                                {
-                                    breadNutrientArray.map((item) => (
-                                        <div key={item.name} className='flex flex-row items-center'>
-                                            <RadioBox item={item} section={'bread'} addContext={''} getState={bread} setState={setBread}></RadioBox>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        </AddRecipeIngredientsSection>
+                        <AddMeatSection prop={addMeat} param={param}></AddMeatSection>
+                        <BreadSection prop={bread} ref={breadRef}></BreadSection>
+                        <CheeseSection prop1={cheese} prop2={addCheese} ref={cheeseRef}></CheeseSection>
+                        <AddIngredientsSection prop={addIngredient}></AddIngredientsSection>
+                        <ToastingSection prop={toasting} ref={toastingRef}></ToastingSection>
 
-                        <AddRecipeIngredientsSection ref={cheeseRef} id='cheese'>
-                            <h3 className='text-xl font-[seoul-metro]'>치즈 선택</h3>
-                            <ul className='p-2'>
-                                {cheeseNutrientArray.map((item) => (
-                                    <li key={item.name} className='flex flex-row items-center'>
-                                        <RadioBox item={item} section={'cheese'} addContext={'치즈'} getState={cheese} setState={setCheese}></RadioBox>
-                                    </li>
-                                ))}
-                                <li className='h-12 flex items-center'>
-                                    <EmptyRadioBox section={'cheese'} addContext={'치즈'} getState={cheese} setState={setCheese}></EmptyRadioBox>
-                                </li>
-                            </ul>
-
-                            <h3 className='text-xl font-[seoul-metro]'>치즈 추가</h3>
-                            <div className='p-2'>
-                                {isShowAddCheese === false && <button className='w-full' onClick={() => setIsShowAddCheese(true)}>추가하기</button>}
-                                <ul className={isShowAddCheese ? 'max-h-[1000px] transition-all duration-500' : 'max-h-0 overflow-hidden transition-all duration-500'}>
-                                    <li className='h-12 flex items-center'>
-                                        <EmptyRadioBox section='AddCheese' addContext={'치즈 추가'} getState={AddCheese} onChange={showAddCheeseClickHandler}></EmptyRadioBox>
-                                    </li>
-                                    {cheeseNutrientArray.map((item) => (
-                                        <li key={item.name} className='flex flex-row items-center'>
-                                            <RadioBox item={item} section='AddCheese' addContext={'치즈 추가'} getState={AddCheese} setState={setAddCheese}></RadioBox>
-                                        </li>
-                                    ))}
-                                </ul>
-
-                            </div>
-                        </AddRecipeIngredientsSection>
-                        <AddRecipeIngredientsSection>
-                            <h3 className='text-xl font-[seoul-metro]'>추가재료</h3>
-                            {isShowAddIngredient === false && <button className='w-full' onClick={() => setIsShowAddIngredient(true)}>추가하기</button>}
-                            <div className={isShowAddIngredient ? 'max-h-[1000px] transition-all duration-500' : 'max-h-0 overflow-hidden transition-all duration-500'}>
-                                <ul className='mb-4 p-4'>
-                                    <div className='flex flex-row h-12 items-center'>
-                                        <EmptyCheckBox section={'addIngredient'} addContext={'재료 추가'} onChange={() => showAddIngredientClickHandler()}></EmptyCheckBox>
-                                    </div>
-                                    {ingredientsArray.map((item) => (
-                                        <li key={item.name} className='flex flex-row items-center'>
-                                            <CheckBox item={item} section={'addIngredient'} addContext={'추가'} getState={addIngredient} onChange={addIngredientChagedHandler}></CheckBox>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </AddRecipeIngredientsSection>
-
-                        <AddRecipeIngredientsSection ref={toastingRef} id='toasting'>
-                            <h3 className='text-xl font-[seoul-metro]'>토스팅 여부</h3>
-                            <button onClick={() => setisToasting(true)} className={`${isToasting && 'bg-green-600 text-white'}`}>예</button>
-                            <button onClick={() => setisToasting(false)} className={`${isToasting === false && 'bg-green-600 text-white'}`}>아니오</button>
-                        </AddRecipeIngredientsSection>
-
-                        <AddRecipeIngredientsSection ref={vegetableRef} id='vegetable'>
-                            <h3 className='text-xl font-[seoul-metro]'>신선 채소</h3>
-                            <ul className='mb-4 p-4'>
-                                {vegetableArray.map((item) => (
-                                    <li key={item.name} className='flex flex-row items-center'>
-                                        <CheckBox item={item} section={'vegetable'} addContext={''} getState={vegetable} onChange={vegetableChagedHandler}></CheckBox>
-                                    </li>
-                                ))}
-                            </ul>
-                            <h3 className='text-xl font-[seoul-metro]'>절임 채소</h3>
-                            <ul className='p-4'>
-                                {pickleArray.map((item) => (
-                                    <li key={item.name} className='flex flex-row items-center'>
-                                        <CheckBox item={item} section={'pickle'} addContext={''} getState={pickle} onChange={pickleChagedHandler}></CheckBox>
-                                    </li>
-                                ))}
-                            </ul>
-                        </AddRecipeIngredientsSection>
-
-                        <div className="bg-white rounded-md shadow-sm mb-2 p-6" ref={sauceRef} id='sauce'>
-                            <div className='m-2'>
-                                <h3 className='text-xl font-[seoul-metro]'>소스 선택</h3>
-                                <span>(최대3개)</span>
-                                <div className='p-2'>
-
-                                    {sauceNutrientArray.map((item) => (
-                                        <div key={item.name} className='flex flex-row items-center'>
-                                            <CheckBox item={item} section={'sauce'} addContext={''} getState={sauce} onChange={sauceChagedHandler}></CheckBox>
-                                        </div>
-                                    ))}
-                                    <div className='flex flex-row h-12'>
-                                        <EmptyCheckBox section={'sauce'} addContext={'소스'} getState={sauce} setState={() => setSauce([])}></EmptyCheckBox>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <VegetableSection prop1={vegetable} prop2={pickledVegetable} ref={vegetableRef}></VegetableSection>
+                        <SauceSection prop={sauce} ref={sauceRef}></SauceSection>
 
                         <button className="bg-white rounded-md shadow-sm p-6" onClick={onClickHandler}>
                             <h3 className='text-xl font-[seoul-metro]'>작성완료</h3>
@@ -483,7 +339,7 @@ const AddRecipe = ({ param }: { param: string }) => {
                         <img src='/images/front_banner.png' className={`w-10`} />
                     </NavSandwich>
                     {progressBarButtons.map((button) => (
-                        <AddRecipeProgressBar
+                        <ProgressBar
                             key={button.id}
                             activeSection={activeSection}
                             handleClick={handleClick}

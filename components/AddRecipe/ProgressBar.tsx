@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AddRecipeProgressBar = ({ activeSection, handleClick, buttonId, buttonText }:{activeSection:number, handleClick:(e) => void,buttonId:string, buttonText:string}) => {
+const ProgressBar = ({ activeSection, handleClick, buttonId, buttonText }:{activeSection:number, handleClick:(e) => void,buttonId:string, buttonText:string}) => {
     return (
       <button
         className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600'
@@ -17,4 +17,4 @@ const AddRecipeProgressBar = ({ activeSection, handleClick, buttonId, buttonText
     );
   };
 
-export default AddRecipeProgressBar;
+export default ProgressBar;

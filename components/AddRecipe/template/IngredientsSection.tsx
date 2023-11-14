@@ -1,12 +1,12 @@
 import React, { ReactNode, forwardRef } from 'react';
 
 type propsType = {
-    children: ReactNode,
+    children?: ReactNode,
     className?: string,
     id?: string
 }
 
-const AddRecipeIngredientsSection = forwardRef<HTMLDivElement, propsType>(({ children, className, id }, ref?) => {
+const IngredientsSection = forwardRef<HTMLDivElement, propsType>(({ children, className, id }, ref?) => {
     return (
         <div ref={ref} className={`bg-white rounded-md shadow-sm mb-2 p-6 ${className}`} id={id}>
             <div className={`m-2`}>
@@ -18,6 +18,6 @@ const AddRecipeIngredientsSection = forwardRef<HTMLDivElement, propsType>(({ chi
     );
 });
 
-export default AddRecipeIngredientsSection;
+export default IngredientsSection;
 
-AddRecipeIngredientsSection.displayName = 'AddRecipeIngredientsSection';
+IngredientsSection.displayName = 'AddRecipeIngredientsSection';
