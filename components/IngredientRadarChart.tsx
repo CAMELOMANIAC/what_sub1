@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RadarChart } from "recharts";
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar } from "recharts";
-import { breadNutrientArray,cheeseNutrientArray,sauceNutrientArray,menuNutrientArray } from "../utils/menuArray"
+import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrientArray } from "../utils/menuArray"
 import { Tooltip } from "recharts";
 import { recipeContextType } from "../interfaces/AppRecipe";
 
@@ -13,14 +13,14 @@ export const useIsServerSide = () => {
     return isServerSide;
 };
 
-const IngredientsRadarChart = ({ context } : {context:recipeContextType}) => {
+const IngredientsRadarChart = ({ context }: { context: recipeContextType }) => {
     const isServerSide = useIsServerSide();
     const [calorie, setCalorie] = useState<number>(0);
     const [protein, setProtein] = useState<number>(0);
     const [saturatedFats, setSaturatedFats] = useState<number>(0);
     const [sugars, setSugars] = useState<number>(0);
     const [sodium, setSodium] = useState<number>(0);
-    const nutrientsArray = [...breadNutrientArray,...cheeseNutrientArray,...sauceNutrientArray,...menuNutrientArray];
+    const nutrientsArray = [...breadNutrientArray, ...cheeseNutrientArray, ...sauceNutrientArray, ...menuNutrientArray];
 
     useEffect(() => {
         setCalorie(0);
@@ -28,16 +28,29 @@ const IngredientsRadarChart = ({ context } : {context:recipeContextType}) => {
         setSaturatedFats(0);
         setSugars(0);
         setSodium(0);
-        context.map((contextItem) => {
-            const nutrientsItem = nutrientsArray.find(item => (item.name+" 추가") === contextItem || item.name === contextItem);
-            if (nutrientsItem) {
-                setCalorie((prev) => prev + nutrientsItem!.kcal);
-                setProtein((prev) => prev + nutrientsItem!.protein);
-                setSaturatedFats((prev) => prev + nutrientsItem!.saturatedFats);
-                setSugars((prev) => prev + nutrientsItem!.sugars);
-                setSodium((prev) => prev + nutrientsItem!.sodium);
+        Object.entries(context).forEach(([key, value]) => {
+            if (key === "bread" || key === "cheese" || key === "addCheese" || key === "param" || key === "addMeat") {
+                const nutrientsItem = nutrientsArray.find(item => (item.name + " 추가") === value || item.name === value);
+                if (nutrientsItem) {
+                    setCalorie((prev) => prev + nutrientsItem.kcal);
+                    setProtein((prev) => prev + nutrientsItem.protein);
+                    setSaturatedFats((prev) => prev + nutrientsItem.saturatedFats);
+                    setSugars((prev) => prev + nutrientsItem.sugars);
+                    setSodium((prev) => prev + nutrientsItem.sodium);
+                }
+            } else if (key === "sauce" && Array.isArray(value)) {
+                value.forEach(subItem => {
+                    const nutrientsItem = nutrientsArray.find(item => item.name === subItem);
+                    if (nutrientsItem) {
+                        setCalorie((prev) => prev + nutrientsItem.kcal);
+                        setProtein((prev) => prev + nutrientsItem.protein);
+                        setSaturatedFats((prev) => prev + nutrientsItem.saturatedFats);
+                        setSugars((prev) => prev + nutrientsItem.sugars);
+                        setSodium((prev) => prev + nutrientsItem.sodium);
+                    }
+                })
             }
-        });
+        })
         console.log(calorie, protein, saturatedFats, sugars, sodium);
         console.log(calorie / 2000, protein / 50, saturatedFats / 20, sugars / 50, sodium / 2);
     }, [context])
@@ -83,16 +96,16 @@ const IngredientsRadarChart = ({ context } : {context:recipeContextType}) => {
 
 export default IngredientsRadarChart;
 
-const CustomTooltip = ({ active, payload, label }:{active:boolean, payload:[{value:number}], label:string}) => {
+const CustomTooltip = ({ active, payload, label }: { active: boolean, payload: [{ value: number }], label: string }) => {
     if (active && payload && payload.length) {
         return (
             <div className="custom-tooltip">
                 <p className="label">{label}:
-                    {label === '칼로리' && (payload[0].value * 2000).toFixed(1)+'kcal'+`(${((payload[0].value)*100).toFixed(1)}%)`}
-                    {label === '단백질' && (payload[0].value * 50).toFixed(1)+'g'+`(${((payload[0].value)*100).toFixed(1)}%)`}
-                    {label === '포화지방' && (payload[0].value * 20).toFixed(1)+'g'+`(${((payload[0].value)*100).toFixed(1)}%)`}
-                    {label === '당분' && (payload[0].value * 50).toFixed(1)+'g'+`(${((payload[0].value)*100).toFixed(1)}%)`}
-                    {label === '염분' && (payload[0].value * 2).toFixed(1)+'g'+`(${((payload[0].value)*100).toFixed(1)}%)`}
+                    {label === '칼로리' && (payload[0].value * 2000).toFixed(1) + 'kcal' + `(${((payload[0].value) * 100).toFixed(1)}%)`}
+                    {label === '단백질' && (payload[0].value * 50).toFixed(1) + 'g' + `(${((payload[0].value) * 100).toFixed(1)}%)`}
+                    {label === '포화지방' && (payload[0].value * 20).toFixed(1) + 'g' + `(${((payload[0].value) * 100).toFixed(1)}%)`}
+                    {label === '당분' && (payload[0].value * 50).toFixed(1) + 'g' + `(${((payload[0].value) * 100).toFixed(1)}%)`}
+                    {label === '염분' && (payload[0].value * 2).toFixed(1) + 'g' + `(${((payload[0].value) * 100).toFixed(1)}%)`}
                 </p>
             </div>
         );

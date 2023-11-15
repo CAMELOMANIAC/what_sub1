@@ -53,7 +53,7 @@ const Recipes = () => {
         if (Object.keys(router.query).length !== 0) {
             console.log(router.query)
             if (query) {
-                getRecipes(String(query), 0, 8, filterQuery)
+                getRecipes(String(query), 0, 9, filterQuery)
             } if (param) {
                 getRecipes(String(param), 0, 8, ['메뉴이름'])
             }

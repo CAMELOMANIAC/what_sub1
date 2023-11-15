@@ -74,10 +74,6 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
         const response = await fetch(`/api/menu?query=${query}`);
         return await response.json();
     }
-    //컴포넌트 준비완료시 
-    useEffect(() => {
-        setFilter(queryFilterArray);
-    }, [])
     //쿼리스트링 변경시
     useEffect(() => {
         if (router.isReady) {

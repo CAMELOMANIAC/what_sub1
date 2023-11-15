@@ -5,15 +5,15 @@ import styled from 'styled-components';
 import IngredientsRadarChart from '../components/IngredientRadarChart';
 import { TbAlertCircle } from 'react-icons/tb';
 import { useRouter } from 'next/router';
-import ProgressBar from '../components/AddRecipe/ProgressBar';
-import BreadSection from '../components/AddRecipe/BreadSection';
-import CheeseSection from '../components/AddRecipe/CheeseSection';
-import AddIngredientsSection from '../components/AddRecipe/AddIngredientsSection';
-import AddMeatSection from '../components/AddRecipe/AddMeatSection';
-import VegetableSection from '../components/AddRecipe/VegetableSection';
-import SauceSection from '../components/AddRecipe/SauceSection';
-import ToastingSection from '../components/AddRecipe/ToastingSection';
-import RecipeNameSection from '../components/AddRecipe/RecipeNameSection';
+import ProgressBar from '../components/ingredientSection/ProgressBar';
+import BreadSection from '../components/ingredientSection/BreadSection';
+import CheeseSection from '../components/ingredientSection/CheeseSection';
+import AddIngredientsSection from '../components/ingredientSection/AddIngredientsSection';
+import AddMeatSection from '../components/ingredientSection/AddMeatSection';
+import VegetableSection from '../components/ingredientSection/VegetableSection';
+import SauceSection from '../components/ingredientSection/SauceSection';
+import ToastingSection from '../components/ingredientSection/ToastingSection';
+import RecipeNameSection from '../components/ingredientSection/RecipeNameSection';
 import { recipeContextType } from '../interfaces/AppRecipe';
 
 const RecipeNav = styled.div`
@@ -130,27 +130,14 @@ const AddRecipe = ({ param }: { param: string }) => {
 
             if (firstEntry.isIntersecting) {
                 switch (firstEntry.target.id) {
-                    case 'recipeName':
-                        setActiveSection(0)
-                        break;
-                    case 'bread':
-                        setActiveSection(1);
-                        break;
-                    case 'cheese':
-                        setActiveSection(2);
-                        break;
-                    case 'toasting':
-                        setActiveSection(3);
-                        break;
-                    case 'vegetable':
-                        setActiveSection(4);
-                        break;
-                    case 'sauce':
-                        setActiveSection(5);
-                        break;
+                    case 'recipeName': setActiveSection(0); break;
+                    case 'bread': setActiveSection(1); break;
+                    case 'cheese': setActiveSection(2); break;
+                    case 'toasting': setActiveSection(3); break;
+                    case 'vegetable': setActiveSection(4); break;
+                    case 'sauce': setActiveSection(5); break;
                     // ... (다른 case들)
-                    default:
-                        break;
+                    default: break;
                 }
             }
         }, {
@@ -194,10 +181,13 @@ const AddRecipe = ({ param }: { param: string }) => {
 
     useEffect(() => {
         setContext(createContext);
-        const isNotComplete = Object.entries(context).some(([_key, value]) => value === '');
+        //필수항목배열 확인후 다 작성되면 사용가능
+        const isNotComplete = Object.entries([recipeName,param,bread.state,toasting.state]).some(([_key, value]) => value === '');
         setIsComplete(!isNotComplete);
+        console.log(isNotComplete);
     }, [recipeName, param, addMeat.state, bread.state, cheese.state, addCheese.state, toasting.state, vegetable.array, pickledVegetable.array, sauce.array, addIngredient.array])
 
+    //서버에 전달하는 함수
     const sendRecipe = async () => {
         const response = await fetch('/api/recipe?insert=recipe', {
             method: 'POST',
@@ -221,7 +211,8 @@ const AddRecipe = ({ param }: { param: string }) => {
                     router.push(result.redirect)
                 }
             },
-            error => console.log(error))
+            error => console.log(error)
+        )
     }
 
     return (

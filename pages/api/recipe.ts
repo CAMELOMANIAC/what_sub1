@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import executeQuery from '../../lib/db'
 import { loginCheck } from './login';
+import { recipeContextType } from '../../interfaces/AppRecipe';
 
 export type recipeType = {
     recipe_id: string,
@@ -110,26 +111,41 @@ export const loadRecipeLike = async (userId) => {
 }
 
 //실제 레시피 테이블에 저장하는 함수
-const insertRecipe = async (checkedUser, recipe) => {
-    const recipeName = (recipe.find((item, index) => index === 0));
-    const recipeTag = recipe.find((item, index) => index === 1);
-    const tagArray = recipeTag && recipeTag.split(',');
-    const recipeMenu = (recipe.find((item, index) => index === 2));
+const insertRecipe = async (checkedUser: string, recipe: recipeContextType) => {
+    const { recipeName: recipeName,
+        tagArray: tagArray,
+        param: recipeMenu,
+        addMeat: addMeat,
+        bread: bread,
+        cheese: cheese,
+        addCheese: addCheese,
+        isToasting: isToasting,
+        vegetable: vegetable,
+        pickledVegetable: pickledVegetable,
+        sauce: sauce,
+        addIngredient: addIngredient } = recipe;
+
     const tagPlaceholders = tagArray.map(() => '(?)').join(',');
     const recipeTagPlaceholders = tagArray.map(() => '(@last_recipe_id, ?)').join(',');
-    const recipeIngredients = recipe.slice(3);
+    let recipeIngredients: string[] = [addMeat, bread, cheese, addCheese, isToasting, ...vegetable, ...pickledVegetable, ...sauce, ...addIngredient];
+    recipeIngredients = recipeIngredients.filter(item => item !== '');//''배열 제거
     const ingredientsPlaceholders = recipeIngredients.map(() => '(@last_recipe_id, ?)').join(',');
     const query = `BEGIN;
     INSERT INTO recipe_table (recipe_name, user_table_user_id, sandwich_table_sandwich_name) VALUES (?, ?, ?);
     SET @last_recipe_id = LAST_INSERT_ID();
     INSERT INTO recipe_ingredients_table (recipe_table_recipe_id, recipe_ingredients) VALUES ${ingredientsPlaceholders};
-    INSERT IGNORE INTO tag_table (tag_name) VALUES ${tagPlaceholders};
-    INSERT IGNORE INTO recipe_tag_table (recipe_table_recipe_id, tag_table_tag_name) VALUES ${recipeTagPlaceholders};
+    ${tagArray.length > 0 ? `INSERT IGNORE INTO tag_table (tag_name) VALUES ${tagPlaceholders};` : ''}
+    ${tagArray.length > 0 ? `INSERT IGNORE INTO recipe_tag_table (recipe_table_recipe_id, tag_table_tag_name) VALUES ${recipeTagPlaceholders};` : ''}
     COMMIT;`
+
     try {
         const results = await executeQuery(
             { query: query, values: [recipeName, checkedUser, recipeMenu, ...recipeIngredients, ...tagArray, ...tagArray] }
         );
+        console.log(tagArray)
+        console.log(query)
+        console.log([recipeName, checkedUser, recipeMenu, ...recipeIngredients, ...tagArray, ...tagArray])
+        console.log(results);
         return results;
     } catch (err) {
         console.log(err.message)
@@ -240,63 +256,84 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             res.status(500).json({ statusCode: 500, message: err.message });
         }
 
-    } else if (req.method === 'POST') {
-        //post 요청시
-        let checkedUser;
-        const insert = req.query.insert
-        if (req.headers.cookie) {
-            checkedUser = await loginCheck(req.headers.cookie);
-            if (checkedUser) {
-                console.log('유저맞음')
-                if (insert === 'recipe') {
-                    const recipe = req.body
-                    const recipeName = (recipe.find((item, index) => index === 0));
-                    const insertRecipeResult = await insertRecipe(checkedUser, recipe);
-                    if (insertRecipeResult) {
-                        console.log('저장성공')
-                        res.status(200).json({ message: '저장성공', redirect: '/Recipes?query=' + recipeName })
-                    } else {
-                        res.status(500).json({ message: '저장실패' })
-                        console.log('저장실패')
-                    }
-                } else if (insert === 'recipeLike') {
-                    const recipe = req.body
-                    const checkRecipeLikeResult = await checkRecipeLike(recipe, checkedUser);
-                    console.log(checkRecipeLikeResult)
-                    if (checkRecipeLikeResult === false) {
-                        const insertRecipeLikeResult = await insertRecipeLike(recipe, checkedUser);
-                        if (insertRecipeLikeResult) {
-                            console.log('저장성공')
-                            res.status(200).json('insertRecipeLike성공')
-                        } else {
-                            res.status(500).json({ message: '저장실패' })
-                            console.log('저장실패')
-                        }
-                    } else if (checkRecipeLikeResult === true) {
-                        const deleteRecipeLikeResult = await deleteRecipeLike(recipe, checkedUser);
-                        if (deleteRecipeLikeResult) {
-                            console.log('제거성공')
-                            res.status(200).json('deleteRecipeLike성공')
-                        } else {
-                            res.status(500).json({ message: '제거실패' })
-                            console.log('제거실패')
-                        }
-                    }
-                }
-            } else {
-                res.status(405).json({ message: '유저확인실패' })
-                console.log('유저확인실패')
-            }
+    } else if (req.method === 'POST') {//post 요청시
+        const insert = req.query.insert;
+
+        //쿠키가 서버에 전송되었는지 체크하고
+        if (!req.headers.cookie) {
+            console.log('유저확인실패');
+            res.status(405).json({ message: '유저확인실패' });
+            return;
         }
-        else {
-            res.status(200).json({ message: '쿠키가 전달되지 않았거나 생성되지(로그인하지) 않았음' })
-            console.log('쿠키없음')
+
+        //쿠키값이 유효한지 체크하고
+        const checkedUser = await loginCheck(req.headers.cookie);
+        if (!checkedUser) {
+            console.log('유저확인실패');
+            res.status(405).json({ message: '유저확인실패' });
+            return;
         }
+
+        //실제로 실행
+        if (insert === 'recipe') {
+            handleRecipeInsert(req, res, checkedUser);
+        } else if (insert === 'recipeLike') {
+            handleRecipeLikeInsert(req, res, checkedUser);
+        }
+
     } else {
         res.status(405).send({ message: '허용되지 않은 메서드' });
     }
 
 }
 
+async function handleRecipeInsert(req, res, checkedUser) {
+    const recipe: recipeContextType = req.body;
+    const recipeName = recipe.recipeName;
+    const insertRecipeResult = await insertRecipe(checkedUser, recipe);
+
+    if (!insertRecipeResult) {
+        console.log('저장실패');
+        res.status(500).json({ message: '저장실패' });
+        return;
+    }
+
+    console.log('저장성공');
+    res.status(200).json({ message: '저장성공', redirect: '/Recipes?query=' + recipeName + "&filter='레시피제목'" });
+}
+
+async function handleRecipeLikeInsert(req, res, checkedUser) {
+    const recipe: recipeContextType = req.body;
+    const checkRecipeLikeResult = await checkRecipeLike(recipe, checkedUser);
+
+    console.log(checkRecipeLikeResult);
+
+    if (checkRecipeLikeResult === false) {
+        const insertRecipeLikeResult = await insertRecipeLike(recipe, checkedUser);
+
+        if (!insertRecipeLikeResult) {
+            console.log('저장실패');
+            res.status(500).json({ message: '저장실패' });
+            return;
+        }
+
+        console.log('저장성공');
+        return res.status(200).json('insertRecipeLike성공');
+    } else if (checkRecipeLikeResult === true) {
+        const deleteRecipeLikeResult = await deleteRecipeLike(recipe, checkedUser);
+
+        if (!deleteRecipeLikeResult) {
+            console.log('제거실패');
+            res.status(500).json({ message: '제거실패' });
+            return;
+        }
+
+        console.log('제거성공');
+        return res.status(200).json('deleteRecipeLike성공');
+    } else {
+        // checkRecipeLikeResult가 false나 true가 아닌 경우에 대한 기본 응답
+        return res.status(500).json({ message: '알 수 없는 오류' });
+    }
+}
 
 export default handler
