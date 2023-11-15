@@ -3,6 +3,7 @@ import { RadarChart } from "recharts";
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar } from "recharts";
 import { breadNutrientArray,cheeseNutrientArray,sauceNutrientArray,menuNutrientArray } from "../utils/menuArray"
 import { Tooltip } from "recharts";
+import { recipeContextType } from "../interfaces/AppRecipe";
 
 export const useIsServerSide = () => {
     const [isServerSide, setIsServerSide] = useState(true);
@@ -12,7 +13,7 @@ export const useIsServerSide = () => {
     return isServerSide;
 };
 
-const IngredientsRadarChart = ({ context } : {context:string[]}) => {
+const IngredientsRadarChart = ({ context } : {context:recipeContextType}) => {
     const isServerSide = useIsServerSide();
     const [calorie, setCalorie] = useState<number>(0);
     const [protein, setProtein] = useState<number>(0);

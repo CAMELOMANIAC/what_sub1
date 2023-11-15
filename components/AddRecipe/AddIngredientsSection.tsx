@@ -5,7 +5,7 @@ import IngredientsSection from './template/IngredientsSection';
 export type propsType = {
     prop: {
         array: string[],
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+        onChange: (_e: React.ChangeEvent<HTMLInputElement>) => void,
     },
 }
 const AddIngredientsSection = ({ prop }: propsType) => {

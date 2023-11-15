@@ -1,14 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { menuArray} from "../utils/menuArray"
+import Head from 'next/head'
+import { menuArray } from "../utils/menuArray"
 import styled from 'styled-components';
 import IngredientsRadarChart from '../components/IngredientRadarChart';
 import { TbAlertCircle } from 'react-icons/tb';
-import { FiSearch } from 'react-icons/fi';
 import { useRouter } from 'next/router';
-import { StyleTag } from '../components/RecipesBanner'
-import Head from 'next/head'
 import ProgressBar from '../components/AddRecipe/ProgressBar';
-import IngredientsSection from '../components/AddRecipe/template/IngredientsSection';
 import BreadSection from '../components/AddRecipe/BreadSection';
 import CheeseSection from '../components/AddRecipe/CheeseSection';
 import AddIngredientsSection from '../components/AddRecipe/AddIngredientsSection';
@@ -16,7 +13,8 @@ import AddMeatSection from '../components/AddRecipe/AddMeatSection';
 import VegetableSection from '../components/AddRecipe/VegetableSection';
 import SauceSection from '../components/AddRecipe/SauceSection';
 import ToastingSection from '../components/AddRecipe/ToastingSection';
-
+import RecipeNameSection from '../components/AddRecipe/RecipeNameSection';
+import { recipeContextType } from '../interfaces/AppRecipe';
 
 const RecipeNav = styled.div`
     position: fixed;
@@ -41,27 +39,21 @@ const NavSandwich = styled.div<NavSandwichProps>`
 const AddRecipe = ({ param }: { param: string }) => {
     const index = menuArray.findIndex((item) => (item.name === param));
     const [recipeName, setRecipeName] = useState<string>('');
-    const [isComplete, setIsComplete] = useState<boolean>(false);
-    const [tagInput, setTagInput] = useState<string>('');
     const [tagArray, setTagArray] = useState<string[]>([]);
-    const [tagData, setTagData] = useState<string[]>([]);
+    const RecipeNameProp = {
+        recipeName: recipeName,
+        setRecipeName: setRecipeName,
+        tagArray: tagArray,
+        setTagArray: setTagArray
+    }
 
-    const progressBarButtons = [
-        { id: 'recipeNameButton', text: '레시피 이름' },
-        { id: 'breadButton', text: '빵 선택' },
-        { id: 'cheeseButton', text: '치즈 선택' },
-        { id: 'toastingButton', text: '토스팅 여부' },
-        { id: 'vegetableButton', text: '채소 선택' },
-        { id: 'sauceButton', text: '소스 선택' },
-    ];
-    
     const useCheckInput = () => {
-        const [array, setArray]=useState<string[]>([]);
+        const [array, setArray] = useState<string[]>([]);
         const onChange = (e) => { e.target.value === '' ? setArray([]) : (array.includes(e.target.value) ? setArray(prev => prev.filter(item => item !== e.target.value)) : setArray(prev => [...prev, e.target.value])) };
         return { onChange, array, setArray };
     };
     const useRadioInput = () => {
-        const [state, setState]=useState<string>('');
+        const [state, setState] = useState<string>('');
         const onChange = (e) => { setState(e.target.value) };
         return { onChange, state };
     };
@@ -73,20 +65,27 @@ const AddRecipe = ({ param }: { param: string }) => {
     const vegetable = useCheckInput();
     const pickledVegetable = useCheckInput();
     const sauce = useCheckInput();
-    const [isToasting,setIsToasting]=useState<boolean>(true);
-    const toasting = {state:isToasting,setState:setIsToasting};
+    const [isToasting, setIsToasting] = useState<boolean>(true);
+    const toasting = { state: isToasting, setState: setIsToasting };
 
     const sauceOnChange = (e) => {
-        if (sauce.array.length < 3){
-            sauce.setArray(prev=>[...prev,e.target.value])   
+        if (sauce.array.length < 3) {
+            sauce.setArray(prev => [...prev, e.target.value])
         }
-        if (sauce.array.includes(e.target.value)){
-            sauce.setArray(prev=>prev.filter(item=>item!==e.target.value))
+        if (sauce.array.includes(e.target.value)) {
+            sauce.setArray(prev => prev.filter(item => item !== e.target.value))
         }
-      };
+    };
     sauce.onChange = sauceOnChange;//sauce는 3개 제한때문에 핸들러함수 만들어서 재 할당
 
-
+    const progressBarButtons = [
+        { id: 'recipeNameButton', text: '레시피 이름' },
+        { id: 'breadButton', text: '빵 선택' },
+        { id: 'cheeseButton', text: '치즈 선택' },
+        { id: 'toastingButton', text: '토스팅 여부' },
+        { id: 'vegetableButton', text: '채소 선택' },
+        { id: 'sauceButton', text: '소스 선택' },
+    ];
     const recipeNameRef = useRef<HTMLDivElement | null>(null);
     const breadRef = useRef<HTMLDivElement | null>(null);
     const cheeseRef = useRef<HTMLDivElement | null>(null);
@@ -122,7 +121,8 @@ const AddRecipe = ({ param }: { param: string }) => {
     useEffect(() => {
         observer = new IntersectionObserver((entries) => {
 
-            //가장위에 있는 요소 탐지(IntersectionObserver는 요소를 여러개 감지하면 가장 마지막 요소만 entry.target에 저장하므로 가장위에것을 탐지하게하기 위해서)
+            //가장위에 있는 요소 탐지
+            //(IntersectionObserver는 요소를 여러개 감지하면 가장 마지막 요소만 entry.target에 저장하므로 가장위에것을 탐지하게하기 위해서)
             const firstEntry = entries.reduce((first, entry) => {
                 return (entry.boundingClientRect.top < first.boundingClientRect.top) ? entry : first;
             });
@@ -157,81 +157,46 @@ const AddRecipe = ({ param }: { param: string }) => {
             threshold: [0.5, 1, 1]
         });
 
-        // 요소들을 관찰합니다
+        // 관찰할 요소
         if (recipeNameRef.current) observer.observe(recipeNameRef.current);
         if (breadRef.current) observer.observe(breadRef.current);
         if (cheeseRef.current) observer.observe(cheeseRef.current);
         if (toastingRef.current) observer.observe(toastingRef.current);
         if (vegetableRef.current) observer.observe(vegetableRef.current);
         if (sauceRef.current) observer.observe(sauceRef.current);
-        // ... (다른 요소들을 관찰합니다)
 
-        // 옵저버를 정리합니다
         return () => {
             observer.disconnect();
         };
     }, []);
 
-    //레시피 이름 입력 이벤트 핸들러
-    const handleChange = (e) => {
-        const value = e.target.value;
-        setRecipeName(value);
-        if (value.length > 0) {
-            setIsComplete(true);
-        } else {
-            setIsComplete(false);
+    const createContext = () => {
+        const recipeContext: recipeContextType = {
+            recipeName: recipeName,
+            tagArray: tagArray,
+            param: param,
+            addMeat: addMeat.state,
+            bread: bread.state,
+            cheese: cheese.state,
+            addCheese: addCheese.state,
+            isToasting: String(isToasting),
+            vegetable: vegetable.array,
+            pickledVegetable: pickledVegetable.array,
+            sauce: sauce.array,
+            addIngredient: addIngredient.array
         }
-    };
-
-    //인풋을 통한 태그 추가 이벤트 핸들러
-    const addInputHandler = () => {
-        //태그 중복금지 및 빈 문자열 금지
-        if (tagArray.every(item => item !== tagInput) && tagInput.replaceAll(' ', '') !== '') {
-            setTagArray(prev => [...prev, tagInput])
-        }
-    }//버튼을통한 태그 추가 이벤트 핸들러
-    const addTagHandler = (tag) => {
-        //태그 중복금지 및 빈 문자열 금지
-        if (tagArray.every(item => item !== tag) && tag.replaceAll(' ', '') !== '') {
-            setTagArray(prev => [...prev, tag])
-        }
+        return recipeContext;
     }
+    //서버에 작성한 레시피를 제출하거나 거미줄차트에 전달해줄 props상태 객체를 작성
+    const [context, setContext] = useState<recipeContextType>(createContext);
+    //완료여부 확인 상태
+    const [isComplete, setIsComplete] = useState<boolean>(false);
 
-    //태그검색
     useEffect(() => {
-        const tagSearch = async () => {
-            const result = await fetch(`http://localhost:3000/api/tag?tag=${tagInput}`);
-            const data = await result.json();
-            setTagData(data.tag)
-        }
-        tagSearch();
-    }, [tagInput])
-
-    //태그 초기 검색
-    useEffect(() => {
-        const tagFirstSearch = async () => {
-            const res = await fetch(`http://localhost:3000/api/tag?param=${encodeURIComponent(param)}`);
-            const data = await res.json();
-            setTagData(data.tag);
-            console.log(data.tag);
-        }
-        tagFirstSearch();
-    }, [])
-
-    //서버에 작성한 레시피를 제출하거나 거미줄차트에 전달해줄 props상태 배열을 작성
-    const [context, setContext] = useState<string[]>([]);
-    useEffect(() => {
-        createArray();
+        setContext(createContext);
+        const isNotComplete = Object.entries(context).some(([_key, value]) => value === '');
+        setIsComplete(!isNotComplete);
     }, [recipeName, param, addMeat.state, bread.state, cheese.state, addCheese.state, toasting.state, vegetable.array, pickledVegetable.array, sauce.array, addIngredient.array])
-
-    const handleSubmit = () => {
-        createArray();
-    }
-    const createArray = () => {
-        const arr: string[] = [recipeName, String(tagArray), param, addMeat.state, bread.state, cheese.state, addCheese.state, String(isToasting), ...vegetable.array, ...pickledVegetable.array, ...sauce.array, ...addIngredient.array];
-        setContext(arr.filter((item) => item !== ''));
-        console.log(JSON.stringify(context));
-    }
 
     const sendRecipe = async () => {
         const response = await fetch('/api/recipe?insert=recipe', {
@@ -252,9 +217,7 @@ const AddRecipe = ({ param }: { param: string }) => {
     const onClickHandler = () => {
         sendRecipe().then(
             result => {
-                console.log(result);
                 if (result.redirect) {
-                    console.log(result.redirect)
                     router.push(result.redirect)
                 }
             },
@@ -287,43 +250,12 @@ const AddRecipe = ({ param }: { param: string }) => {
                     </div>
 
                     <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
-
-                        <IngredientsSection ref={recipeNameRef} id='recipeName'>
-                            <h3 className='text-xl font-[seoul-metro]'>레시피 이름</h3>
-                            <div className='p-2'>
-                                <div className="flex flex-row items-center border rounded-md placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
-                                    <input className='w-full outline-none' onChange={handleChange}></input>
-                                </div>
-                            </div>
-                            <h3 className='text-xl font-[seoul-metro]'>태그 추가</h3>
-                            <div className='p-2'>
-                                {tagArray.map((item) =>
-                                    <StyleTag key={item} className='group' onClick={() => setTagArray(tagArray.filter(index => index !== item))}>
-                                        <span className='group-hover:hidden'>#</span>
-                                        <span className='hidden group-hover:inline'>-</span>
-                                        {item}
-                                    </StyleTag>)}
-                                <div className='w-full'>
-                                    <div className="flex flex-row items-center border rounded-md placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
-                                        <FiSearch className='text-lg mx-1 text-gray-400' />
-                                        <input className='w-full outline-none' onChange={(e) => setTagInput(e.target.value)}></input>
-                                    </div>
-                                </div>
-                                <div className='p-2'>
-                                    추천태그:
-                                    {!tagData && <StyleTag onClick={addInputHandler}>+{tagInput}</StyleTag>}
-                                    {tagData && tagData.map(item => <StyleTag key={item} onClick={() => addTagHandler(item)}>+{item}</StyleTag>)}
-                                </div>
-                            </div>
-                        </IngredientsSection>
-
-
+                        <RecipeNameSection prop={RecipeNameProp} ref={recipeNameRef} param={param}></RecipeNameSection>
                         <AddMeatSection prop={addMeat} param={param}></AddMeatSection>
                         <BreadSection prop={bread} ref={breadRef}></BreadSection>
                         <CheeseSection prop1={cheese} prop2={addCheese} ref={cheeseRef}></CheeseSection>
                         <AddIngredientsSection prop={addIngredient}></AddIngredientsSection>
                         <ToastingSection prop={toasting} ref={toastingRef}></ToastingSection>
-
                         <VegetableSection prop1={vegetable} prop2={pickledVegetable} ref={vegetableRef}></VegetableSection>
                         <SauceSection prop={sauce} ref={sauceRef}></SauceSection>
 
@@ -347,7 +279,7 @@ const AddRecipe = ({ param }: { param: string }) => {
                             buttonText={button.text}
                         />
                     ))}
-                    <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600 mb-[30%]' disabled={!isComplete} onClick={handleSubmit}>
+                    <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600 mb-[30%]' disabled={!isComplete} onClick={createContext}>
                         <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div>
                         <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-yellow-400'></div>
                         <div className={`col-span-1 text-center absolute mt-1 ` + (!isComplete && 'text-gray-300')}>작성완료</div>
@@ -368,29 +300,4 @@ export async function getServerSideProps(context) {
             param
         },
     };
-}
-
-
-{/*
-    <div className="bg-white rounded-md shadow-sm mb-2 p-6" >
-        <h3 className='text-xl font-[seoul-metro]'>테스트 이름</h3>
-        {
-            cheeseNutrientArray.map((item) => (
-                <div key={item.name} className='flex flex-row items-center'>
-                    <label>
-                        <input type='checkbox' onChange={test.onChange} checked={test.array.includes(item.name)} value={item.name}></input>{item.name}
-                    </label>
-                </div>
-            ))
-        }
-        {
-            cheeseNutrientArray.map((item) => (
-                <div key={item.name} className='flex flex-row items-center'>
-                    <label>
-                        <input type='radio' onChange={test2.onChange} checked={test2.array.includes(item.name)} value={item.name}></input>{item.name}
-                    </label>
-                </div>
-            ))
-        }
-    </div>*/
 }
