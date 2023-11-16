@@ -3,17 +3,6 @@ import executeQuery from '../../lib/db'
 import { loginCheck } from './login';
 import { recipeContextType } from '../../interfaces/AppRecipe';
 
-export type recipeType = {
-    recipe_id: string,
-    recipe_name: string,
-    recipe_ingredients: string,
-    user_id: string,
-    sandwich_name: string,
-    tag: string,
-    reply_count: string,
-    like_count: string,
-}
-
 //일반적인 레시피 불러오기
 const loadRecipes = async (searchQuery: string | string[] | undefined, offset: number, limit: number, filter: string | string[] | undefined) => {
     try {
@@ -256,84 +245,63 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             res.status(500).json({ statusCode: 500, message: err.message });
         }
 
-    } else if (req.method === 'POST') {//post 요청시
-        const insert = req.query.insert;
-
-        //쿠키가 서버에 전송되었는지 체크하고
-        if (!req.headers.cookie) {
-            console.log('유저확인실패');
-            res.status(405).json({ message: '유저확인실패' });
-            return;
+    } else if (req.method === 'POST') {
+        //post 요청시
+        let checkedUser;
+        const insert = req.query.insert
+        if (req.headers.cookie) {
+            checkedUser = await loginCheck(req.headers.cookie);
+            if (checkedUser) {
+                console.log('유저맞음')
+                if (insert === 'recipe') {
+                    const recipe = req.body
+                    const recipeName = recipe.recipeName;
+                    const insertRecipeResult = await insertRecipe(checkedUser, recipe);
+                    if (insertRecipeResult) {
+                        console.log('저장성공')
+                        res.status(200).json({ message: '저장성공', redirect: '/Recipes?query=' + recipeName + '&filter=레시피제목' })
+                    } else {
+                        res.status(500).json({ message: '저장실패' })
+                        console.log('저장실패')
+                    }
+                } else if (insert === 'recipeLike') {
+                    const recipe = req.body
+                    const checkRecipeLikeResult = await checkRecipeLike(recipe, checkedUser);
+                    console.log(checkRecipeLikeResult)
+                    if (checkRecipeLikeResult === false) {
+                        const insertRecipeLikeResult = await insertRecipeLike(recipe, checkedUser);
+                        if (insertRecipeLikeResult) {
+                            console.log('저장성공')
+                            res.status(200).json('insertRecipeLike성공')
+                        } else {
+                            res.status(500).json({ message: '저장실패' })
+                            console.log('저장실패')
+                        }
+                    } else if (checkRecipeLikeResult === true) {
+                        const deleteRecipeLikeResult = await deleteRecipeLike(recipe, checkedUser);
+                        if (deleteRecipeLikeResult) {
+                            console.log('제거성공')
+                            res.status(200).json('deleteRecipeLike성공')
+                        } else {
+                            res.status(500).json({ message: '제거실패' })
+                            console.log('제거실패')
+                        }
+                    }
+                }
+            } else {
+                res.status(405).json({ message: '유저확인실패' })
+                console.log('유저확인실패')
+            }
         }
-
-        //쿠키값이 유효한지 체크하고
-        const checkedUser = await loginCheck(req.headers.cookie);
-        if (!checkedUser) {
-            console.log('유저확인실패');
-            res.status(405).json({ message: '유저확인실패' });
-            return;
+        else {
+            res.status(200).json({ message: '쿠키가 전달되지 않았거나 생성되지(로그인하지) 않았음' })
+            console.log('쿠키없음')
         }
-
-        //실제로 실행
-        if (insert === 'recipe') {
-            handleRecipeInsert(req, res, checkedUser);
-        } else if (insert === 'recipeLike') {
-            handleRecipeLikeInsert(req, res, checkedUser);
-        }
-
     } else {
         res.status(405).send({ message: '허용되지 않은 메서드' });
     }
 
 }
 
-async function handleRecipeInsert(req, res, checkedUser) {
-    const recipe: recipeContextType = req.body;
-    const recipeName = recipe.recipeName;
-    const insertRecipeResult = await insertRecipe(checkedUser, recipe);
-
-    if (!insertRecipeResult) {
-        console.log('저장실패');
-        res.status(500).json({ message: '저장실패' });
-        return;
-    }
-
-    console.log('저장성공');
-    res.status(200).json({ message: '저장성공', redirect: '/Recipes?query=' + recipeName + "&filter='레시피제목'" });
-}
-
-async function handleRecipeLikeInsert(req, res, checkedUser) {
-    const recipe: recipeContextType = req.body;
-    const checkRecipeLikeResult = await checkRecipeLike(recipe, checkedUser);
-
-    console.log(checkRecipeLikeResult);
-
-    if (checkRecipeLikeResult === false) {
-        const insertRecipeLikeResult = await insertRecipeLike(recipe, checkedUser);
-
-        if (!insertRecipeLikeResult) {
-            console.log('저장실패');
-            res.status(500).json({ message: '저장실패' });
-            return;
-        }
-
-        console.log('저장성공');
-        return res.status(200).json('insertRecipeLike성공');
-    } else if (checkRecipeLikeResult === true) {
-        const deleteRecipeLikeResult = await deleteRecipeLike(recipe, checkedUser);
-
-        if (!deleteRecipeLikeResult) {
-            console.log('제거실패');
-            res.status(500).json({ message: '제거실패' });
-            return;
-        }
-
-        console.log('제거성공');
-        return res.status(200).json('deleteRecipeLike성공');
-    } else {
-        // checkRecipeLikeResult가 false나 true가 아닌 경우에 대한 기본 응답
-        return res.status(500).json({ message: '알 수 없는 오류' });
-    }
-}
 
 export default handler
