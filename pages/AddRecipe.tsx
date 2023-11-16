@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import Head from 'next/head'
 import { menuArray } from "../utils/menuArray"
-import styled from 'styled-components';
 import IngredientsRadarChart from '../components/IngredientRadarChart';
 import { TbAlertCircle } from 'react-icons/tb';
 import { useRouter } from 'next/router';
-import ProgressBar from '../components/ingredientSection/ProgressBar';
 import BreadSection from '../components/ingredientSection/BreadSection';
 import CheeseSection from '../components/ingredientSection/CheeseSection';
 import AddIngredientsSection from '../components/ingredientSection/AddIngredientsSection';
@@ -15,26 +13,14 @@ import SauceSection from '../components/ingredientSection/SauceSection';
 import ToastingSection from '../components/ingredientSection/ToastingSection';
 import RecipeNameSection from '../components/ingredientSection/RecipeNameSection';
 import { recipeContextType } from '../interfaces/AppRecipe';
+import RecipeNav from '../components/RecipeNav';
 
-const RecipeNav = styled.div`
-    position: fixed;
-    bottom:0;
-    width:1024px;
-    height:80px;
-    background-color: #fff;
-    box-shadow: 0px 0px 10px 0px lightgray;
-    border-radius: 10px 10px 0px 0px;
-`
-type NavSandwichProps = {
-    $activesection: number;
+export type progressBarButtonsType = {
+    id: string,
+    text: string,
+    ref: React.RefObject<HTMLDivElement>,
+    handleClick: () => void
 }
-const NavSandwich = styled.div<NavSandwichProps>`
-    position: absolute;
-    transform: translate(${(props) => props.$activesection * 140 + 40}px, -5px);
-    transition-property: transform;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 500ms;
-    `
 
 const AddRecipe = ({ param }: { param: string }) => {
     const index = menuArray.findIndex((item) => (item.name === param));
@@ -78,14 +64,7 @@ const AddRecipe = ({ param }: { param: string }) => {
     };
     sauce.onChange = sauceOnChange;//sauce는 3개 제한때문에 핸들러함수 만들어서 재 할당
 
-    const progressBarButtons = [
-        { id: 'recipeNameButton', text: '레시피 이름' },
-        { id: 'breadButton', text: '빵 선택' },
-        { id: 'cheeseButton', text: '치즈 선택' },
-        { id: 'toastingButton', text: '토스팅 여부' },
-        { id: 'vegetableButton', text: '채소 선택' },
-        { id: 'sauceButton', text: '소스 선택' },
-    ];
+    //RecipeNav에게 전달해줄 관찰대상 상태
     const recipeNameRef = useRef<HTMLDivElement | null>(null);
     const breadRef = useRef<HTMLDivElement | null>(null);
     const cheeseRef = useRef<HTMLDivElement | null>(null);
@@ -94,69 +73,14 @@ const AddRecipe = ({ param }: { param: string }) => {
     const sauceRef = useRef<HTMLDivElement | null>(null);
     const rootRef = useRef<HTMLDivElement | null>(null);
 
-    const handleClick = (e) => {
-        if (recipeNameRef.current && e.currentTarget.id === 'recipeNameButton') {
-            recipeNameRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (breadRef.current && e.currentTarget.id === 'breadButton') {
-            breadRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (cheeseRef.current && e.currentTarget.id === 'cheeseButton') {
-            cheeseRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (toastingRef.current && e.currentTarget.id === 'toastingButton') {
-            toastingRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (vegetableRef.current && e.currentTarget.id === 'vegetableButton') {
-            vegetableRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (sauceRef.current && e.currentTarget.id === 'sauceButton') {
-            sauceRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    };
-
-    const [activeSection, setActiveSection] = useState<number>(0);
-    let observer: IntersectionObserver;
-
-    useEffect(() => {
-        observer = new IntersectionObserver((entries) => {
-
-            //가장위에 있는 요소 탐지
-            //(IntersectionObserver는 요소를 여러개 감지하면 가장 마지막 요소만 entry.target에 저장하므로 가장위에것을 탐지하게하기 위해서)
-            const firstEntry = entries.reduce((first, entry) => {
-                return (entry.boundingClientRect.top < first.boundingClientRect.top) ? entry : first;
-            });
-            console.log(firstEntry.target.id);
-
-            if (firstEntry.isIntersecting) {
-                switch (firstEntry.target.id) {
-                    case 'recipeName': setActiveSection(0); break;
-                    case 'bread': setActiveSection(1); break;
-                    case 'cheese': setActiveSection(2); break;
-                    case 'toasting': setActiveSection(3); break;
-                    case 'vegetable': setActiveSection(4); break;
-                    case 'sauce': setActiveSection(5); break;
-                    // ... (다른 case들)
-                    default: break;
-                }
-            }
-        }, {
-            threshold: [0.5, 1, 1]
-        });
-
-        // 관찰할 요소
-        if (recipeNameRef.current) observer.observe(recipeNameRef.current);
-        if (breadRef.current) observer.observe(breadRef.current);
-        if (cheeseRef.current) observer.observe(cheeseRef.current);
-        if (toastingRef.current) observer.observe(toastingRef.current);
-        if (vegetableRef.current) observer.observe(vegetableRef.current);
-        if (sauceRef.current) observer.observe(sauceRef.current);
-
-        return () => {
-            observer.disconnect();
-        };
-    }, []);
-
+    const progressBarButtons: progressBarButtonsType[] = [
+        { id: 'recipeNameButton', text: '레시피 이름', ref: recipeNameRef, handleClick: () => { progressBarButtons[0].ref.current && progressBarButtons[0].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
+        { id: 'breadButton', text: '빵 선택', ref: breadRef, handleClick: () => { progressBarButtons[1].ref.current && progressBarButtons[1].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
+        { id: 'cheeseButton', text: '치즈 선택', ref: cheeseRef, handleClick: () => { progressBarButtons[2].ref.current && progressBarButtons[2].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
+        { id: 'toastingButton', text: '토스팅 여부', ref: toastingRef, handleClick: () => { progressBarButtons[3].ref.current && progressBarButtons[3].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
+        { id: 'vegetableButton', text: '채소 선택', ref: vegetableRef, handleClick: () => { progressBarButtons[4].ref.current && progressBarButtons[4].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
+        { id: 'sauceButton', text: '소스 선택', ref: sauceRef, handleClick: () => { progressBarButtons[5].ref.current && progressBarButtons[5].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
+    ];
     const createContext = () => {
         const recipeContext: recipeContextType = {
             recipeName: recipeName,
@@ -182,7 +106,7 @@ const AddRecipe = ({ param }: { param: string }) => {
     useEffect(() => {
         setContext(createContext);
         //필수항목배열 확인후 다 작성되면 사용가능
-        const isNotComplete = Object.entries([recipeName,param,bread.state,toasting.state]).some(([_key, value]) => value === '');
+        const isNotComplete = Object.entries([recipeName, param, bread.state, toasting.state]).some(([_key, value]) => value === '');
         setIsComplete(!isNotComplete);
         console.log(isNotComplete);
     }, [recipeName, param, addMeat.state, bread.state, cheese.state, addCheese.state, toasting.state, vegetable.array, pickledVegetable.array, sauce.array, addIngredient.array])
@@ -241,14 +165,14 @@ const AddRecipe = ({ param }: { param: string }) => {
                     </div>
 
                     <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
-                        <RecipeNameSection prop={RecipeNameProp} ref={recipeNameRef} param={param}></RecipeNameSection>
-                        <AddMeatSection prop={addMeat} param={param}></AddMeatSection>
-                        <BreadSection prop={bread} ref={breadRef}></BreadSection>
-                        <CheeseSection prop1={cheese} prop2={addCheese} ref={cheeseRef}></CheeseSection>
-                        <AddIngredientsSection prop={addIngredient}></AddIngredientsSection>
-                        <ToastingSection prop={toasting} ref={toastingRef}></ToastingSection>
-                        <VegetableSection prop1={vegetable} prop2={pickledVegetable} ref={vegetableRef}></VegetableSection>
-                        <SauceSection prop={sauce} ref={sauceRef}></SauceSection>
+                        <RecipeNameSection prop={RecipeNameProp} ref={recipeNameRef} param={param}/>
+                        <AddMeatSection prop={addMeat} param={param}/>
+                        <BreadSection prop={bread} ref={breadRef}/>
+                        <CheeseSection prop1={cheese} prop2={addCheese} ref={cheeseRef}/>
+                        <AddIngredientsSection prop={addIngredient}/>
+                        <ToastingSection prop={toasting} ref={toastingRef}/>
+                        <VegetableSection prop1={vegetable} prop2={pickledVegetable} ref={vegetableRef}/>
+                        <SauceSection prop={sauce} ref={sauceRef}/>
 
                         <button className="bg-white rounded-md shadow-sm p-6" onClick={onClickHandler}>
                             <h3 className='text-xl font-[seoul-metro]'>작성완료</h3>
@@ -257,25 +181,7 @@ const AddRecipe = ({ param }: { param: string }) => {
                     </div>
                 </div>
 
-                <RecipeNav className='p-6 grid grid-cols-7 grid-rows-1 font-[seoul-metro]'>
-                    <NavSandwich $activesection={activeSection}>
-                        <img src='/images/front_banner.png' className={`w-10`} />
-                    </NavSandwich>
-                    {progressBarButtons.map((button) => (
-                        <ProgressBar
-                            key={button.id}
-                            activeSection={activeSection}
-                            handleClick={handleClick}
-                            buttonId={button.id}
-                            buttonText={button.text}
-                        />
-                    ))}
-                    <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600 mb-[30%]' disabled={!isComplete} onClick={createContext}>
-                        <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div>
-                        <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-yellow-400'></div>
-                        <div className={`col-span-1 text-center absolute mt-1 ` + (!isComplete && 'text-gray-300')}>작성완료</div>
-                    </button>
-                </RecipeNav>
+                <RecipeNav progressBarButtons={progressBarButtons} isComplete={isComplete} createContext={createContext}/>
             </main>
         </>
     );
