@@ -13,7 +13,7 @@ import SauceSection from '../components/ingredientSection/SauceSection';
 import ToastingSection from '../components/ingredientSection/ToastingSection';
 import RecipeNameSection from '../components/ingredientSection/RecipeNameSection';
 import { recipeContextType } from '../interfaces/AppRecipe';
-import RecipeNav from '../components/RecipeNav';
+import RecipeNav from '../components/RecipeNav/RecipeNav';
 
 export type progressBarButtonsType = {
     id: string,
@@ -32,7 +32,7 @@ const AddRecipe = ({ param }: { param: string }) => {
         tagArray: tagArray,
         setTagArray: setTagArray
     }
-
+    //커스텀 함수로 각 섹션에 맞는 값 정의
     const useCheckInput = () => {
         const [array, setArray] = useState<string[]>([]);
         const onChange = (e) => { e.target.value === '' ? setArray([]) : (array.includes(e.target.value) ? setArray(prev => prev.filter(item => item !== e.target.value)) : setArray(prev => [...prev, e.target.value])) };
@@ -53,7 +53,7 @@ const AddRecipe = ({ param }: { param: string }) => {
     const sauce = useCheckInput();
     const [isToasting, setIsToasting] = useState<boolean>(true);
     const toasting = { state: isToasting, setState: setIsToasting };
-
+    //sauce는 3개 제한이라는 특수성이 있어서 핸들러 함수를 만들어서 재 할당
     const sauceOnChange = (e) => {
         if (sauce.array.length < 3) {
             sauce.setArray(prev => [...prev, e.target.value])
@@ -62,7 +62,7 @@ const AddRecipe = ({ param }: { param: string }) => {
             sauce.setArray(prev => prev.filter(item => item !== e.target.value))
         }
     };
-    sauce.onChange = sauceOnChange;//sauce는 3개 제한때문에 핸들러함수 만들어서 재 할당
+    sauce.onChange = sauceOnChange;
 
     //RecipeNav에게 전달해줄 관찰대상 상태
     const recipeNameRef = useRef<HTMLDivElement | null>(null);
@@ -105,7 +105,7 @@ const AddRecipe = ({ param }: { param: string }) => {
 
     useEffect(() => {
         setContext(createContext);
-        //필수항목배열 확인후 다 작성되면 사용가능
+        //필수항목배열 확인후 다 작성되면 작성완료 할수있게
         const isNotComplete = Object.entries([recipeName, param, bread.state, toasting.state]).some(([_key, value]) => value === '');
         setIsComplete(!isNotComplete);
         console.log(isNotComplete);

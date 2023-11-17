@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, forwardRef } from 'react';
-import IngredientsSection from './template/IngredientsSection';
+import IngredientsSection from './sub/IngredientsSection';
 
 export type propsType = {
     prop: {

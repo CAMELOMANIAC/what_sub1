@@ -8,7 +8,7 @@ type checkBoxType = {
     addContext: string,
     getState: string | string[],
     setState?: Dispatch<SetStateAction<string | string[]>>,
-    onChange?: (e) => void
+    onChange?: (_e:React.ChangeEvent<HTMLInputElement>) => void
 }
 export const CheckBox = ({ item, section, addContext, getState, setState, onChange }: checkBoxType) => {
     return (

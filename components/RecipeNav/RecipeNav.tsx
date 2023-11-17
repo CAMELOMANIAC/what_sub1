@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import ProgressBar from './ingredientSection/ProgressBar';
-import { progressBarButtonsType } from '../pages/AddRecipe';
+import ProgressBar from './ProgressBar';
+import { progressBarButtonsType } from '../../pages/AddRecipe';
 
 const NavBackground = styled.div`
     position: fixed;
