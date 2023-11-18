@@ -12,10 +12,7 @@ const CheckBox = ({ name, addContext, checked, onChange }: propsType) => {
     return (
         <li className='h-12 flex items-center'>
             <label className='my-auto flex items-center group'>
-                {checked ?
-                    <BsFillCheckSquareFill className='relative w-6 h-6 mr-2 text-green-600 border-0  group-hover:border group-hover:border-gray-600 rounded'></BsFillCheckSquareFill>
-                    : <BsFillCheckSquareFill className='relative w-6 h-6 mr-2 text-white border group-hover:border-gray-500 rounded'></BsFillCheckSquareFill>
-                }
+            <BsFillCheckSquareFill className={`relative w-6 h-6 mr-2 border rounded group-hover:border-gray-600 group-hover:border ${checked ? 'text-green-600 border-0' : 'text-white '}`}></BsFillCheckSquareFill>
                 <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1 mr-2'>
                     <img src={'/images/sandwich_menu/ingredients/' + name + '.jpg'} alt={name} className='object-cover w-12 aspect-square rounded-md mr-2'></img>
                 </div>

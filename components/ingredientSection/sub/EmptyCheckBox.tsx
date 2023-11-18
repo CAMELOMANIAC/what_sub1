@@ -17,10 +17,7 @@ const EmptyCheckBox = ({ prop, text,setIsShow }: propsType) => {
     return (
         <li className='h-12 flex items-center'>
             <label className='my-auto flex items-center group'>
-                {prop.array.length === 0 ?
-                    <BsFillCheckSquareFill className='relative w-6 h-6 mr-2 text-green-600 border-0  group-hover:border group-hover:border-gray-600 rounded'></BsFillCheckSquareFill>
-                    : <BsFillCheckSquareFill className='relative w-6 h-6 mr-2 text-white border group-hover:border-gray-500 rounded'></BsFillCheckSquareFill>
-                }
+                <BsFillCheckSquareFill className={`relative w-6 h-6 mr-2 border rounded group-hover:border-gray-600 group-hover:border ${prop.array.length === 0 ? 'text-green-600 border-0' : 'text-white '}`}></BsFillCheckSquareFill>
                 <span className='font-[noto-sans]'>{text}</span>
                 <input type='checkBox' className='invisible absolute' onChange={()=>onChangeHandler()} checked={prop.array.length === 0} value={''}></input>
             </label>

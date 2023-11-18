@@ -16,11 +16,8 @@ const EmptyRadioBox = ({ name, addContext, checked, onChange, setIsShow }: props
     }
     return (
         <li className='h-12 flex items-center'>
-            <label className='my-auto flex items-center gruop'>
-                {checked ?
-                    <FaDotCircle className='relative w-6 h-6 mr-2 text-green-600 border rounded-full group-hover:border-gray-500'></FaDotCircle> :
-                    <FaDotCircle className='relative w-6 h-6 mr-2 text-white border rounded-full group-hover:border-1 group-hover:border-gray-500'></FaDotCircle>
-                }
+            <label className='my-auto flex items-center group'>
+                <FaDotCircle className={`relative w-6 h-6 mr-2 rounded-full group-hover:border group-hover:border-gray-500 ${checked ? 'text-green-600 border-0' : 'text-white border'}`}></FaDotCircle>
                 <span className='font-[noto-sans]'>{name}{addContext}</span>
                 <input className='peer invisible absolute' type='checkBox' onChange={onChangeHandler} value={''}></input>
             </label>

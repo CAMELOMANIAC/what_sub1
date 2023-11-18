@@ -12,7 +12,7 @@ import VegetableSection from '../components/ingredientSection/VegetableSection';
 import SauceSection from '../components/ingredientSection/SauceSection';
 import ToastingSection from '../components/ingredientSection/ToastingSection';
 import RecipeNameSection from '../components/ingredientSection/RecipeNameSection';
-import { recipeContextType } from '../interfaces/AppRecipe';
+import { recipeContextType } from '../interfaces/AddRecipe';
 import RecipeNav from '../components/RecipeNav/RecipeNav';
 
 export type progressBarButtonsType = {

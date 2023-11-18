@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaDotCircle } from 'react-icons/fa';
 
-type propsType = {
+export type propsType = {
     name: string,
     addContext: string,
     checked: boolean,
@@ -11,11 +11,9 @@ type propsType = {
 const RadioBox = ({ name, addContext, checked, onChange }: propsType) => {
     return (
         <li className='h-12 flex items-center'>
-            <label className='my-auto flex items-center gruop'>
-                {checked ?
-                    <FaDotCircle className='relative w-6 h-6 mr-2 text-green-600 border rounded-full group-hover:border-gray-500'></FaDotCircle> :
-                    <FaDotCircle className='relative w-6 h-6 mr-2 text-white border rounded-full group-hover:border-1 group-hover:border-gray-500'></FaDotCircle>
-                }
+            <label className='my-auto flex items-center group'>
+                <FaDotCircle className={`relative w-6 h-6 mr-2 rounded-full group-hover:border group-hover:border-gray-500 ${checked ? 'text-green-600 border-0' : 'text-white border'}`}></FaDotCircle>
+
                 <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1 mr-2'>
                     <img src={'/images/sandwich_menu/ingredients/' + name + '.jpg'} alt={name} className='object-cover w-12 aspect-square rounded-md mr-2'></img>
                 </div>
