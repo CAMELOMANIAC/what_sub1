@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Head from 'next/head'
 import { menuArray } from "../utils/menuArray"
 import IngredientsRadarChart from '../components/IngredientRadarChart';
@@ -72,14 +72,18 @@ const AddRecipe = ({ param }: { param: string }) => {
     const vegetableRef = useRef<HTMLDivElement | null>(null);
     const sauceRef = useRef<HTMLDivElement | null>(null);
     const rootRef = useRef<HTMLDivElement | null>(null);
-
+    const handleClickHander = useCallback((ref) => {//이벤트를 자식에게 전달해주니까 useCallback으로 함수 메모라이즈
+        if (ref.current) {
+            ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, []); 
     const progressBarButtons: progressBarButtonsType[] = [
-        { id: 'recipeNameButton', text: '레시피 이름', ref: recipeNameRef, handleClick: () => { progressBarButtons[0].ref.current && progressBarButtons[0].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
-        { id: 'breadButton', text: '빵 선택', ref: breadRef, handleClick: () => { progressBarButtons[1].ref.current && progressBarButtons[1].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
-        { id: 'cheeseButton', text: '치즈 선택', ref: cheeseRef, handleClick: () => { progressBarButtons[2].ref.current && progressBarButtons[2].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
-        { id: 'toastingButton', text: '토스팅 여부', ref: toastingRef, handleClick: () => { progressBarButtons[3].ref.current && progressBarButtons[3].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
-        { id: 'vegetableButton', text: '채소 선택', ref: vegetableRef, handleClick: () => { progressBarButtons[4].ref.current && progressBarButtons[4].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
-        { id: 'sauceButton', text: '소스 선택', ref: sauceRef, handleClick: () => { progressBarButtons[5].ref.current && progressBarButtons[5].ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' }) } },
+        { id: 'recipeNameButton', text: '레시피 이름', ref: recipeNameRef, handleClick: () => handleClickHander(recipeNameRef) },
+        { id: 'breadButton', text: '빵 선택', ref: breadRef, handleClick: () => handleClickHander(breadRef) },
+        { id: 'cheeseButton', text: '치즈 선택', ref: cheeseRef, handleClick: () => handleClickHander(cheeseRef) },
+        { id: 'toastingButton', text: '토스팅 여부', ref: toastingRef, handleClick: () => handleClickHander(toastingRef) },
+        { id: 'vegetableButton', text: '채소 선택', ref: vegetableRef, handleClick: () => handleClickHander(vegetableRef) },
+        { id: 'sauceButton', text: '소스 선택', ref: sauceRef, handleClick: () => handleClickHander(sauceRef) },
     ];
     const createContext = () => {
         const recipeContext: recipeContextType = {
@@ -165,14 +169,14 @@ const AddRecipe = ({ param }: { param: string }) => {
                     </div>
 
                     <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
-                        <RecipeNameSection prop={RecipeNameProp} ref={recipeNameRef} param={param}/>
-                        <AddMeatSection prop={addMeat} param={param}/>
-                        <BreadSection prop={bread} ref={breadRef}/>
-                        <CheeseSection prop1={cheese} prop2={addCheese} ref={cheeseRef}/>
-                        <AddIngredientsSection prop={addIngredient}/>
-                        <ToastingSection prop={toasting} ref={toastingRef}/>
-                        <VegetableSection prop1={vegetable} prop2={pickledVegetable} ref={vegetableRef}/>
-                        <SauceSection prop={sauce} ref={sauceRef}/>
+                        <RecipeNameSection prop={RecipeNameProp} ref={recipeNameRef} param={param} />
+                        <AddMeatSection prop={addMeat} param={param} />
+                        <BreadSection prop={bread} ref={breadRef} />
+                        <CheeseSection prop1={cheese} prop2={addCheese} ref={cheeseRef} />
+                        <AddIngredientsSection prop={addIngredient} />
+                        <ToastingSection prop={toasting} ref={toastingRef} />
+                        <VegetableSection prop1={vegetable} prop2={pickledVegetable} ref={vegetableRef} />
+                        <SauceSection prop={sauce} ref={sauceRef} />
 
                         <button className="bg-white rounded-md shadow-sm p-6" onClick={onClickHandler}>
                             <h3 className='text-xl font-[seoul-metro]'>작성완료</h3>
@@ -181,7 +185,7 @@ const AddRecipe = ({ param }: { param: string }) => {
                     </div>
                 </div>
 
-                <RecipeNav progressBarButtons={progressBarButtons} isComplete={isComplete} createContext={createContext}/>
+                <RecipeNav progressBarButtons={progressBarButtons} isComplete={isComplete} createContext={createContext} />
             </main>
         </>
     );
