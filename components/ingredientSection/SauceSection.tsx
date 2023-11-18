@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
 import { sauceNutrientArray } from '../../utils/menuArray';
 import IngredientsSection from './sub/IngredientsSection';
-import CheckBox from './sub/CheckBox';
 import EmptyCheckBox from './sub/EmptyCheckBox';
+import InputBox from './sub/InputBox';
 
 export type propsType = {
     prop: {
@@ -18,7 +18,7 @@ const SauceSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) => {
             <span>(최대3개)</span>
             <div className='p-4'>
                 {sauceNutrientArray.map((item) => (
-                    <CheckBox key={item.name} name={item.name} addContext='' checked={prop.array.includes(item.name)} onChange={prop.onChange}></CheckBox>
+                    <InputBox key={item.name} inputType='checkBox' name={item.name} addContext='' checked={prop.array.includes(item.name)} onChange={prop.onChange}></InputBox>
                 ))}
                 <EmptyCheckBox prop={prop} text='소스 없음'></EmptyCheckBox>
             </div>

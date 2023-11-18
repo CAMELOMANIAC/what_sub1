@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import IngredientsSection from './sub/IngredientsSection';
 import { breadNutrientArray } from '../../utils/menuArray';
-import RadioBox from './sub/RadioBox';
+import InputBox from './sub/InputBox';
 
 export type propsType = {
     prop: {
@@ -15,7 +15,7 @@ const BreadSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) => {
             <h3 className='text-xl font-[seoul-metro]'>빵 선택</h3>
             <ul className='p-2'>
                 {breadNutrientArray.map((item) => (
-                    <RadioBox key={item.name} name={item.name} addContext='' checked={prop.state === item.name} onChange={prop.onChange}></RadioBox>
+                    <InputBox key={item.name} inputType='radio' name={item.name} addContext='' checked={prop.state === item.name} onChange={prop.onChange}></InputBox>
                 ))}
             </ul>
         </IngredientsSection>

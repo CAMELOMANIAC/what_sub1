@@ -26,10 +26,7 @@ const AddMeatSection = ({ prop, param }: propsType) => {
                     {menuNutrientArray.filter(item => item.name !== '베지').map((item) => (
                         <li key={item.name} className='h-12 flex items-center'>
                             <label className='my-auto flex items-center gruop'>
-                                {prop.state === item.name ?
-                                    <FaDotCircle className='relative w-6 h-6 mr-2 text-green-600 border rounded-full group-hover:border-gray-500'></FaDotCircle> :
-                                    <FaDotCircle className='relative w-6 h-6 mr-2 text-white border rounded-full group-hover:border-1 group-hover:border-gray-500'></FaDotCircle>
-                                }
+                                <FaDotCircle className={`relative w-6 h-6 mr-2 rounded-full group-hover:border group-hover:border-gray-500 ${prop.state === item.name ? 'text-green-600 border-0' : 'text-white border'}`}></FaDotCircle>
                                 <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1 mr-2'>
                                     <img src={'/images/sandwich_menu/' + item.name + '.png'} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
                                 </div>

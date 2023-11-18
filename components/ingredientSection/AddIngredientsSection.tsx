@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ingredientsArray } from '../../utils/menuArray';
 import IngredientsSection from './sub/IngredientsSection';
-import CheckBox from './sub/CheckBox';
 import EmptyCheckBox from './sub/EmptyCheckBox';
+import InputBox from './sub/InputBox';
 
 export type propsType = {
     prop: {
@@ -21,7 +21,7 @@ const AddIngredientsSection = ({ prop }: propsType) => {
                 <ul className='mb-4 p-4'>
                     <EmptyCheckBox prop={prop} text='추가재료 없음' setIsShow={setIsShow}></EmptyCheckBox>
                     {ingredientsArray.map((item) => (
-                        <CheckBox key={item.name} name={item.name} addContext='' checked={prop.array.includes(item.name)} onChange={prop.onChange}></CheckBox>
+                        <InputBox key={item.name} inputType='radio' name={item.name} addContext='' checked={prop.array.includes(item.name)} onChange={prop.onChange}></InputBox>
                     ))}
                 </ul>
             </div>
