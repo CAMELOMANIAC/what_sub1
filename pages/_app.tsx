@@ -7,7 +7,7 @@ import { AppProps } from 'next/app';
 import { useEffect, useState } from 'react';
 import { Router } from 'next/router';
 // 전역적으로 사용되는 부분
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }: any) {
   
   const [isLoading,setIsLoading] = useState<boolean>(false);
   useEffect(()=>{
@@ -39,7 +39,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <nav className='mb-12'>{/*globalNav이 가리는 부분을 방지하는 여백*/}
           <GlobalNav></GlobalNav>
         </nav>
-        {isLoading ? <div>로딩중인데스</div>:<Component {...pageProps} />}
+        {isLoading ? <div>로딩중</div>:<Component {...pageProps} />}
       </Provider>
     </>
   );

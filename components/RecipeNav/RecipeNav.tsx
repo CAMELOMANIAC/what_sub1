@@ -40,7 +40,6 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
             const firstEntry = entries.reduce((first, entry) => {
                 return (entry.boundingClientRect.top < first.boundingClientRect.top) ? entry : first;
             });
-            console.log(firstEntry.target.id);
 
             if (firstEntry.isIntersecting) {
                 switch (firstEntry.target.id) {

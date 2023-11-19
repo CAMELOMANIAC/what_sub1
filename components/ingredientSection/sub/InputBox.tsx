@@ -6,7 +6,8 @@ export type propsType = {
     addContext: string,
     checked: boolean,
     onChange: (_e: React.ChangeEvent<HTMLInputElement>) => void,
-    inputType: string
+    inputType: string,
+    value: string
 }
 
 const InputBox = ({ name, addContext, checked, onChange, inputType }: propsType) => {

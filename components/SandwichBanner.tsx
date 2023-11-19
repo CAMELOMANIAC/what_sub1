@@ -165,7 +165,7 @@ const SandwichBanner = () => {
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <canvas ref={sandwichRef} className='mx-auto w-80 h-80'></canvas>
             {forkPosition && (
-                <img
+                <img 
                     src='/images/fork.png'
                     alt='fork'
                     style={{
