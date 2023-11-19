@@ -29,36 +29,36 @@ const SandwichBanner = () => {
             const gridHeight = rect.height / rows;
             const gridValues = initializeGridValues(rows, cols, gridWidth, gridHeight);
 
-            const handleMouseUp = (event) => {
-                const { gridX, gridY } = getGridCoordinates(event, rect, gridWidth, gridHeight);
-
-                if (isValidClick(gridValues, gridX, gridY, cols)) {
-                    updateGridAndRender(event, context, gridValues, gridX, gridY, gridWidth, gridHeight, rect, scale);
-                }
-            };
-
-            const handleMouseMove = (event) => {
-                const { gridX, gridY } = getGridCoordinates(event, rect, gridWidth, gridHeight);
-
-                if (isValidMouseMove(gridValues, gridX, gridY, cols)) {
-                    handleForkPosition(event, rect, scale);
-                } else {
-                    setForkPosition({ x: 0, y: -100, angle: 0 });
-                }
-            };
-
-            canvas.addEventListener('mouseup', handleMouseUp);
-            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', (event)=>handleMouseUp(event,rect, gridWidth, gridHeight,gridValues,cols,scale));
+            canvas.addEventListener('mousemove', (event)=>handleMouseMove(event,rect, gridWidth, gridHeight,gridValues,cols,scale));
 
             return () => {
-                canvas.removeEventListener('mouseup', handleMouseUp);
-                canvas.removeEventListener('mousemove', handleMouseMove);
+                canvas.removeEventListener('mouseup', (event)=>handleMouseUp(event,rect, gridWidth, gridHeight,gridValues,cols,scale));
+                canvas.removeEventListener('mousemove', (event)=>handleMouseMove(event,rect, gridWidth, gridHeight,gridValues,cols,scale));
             };
         };
-
+        //생성한 캔버스를 이미지에 넣기
         image.onload = handleImageLoad;
         image.src = '/images/front_banner.png';
 
+        //클릭시 지우도록 하는 이벤트
+        const handleMouseUp = (event,rect, gridWidth, gridHeight,gridValues,cols,scale) => {
+            const { gridX, gridY } = getGridCoordinates(event, rect, gridWidth, gridHeight);
+
+            if (isValidClick(gridValues, gridX, gridY, cols)) {
+                updateGridAndRender(event, context, gridValues, gridX, gridY, gridWidth, gridHeight, rect, scale);
+            }
+        };
+        //마우스 이동시 포크 움직이는 이벤트
+        const handleMouseMove = (event,rect, gridWidth, gridHeight,gridValues,cols,scale) => {
+            const { gridX, gridY } = getGridCoordinates(event, rect, gridWidth, gridHeight);
+
+            if (isValidMouseMove(gridValues, gridX, gridY, cols)) {
+                handleForkPosition(event, rect, scale);
+            } else {
+                setForkPosition({ x: 0, y: -100, angle: 0 });
+            }
+        };
         const initializeGridValues = (rows, cols, gridWidth, gridHeight) => {
             // 그리드Values 배열 초기화
             const gridValues: boolean[][] = [];
@@ -119,8 +119,7 @@ const SandwichBanner = () => {
             context.clip();
             context.clearRect(0, 0, rect.width * scale, rect.height * scale);
             context.restore();
-            
-            // 그리드 값 업데이트
+    
             const imageData = context.getImageData(gridX * gridWidth, gridY * gridHeight, gridWidth, gridHeight);
     
             let isEmpty = true;
