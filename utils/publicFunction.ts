@@ -17,7 +17,7 @@ export const loadMenuLike = async () => {
 
 //id쿠키에서 id값 가져오는 함수
 export const getCookieValue = (key) => {
-    let cookieKey = key + "=";
+    const cookieKey = key + "=";
     let result = "";
     const cookieArr = document.cookie.split(";");
 

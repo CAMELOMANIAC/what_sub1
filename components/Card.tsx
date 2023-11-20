@@ -1,13 +1,13 @@
 import { PiHeartStraight,PiHeartStraightFill } from 'react-icons/Pi';
 import { HiOutlineChatBubbleLeft } from 'react-icons/Hi2';
 import Link from 'next/link';
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { actionAddRecipeLike,actionRemoveRecipeLike } from "../redux/reducer/userReducer";
 import { recipeType } from '../pages/api/recipe';
 
-const Card = ({ recipe } : {recipe:recipeType}) => {
+const Card = forwardRef<HTMLDivElement, recipeType>(({ recipe },ref) => {
     const [likeCount, setLikeCount] = useState<number>(parseInt(recipe.like_count));
     const recipeTag: string[] = [];
     const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
@@ -48,7 +48,7 @@ const Card = ({ recipe } : {recipe:recipeType}) => {
     }
 
     return (
-        <article className='col-span-2 aspect-[4/3] bg-white rounded-xl p-6 shadow-sm hover:shadow-lg flex flex-col hover:scale-105 transition-transform'>
+        <article className='col-span-2 aspect-[4/3] bg-white rounded-xl p-6 shadow-sm hover:shadow-lg flex flex-col hover:scale-105 transition-transform' ref={ref}>
             <div className='flex flex-row items-center'>
                 <div className='inline-block w-[60px] overflow-hidden relative rounded-md aspect-square mr-2'>
                     <img src={`/images/sandwich_menu/${recipe.sandwich_name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]' alt='Card_sandwich_type'></img>
@@ -74,8 +74,10 @@ const Card = ({ recipe } : {recipe:recipeType}) => {
 
         </article>
     );
-};
+});
 ///나중에 React.memo를 사용해서 최적화해야함
 // 전역상태값 likeRecipe를 부모 페이지 컴포넌트로부터 prop로 받도록 바꿔서 likeRecipe를 사용하는 모든 카드 컴포넌트가 재렌더링하지 않도록
 // 부모 페이지 컴포넌트가 재랜더링이 필요한 컴포넌트에만 props값을 변경해서 전달하게끔 해야됨
+
+Card.displayName = 'Card';
 export default Card;

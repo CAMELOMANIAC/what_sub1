@@ -7,16 +7,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
 import { getCookieValue, loadMenuLike, loadRecipeLike } from '../utils/publicFunction';
 import { RootState } from '../redux/store';
-import { recipeType } from './api/recipe';
+import { recipeContextType } from '../interfaces/AddRecipe';
 
 const Recipes = () => {
     const router = useRouter();
     const bannerRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
-    const [recipes, setRecipes] = useState<recipeType[]>([]);
+    const [recipes, setRecipes] = useState<recipeContextType[]>([]);
     const [param, setParam] = useState<string | string[]>(router.query.param)
     const [query, setQuery] = useState<string | string[]>(router.query.query)
     const filter = useSelector((state: RootState) => state.page.FILTER_ARRAY)
+    const [page, setPage] = useState<number>(0);
 
     const disptach = useDispatch();
     //새로고침시 정보 불러오는용
@@ -24,12 +25,10 @@ const Recipes = () => {
         if (getCookieValue('user').length > 0) {//로그인 정보가 있을경우
             loadRecipeLike().then(data => {//레시피 좋아요 정보 가져와서 전역 상태값에 저장
                 disptach(actionSetRecipeLike(data))
-                console.log(data)
             })
 
             loadMenuLike().then(data => {//메뉴 좋아요 정보 가져와서 전역 상태값에 저장
                 disptach(actionSetMenuLike(data))
-                console.log(data)
             })
         }
     }, [])
@@ -51,14 +50,16 @@ const Recipes = () => {
         setParam(router.query.param)
 
         if (Object.keys(router.query).length !== 0) {
-            console.log(router.query)
             if (query) {
-                getRecipes(String(query), 0, 9, filterQuery)
+                getRecipes(String(query), 0, 12, filterQuery)
+                setPage(12)
             } if (param) {
-                getRecipes(String(param), 0, 8, ['메뉴이름'])
+                getRecipes(String(param), 0, 11, ['메뉴이름'])
+                setPage(11)
             }
         } else {
-            getRecipes('', 0, 9, filterQuery)
+            getRecipes('', 0, 12, filterQuery)
+            setPage(12)
         }
 
     }, [router.query, query, param]);
@@ -76,12 +77,47 @@ const Recipes = () => {
             })
             .then(data => {
                 console.log('서버 응답:', data);
-                setRecipes(data);
+                setRecipes(prev => [...prev, ...data]);
             })
             .catch(error => {
                 console.error('에러 발생:', error);
             });
     }
+
+    // 타겟 요소 선택
+    const lastRecipeRef = useRef<HTMLDivElement | null>(null);
+    useEffect(() => {
+        console.log(lastRecipeRef.current)
+    }, [lastRecipeRef.current])
+    useEffect(() => {
+        console.log('page' + page)
+    }, [page])
+
+    // 콜백 함수 정의
+    const callback = (entries, _observer) => {
+        entries.forEach(entry => {
+            // 타겟 요소가 화면에 보이는 경우
+            if (entry.isIntersecting) {
+                getRecipes('', page, page + 3, filterQuery)
+                setPage(prev => prev + 3)
+            }
+        });
+    };
+    // 컴포넌트가 마운트된 후에 타겟 요소 관찰 시작
+    useEffect(() => {
+        // Intersection Observer 인스턴스 생성
+        const observer = new IntersectionObserver(callback);
+        if (lastRecipeRef.current) {
+            observer.observe(lastRecipeRef.current);
+        }
+
+        // 컴포넌트가 언마운트될 때 관찰 중지
+        return () => {
+            if (lastRecipeRef.current) {
+                observer.unobserve(lastRecipeRef.current);
+            }
+        };
+    }, [recipes]);
 
     return (
         <>
@@ -95,7 +131,7 @@ const Recipes = () => {
                 <div className='grid grid-cols-6 grid-flow-row gap-2 w-[1024px]'>
                     {query !== '' && param && <EmptyCard></EmptyCard>}
                     {recipes.map((recipe, index) => (
-                        <Card key={index} recipe={recipe}></Card>
+                        <Card key={index} recipe={recipe} ref={lastRecipeRef}></Card>
                     ))}
                 </div>
             </main>
