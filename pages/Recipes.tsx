@@ -166,7 +166,7 @@ const Recipes = () => {
                     ))}
                     {loading === loadingState.pending && <StyledDiv>레시피를 불러오고 있어요</StyledDiv>}
                     {loading === loadingState.error && <StyledDiv>레시피 불러오는 중에 문제가 발생했어요</StyledDiv>}
-                    {isNoMore && loading === loadingState.fullfiled && <div className='bg-white max-w-5xl w-[1024px] h-64 flex justify-center items-center'>레시피를 모두 읽었어요</div>}
+                    {isNoMore && loading === loadingState.fullfiled && <div className='max-w-5xl h-52 flex justify-center items-center'>레시피를 모두 읽었어요</div>}
                 </div>
             </main>
         </>
