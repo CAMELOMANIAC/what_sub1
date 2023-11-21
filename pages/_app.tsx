@@ -18,6 +18,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       setIsLoading(false);
     };
   
+    //next.js는 라우터관련 이벤트를 제공해 주므로 이걸로 로딩 상태값 변경
     Router.events.on('routeChangeStart', start);
     Router.events.on('routeChangeComplete', end);
     Router.events.on('routeChangeError', end);
