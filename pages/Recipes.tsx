@@ -94,6 +94,7 @@ const Recipes = () => {
         //레시피 로딩 상태
         setLoading(loadingState.pending)
         setIsNoMore(false)
+        console.log(filter)
         //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩함수안써도됨
         fetch('/api/recipe?query=' + encodeURIComponent(query) + `&offset=${offset}&limit=${limit}&filter=${filter}`)

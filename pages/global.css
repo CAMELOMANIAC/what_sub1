@@ -32,7 +32,7 @@
     background-image: url('/images/타일.svg');
     background-repeat: repeat;
     background-size: auto;
-    z-index: -1;
+    z-index: -2;
   }
 
   /*인풋버튼 기본 내용제거버튼 숨기기*/
