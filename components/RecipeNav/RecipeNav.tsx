@@ -40,7 +40,7 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
             const firstEntry = entries.reduce((first, entry) => {
                 return (entry.boundingClientRect.top < first.boundingClientRect.top) ? entry : first;
             });
-            console.log(firstEntry.target.id);
+            //console.log(firstEntry.target.id);
 
             if (firstEntry.isIntersecting) {
                 switch (firstEntry.target.id) {
@@ -50,7 +50,6 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
                     case 'toasting': setActiveSection(3); break;
                     case 'vegetable': setActiveSection(4); break;
                     case 'sauce': setActiveSection(5); break;
-                    // ... (다른 case들)
                     default: break;
                 }
             }

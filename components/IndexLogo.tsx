@@ -50,7 +50,10 @@ const IndexLogo =() => {
         }
     }
     const queryPushHandler = () => {
-        router.push(`/Recipes?query=${searchQuery}`)
+        if (searchQuery !== '')
+            router.push(`/Recipes?query=${searchQuery}`)
+        else 
+            router.push(`/Recipes`)
     }
 
 
