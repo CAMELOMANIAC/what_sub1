@@ -19,8 +19,12 @@ const LineDeco = styled.div`
     z-index: -1;
   }
 `
+type PropsType = {
+    prevHandler: () => void,
+    nextHandler: () => void,
+}
 
-const IndexLogo = () => {
+const IndexLogo = ({prevHandler,nextHandler}:PropsType) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [isFocus, setFocus] = useState<boolean>(false);
@@ -64,7 +68,7 @@ const IndexLogo = () => {
         <div className='flex flex-col items-center justify-center mx-auto mb-4 rounded-full w-[100%]'>
             <SandwichBanner />
             <div className='flex flex-row'>
-                <button className='flex justify-center items-center font-[seoul-metro] text-xl text-white mr-4'><MdOutlineArrowBack className='text-2xl'></MdOutlineArrowBack>이전</button>
+                <button className='flex justify-center items-center font-[seoul-metro] text-xl text-white mr-4' onClick={prevHandler}><MdOutlineArrowBack className='text-2xl'></MdOutlineArrowBack>이전</button>
                 {<LineDeco>
                     <div className='w-auto bg-white border-[12px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center'>
                         <span className='flex justify-center items-center w-[70px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square mr-6'>
@@ -83,7 +87,7 @@ const IndexLogo = () => {
                     </div>
                 </LineDeco>
                 }
-                <button className='flex justify-center items-center font-[seoul-metro] text-xl text-white ml-4'>다음<MdOutlineArrowForward className='text-2xl'></MdOutlineArrowForward></button>
+                <button className='flex justify-center items-center font-[seoul-metro] text-xl text-white ml-4' onClick={nextHandler}>다음<MdOutlineArrowForward className='text-2xl'></MdOutlineArrowForward></button>
             </div>
         </div>
     );
