@@ -15,7 +15,6 @@ export async function getServerSideProps() {
   };
 }
 
-
 const IndexPage = ({ recipeData }: { recipeData: recipeContextType[] }) => {
 
   return (

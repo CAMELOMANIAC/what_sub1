@@ -4,7 +4,7 @@ const ADD_FILTER_TYPE = 'ACTION_ADD_FILTER_TYPE';
 
 // 초기 상태 정의
 const initialState = {
-  FILTER_ARRAY: ['메뉴이름', '레시피제목', '작성자', '재료', '태그']
+  FILTER_ARRAY: ['메뉴이름', '레시피제목', '작성자', '재료', '태그'],
 };
 
 // 리듀서 정의

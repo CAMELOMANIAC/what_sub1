@@ -7,7 +7,7 @@ import { RootState } from '../redux/store';
 import { actionAddRecipeLike,actionRemoveRecipeLike } from "../redux/reducer/userReducer";
 import { recipeType } from '../pages/api/recipe';
 
-const Card = forwardRef<HTMLDivElement, recipeType>(({ recipe },ref) => {
+const Card = forwardRef<HTMLDivElement, recipeType>(({ recipe,className },ref) => {
     const [likeCount, setLikeCount] = useState<number>(parseInt(recipe.like_count));
     const recipeTag: string[] = [];
     const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
@@ -48,7 +48,7 @@ const Card = forwardRef<HTMLDivElement, recipeType>(({ recipe },ref) => {
     }
 
     return (
-        <article className='col-span-2 aspect-[4/3] bg-white rounded-xl p-6 shadow-sm hover:shadow-lg flex flex-col hover:scale-105 transition-transform' ref={ref}>
+        <article className={`col-span-2 aspect-[4/3] bg-white rounded-xl p-6 shadow-sm hover:shadow-lg flex flex-col hover:scale-105 transition-transform ${className}`} ref={ref}>
             <div className='flex flex-row items-center'>
                 <div className='inline-block w-[60px] overflow-hidden relative rounded-md aspect-square mr-2'>
                     <img src={`/images/sandwich_menu/${recipe.sandwich_name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]' alt='Card_sandwich_type'></img>
