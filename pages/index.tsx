@@ -6,7 +6,6 @@ import IndexLogo from '../components/IndexLogo';
 import Card from '../components/Card';
 import { styled } from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
-
 const CarouselContainer = styled.div`
     &::-webkit-scrollbar {
         display: none;
@@ -28,6 +27,7 @@ export async function getServerSideProps() {
     props: { recipeData: await loadTotalMenuInfo() },
   };
 }
+
 
 const IndexPage = ({ recipeData }: { recipeData: recipeContextType[] }) => {
   const [recipeArray] = useState([...recipeData, ...recipeData]);
@@ -56,40 +56,40 @@ const IndexPage = ({ recipeData }: { recipeData: recipeContextType[] }) => {
     }
   }, [isMoving])
 
-
   //캐러셀 사용자가 움직이는 기능
   const [currentItem, setCurrentItem] = useState<number>(0);
+
+
   useEffect(() => {
     cardRefs[currentItem].scrollIntoView({ behavior: 'smooth', inline: 'start' })
   }, [currentItem])
 
+  //setTimeout변수를 저장한 타이머 변수가 렌더링시 매번 초기화되어서 (상태값을 변경하니까 변수들은 초기화됨)
+  //clearTimeout으로 지워지지 않았는데 useRef로 timer변수의 참조를 저장하면 렌더링해도 초기화되지 않음
+  const timer = useRef<NodeJS.Timeout>();
   const prevItem = () => {
-    setCurrentItem(prev => (prev > 1) ? prev - 1 : recipeArray.length / 2 - 1)
-    setIsMoving(false)
-    let timer = setTimeout(() => {
-      setIsMoving(true)
-
-      if (isMoving === false) {
-        clearTimeout(timer);
-        console.log('타이머 취소')
-        timer = setTimeout(() => { setIsMoving(true); console.log('타이머 재실행') }, 2000);
-      }
-    }, 1000);
-  }
-
+    setCurrentItem(prev => (prev > 1) ? prev - 1 : recipeArray.length / 2 - 1);
+    setIsMoving(false);
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+    timer.current = setTimeout(() => {
+      setIsMoving(true);
+      console.log('완료됨');
+    }, 5000);
+  };
+  
   const nextItem = () => {
     setCurrentItem(prev => (prev < recipeArray.length / 2 - 1) ? prev + 1 : 0)
-    setIsMoving(false)
-    let timer = setTimeout(() => {
-      setIsMoving(true)
-
-      if (isMoving === false) {
-        clearTimeout(timer);
-        console.log('타이머 취소')
-        timer = setTimeout(() => { setIsMoving(true); console.log('타이머 재실행') }, 2000);
-      }
+    setIsMoving(false);
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+    timer.current = setTimeout(() => {
+      setIsMoving(true);
+      console.log('완료됨');
     }, 1000);
-  }
+  };
 
   return (
     <main className=' w-full max-w-screen-xl mx-auto'>
