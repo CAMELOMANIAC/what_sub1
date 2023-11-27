@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import MenusSelectorGridItem from '../components/MenusSelectorGridItem';
-import Link from 'next/link';
 import { FiSearch } from 'react-icons/fi';
-import { IoIosArrowForward } from 'react-icons/io';
-import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/Pi';
-import { RiPencilFill } from 'react-icons/ri';
-import styled from 'styled-components';
 import { menuArray, menuArrayType } from '../utils/menuArray';
 import { checkSession } from '../utils/checkSession';
-import { getCookieValue, loadMenuLike } from '../utils/publicFunction';
-import { useDispatch, useSelector } from 'react-redux';
-import { actionAddMenuLike, actionRemoveMenuLike, actionSetMenuLike } from '../redux/reducer/userReducer';
+import { loadMenuLike } from '../utils/publicFunction';
+import { useDispatch } from 'react-redux';
+import { actionSetMenuLike } from '../redux/reducer/userReducer';
 import { totalMenuInfoType } from '../pages/api/menu';
-import { RootState } from '../redux/store';
+import MenusBanner from '../components/MenusBanner';
 
-const StyledDiv = styled.div`
-    background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
-`;
 
 export async function getServerSideProps({ req }) {
     const cookie = req.headers.cookie;
@@ -36,11 +28,16 @@ export async function getServerSideProps({ req }) {
     };
 }
 
-const Menus = ({ totalMenuInfo }: { totalMenuInfo: totalMenuInfoType[] }) => {
+type props = {
+    sessionCheck: boolean,
+    totalMenuInfo: totalMenuInfoType[]
+}
+
+const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
     const fixedMenuArray: menuArrayType[] = menuArray;
     fixedMenuArray.map(menuArray => {
         totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)
-            ? ( menuArray.recipes = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.recipeCount ?? '0'),
+            ? (menuArray.recipes = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.recipeCount ?? '0'),
                 menuArray.favorit = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.likeCount ?? '0'),
                 menuArray.likeRecipe = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.recipeLikeCount ?? '0'))
             : null
@@ -55,7 +52,6 @@ const Menus = ({ totalMenuInfo }: { totalMenuInfo: totalMenuInfoType[] }) => {
         setSearchQuery(e.target.value);
     }
     const searchResult = menuArray.filter((item: { name: string }) => item.name.includes(searchQuery))
-    const menuLikeArray = useSelector((state: RootState) => state.user.menuLikeArray)
 
     //정렬
     const [order, setOrder] = useState('favorit');
@@ -119,9 +115,9 @@ const Menus = ({ totalMenuInfo }: { totalMenuInfo: totalMenuInfoType[] }) => {
     }, [order]);
 
     const dispatch = useDispatch();
-    //새로고침시 정보 불러오는용
+    //새로고침시 좋아요 정보 가져오기
     useEffect(() => {
-        if (getCookieValue('user').length > 0) {//로그인 정보가 있을경우
+        if (sessionCheck) {//로그인 세션이 존재하면
             loadMenuLike().then(data => {//메뉴 좋아요 정보 가져와서 전역 상태값에 저장
                 dispatch(actionSetMenuLike(data))
                 console.log(data)
@@ -129,75 +125,10 @@ const Menus = ({ totalMenuInfo }: { totalMenuInfo: totalMenuInfoType[] }) => {
         }
     }, [])
 
-    const [menuLike, setMenuLike] = useState<number>(0);
-    //메뉴선택시 메뉴 좋아요 갯수 정보 불러오는용
-    useEffect(() => {
-        fetch(`/api/menu?likeMenuCount=${selected.name}`).then(
-            response => response.json()
-        ).then(
-            data => setMenuLike(parseInt(data))
-        )
-    }, [selected])
-
-    const insertMenuLike = async (menuName: string) => {
-        const response = await fetch('/api/menu?insert=menuLike', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: 'include',
-            body: JSON.stringify(menuName)
-        })
-        return response.json();
-    }
-
-    const menuLikeHandler = async (menuName: string) => {
-        const result = await insertMenuLike(menuName);
-        if (result === 'insertMenuLike성공') {
-            dispatch(actionAddMenuLike(menuName))
-            setMenuLike(prev => prev + 1)
-        }
-        else if (result === 'deleteMenuLike성공') {
-            dispatch(actionRemoveMenuLike(menuName))
-            setMenuLike(prev => prev - 1)
-        }
-    }
-    
-    const userName = useSelector((state: RootState) => state.user.userName);
 
     return (
         <>
-            <StyledDiv className="absolute w-screen min-w-[1024px] right-0 mx-auto h-[300px] grid grid-cols-6 bg-white overflow-hidden">
-                {/*메뉴 간단정보*/}
-                <div className="col-span-3 h-[300px]">
-                    <img src={`/images/sandwich_menu/${selected.name}.png`} alt={selected.name} className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></img>
-                </div>
-                <div className="col-span-3 whitespace-pre-line flex flex-col justify-center">
-                    <div className='flex flex-row items-center text-white pb-4'>
-                        <h1 className='font-bold text-3xl mr-4'>{selected.name}</h1>
-                        <button className='flex items-center text-xl' onClick={() => menuLikeHandler(selected.name)}>
-                            {menuLikeArray.includes(selected.name) ? <PiHeartStraightFill className='inline-block' /> : <PiHeartStraight className='inline-block' />}{menuLike}
-                        </button>
-                    </div>
-                    <div className='text-white/70 mb-2'>{selected.summary}</div>
-                    <div className='flex flex-row'>{selected.ingredients.map((item) =>
-                        <img src={'/images/sandwich_menu/ingredients/' + item} key={item} className='object-cover w-10 aspect-square rounded-md mr-1 mb-8' alt='item'></img>
-                    )}</div>
-                    <div className='flex flex-row'>
-                        <Link href={{
-                            pathname: '/Recipes',
-                            query: { param: selected.name }
-                        }}
-                            className='font-bold rounded-full px-3 py-2 mr-2 text-black bg-yellow-500 flex justify-center items-center'>자세히 보기<IoIosArrowForward className='inline-block text-xl' /></Link>
-                        <Link href={userName &&{
-                            pathname: '/AddRecipe',
-                            query: { param: selected.name }
-                        }}
-                            className='font-bold rounded-full px-3 py-2 mr-2 text-white underline decoration-1 underline-offset-3 flex justify-center items-center'>레시피 작성<RiPencilFill className='inline-block text-xl' /></Link>
-                    </div>
-                </div>
-            </StyledDiv>
-
+            <MenusBanner selected={selected} sessionCheck={sessionCheck}></MenusBanner>
             <main className='w-full max-w-screen-xl mx-auto pt-2 mt-[calc(300px+3rem)]'>
                 <div className="grid grid-cols-6 gap-2 w-[1024px]">
                     <div className="col-span-2 border bg-white h-fit p-2">
