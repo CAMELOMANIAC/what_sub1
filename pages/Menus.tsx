@@ -70,7 +70,6 @@ const Menus = ({ totalMenuInfo }: { totalMenuInfo: totalMenuInfoType[] }) => {
             }
             return 'favorit';
         });
-        console.log(order);
     }
 
     const orderChangeRecipes = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -163,6 +162,8 @@ const Menus = ({ totalMenuInfo }: { totalMenuInfo: totalMenuInfoType[] }) => {
             setMenuLike(prev => prev - 1)
         }
     }
+    
+    const userName = useSelector((state: RootState) => state.user.userName);
 
     return (
         <>
@@ -184,13 +185,13 @@ const Menus = ({ totalMenuInfo }: { totalMenuInfo: totalMenuInfoType[] }) => {
                     )}</div>
                     <div className='flex flex-row'>
                         <Link href={{
-                            pathname: '/Recipes',  // 이동할 페이지의 경로
-                            query: { param: selected.name }  /* URL에 전달할 쿼리 매개변수*/
+                            pathname: '/Recipes',
+                            query: { param: selected.name }
                         }}
                             className='font-bold rounded-full px-3 py-2 mr-2 text-black bg-yellow-500 flex justify-center items-center'>자세히 보기<IoIosArrowForward className='inline-block text-xl' /></Link>
-                        <Link href={{
-                            pathname: '/AddRecipe',  // 이동할 페이지의 경로
-                            query: { param: selected.name }  /* URL에 전달할 쿼리 매개변수*/
+                        <Link href={userName &&{
+                            pathname: '/AddRecipe',
+                            query: { param: selected.name }
                         }}
                             className='font-bold rounded-full px-3 py-2 mr-2 text-white underline decoration-1 underline-offset-3 flex justify-center items-center'>레시피 작성<RiPencilFill className='inline-block text-xl' /></Link>
                     </div>

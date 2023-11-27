@@ -62,8 +62,6 @@ const IndexLogo = ({prevHandler,nextHandler}:PropsType) => {
             router.push(`/Recipes`)
     }
 
-
-
     return (
         <div className='flex flex-col items-center justify-center mx-auto mb-4 rounded-full w-[100%]'>
             <SandwichBanner />

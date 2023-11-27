@@ -59,9 +59,9 @@ const IndexPage = ({ recipeData }: { recipeData: recipeContextType[] }) => {
   //캐러셀 사용자가 움직이는 기능
   const [currentItem, setCurrentItem] = useState<number>(0);
 
-
   useEffect(() => {
     cardRefs[currentItem].scrollIntoView({ behavior: 'smooth', inline: 'start' })
+    console.log(currentItem)
   }, [currentItem])
 
   //setTimeout변수를 저장한 타이머 변수가 렌더링시 매번 초기화되어서 (상태값을 변경하니까 변수들은 초기화됨)
@@ -75,8 +75,7 @@ const IndexPage = ({ recipeData }: { recipeData: recipeContextType[] }) => {
     }
     timer.current = setTimeout(() => {
       setIsMoving(true);
-      console.log('완료됨');
-    }, 5000);
+    }, 500);
   };
   
   const nextItem = () => {
@@ -87,14 +86,13 @@ const IndexPage = ({ recipeData }: { recipeData: recipeContextType[] }) => {
     }
     timer.current = setTimeout(() => {
       setIsMoving(true);
-      console.log('완료됨');
-    }, 1000);
+    }, 500);
   };
 
   return (
     <main className=' w-full max-w-screen-xl mx-auto'>
       <IndexLogo prevHandler={prevItem} nextHandler={nextItem} />
-      <Carousel cardRefs={cardRefs} recipeArray={recipeArray} crouselRef={crouselRef} setCurrentItem={setCurrentItem}>
+      <Carousel cardRefs={cardRefs} recipeArray={recipeArray} crouselRef={crouselRef}>
         <CarouselContainer className='max-w-[100vw] pt-12 p-5 flex flex-row gap-2 overflow-x-auto' ref={crouselRef}>
           {recipeArray.map((recipe, index) => (
             <Card key={index} recipe={recipe} ref={(element) => cardRefs[index] = element} id={index} className=''></Card>

@@ -1,15 +1,15 @@
-import {HiPlus} from 'react-icons/hi';
+import { HiPlus } from 'react-icons/hi';
 import { useRouter } from 'next/router';
-
-
-
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const EmptyCard = () => {
-    const router=useRouter();
+    const router = useRouter();
     const param = router.query.param
+    const userName = useSelector((state: RootState) => state.user.userName);
 
-    const clickHandler = ()=>(
-        router.push(`/AddRecipe?param=${encodeURIComponent(String(param))}`)
+    const clickHandler = () => (
+        userName && router.push(`/AddRecipe?param=${encodeURIComponent(String(param))}`)
     )
 
     return (
