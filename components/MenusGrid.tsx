@@ -4,7 +4,7 @@ import { FiSearch } from 'react-icons/fi';
 import { menuArray, menuArrayType } from '../utils/menuArray';
 
 type propsType = {
-    setSelected : React.Dispatch<React.SetStateAction<menuArrayType>>
+    setSelected: React.Dispatch<React.SetStateAction<menuArrayType>>
 }
 
 const MenusGrid = ({ setSelected }: propsType) => {
@@ -28,28 +28,19 @@ const MenusGrid = ({ setSelected }: propsType) => {
                 <button className={`border-y py-2 w-full text-xs ${menuType === 3 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(3)}>프리미엄</button>
                 <button className={`border rounded-r py-2 w-full text-xs ${menuType === 4 ? 'bg-green-600 text-white' : ''}`} onClick={() => setMenuType(4)}>신제품</button>
             </div>
+            
+            <div className='grid grid-cols-5 pt-2 gap-2 relative'>
+                {searchResult.map((index) => (
+                    (menuType === 0 || index.type === menuType) &&
+                    <MenusSelectorGridItem
+                        menuName={index.name}
+                        src={`/images/sandwich_menu/${index.name}.png`}
+                        key={index.name}
+                        clickHandler={() => setSelected(index)}
+                    />
+                ))}
+            </div>
 
-            {menuType === 0 &&
-                <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                    {searchResult.map((index) => (<MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
-                </div>
-            }{menuType === 1 &&
-                <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                    {searchResult.map((index) => (index.type === 1 && <MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
-                </div>
-            }{menuType === 2 &&
-                <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                    {searchResult.map((index) => (index.type === 2 && <MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
-                </div>
-            }{menuType === 3 &&
-                <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                    {searchResult.map((index) => (index.type === 3 && <MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
-                </div>
-            }{menuType === 4 &&
-                <div className='grid grid-cols-5 pt-2  gap-2 relative'>
-                    {searchResult.map((index) => (index.type === 4 && <MenusSelectorGridItem menuName={index.name} src={`/images/sandwich_menu/${index.name}.png`} key={index.name} clickHandler={() => setSelected(index)} />))}
-                </div>
-            }
         </div>
     );
 };

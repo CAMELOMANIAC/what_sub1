@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { menuArray, menuArrayType } from '../utils/menuArray';
 
 type propsType = {
-    setSelected : React.Dispatch<React.SetStateAction<menuArrayType>>
+    setSelected: React.Dispatch<React.SetStateAction<menuArrayType>>
 }
-const MenusList = ({setSelected}:propsType) => {
+const MenusList = ({ setSelected }: propsType) => {
     //정렬
     const [order, setOrder] = useState('favorit');
     const arrayTemplate: { name: string, favorit: string, recipes: string, likeRecipe: string, matches: string } = {
@@ -15,8 +15,7 @@ const MenusList = ({setSelected}:propsType) => {
         setOrder(prevOrder => {
             if (id === 'favorit' && prevOrder === 'favorit') {
                 return 'reverseFavorit';
-            }
-            else if (id === 'favorit' && prevOrder === 'reverseFavorit') {
+            } else if (id === 'favorit' && prevOrder === 'reverseFavorit') {
                 return 'favorit';
             }
             return 'favorit';
@@ -28,8 +27,7 @@ const MenusList = ({setSelected}:propsType) => {
         setOrder(prevOrder => {
             if (id === 'recipes' && prevOrder === 'recipes') {
                 return 'reverseRecipes';
-            }
-            else if (id === 'recipes' && prevOrder === 'reverseRecipes') {
+            } else if (id === 'recipes' && prevOrder === 'reverseRecipes') {
                 return 'recipes';
             }
             return 'recipes';
@@ -54,20 +52,32 @@ const MenusList = ({setSelected}:propsType) => {
 
     useEffect(() => {
         const sorted = [...menuArray];
-        if (order === 'favorit')
-            sorted.sort((a, b) => (b.favorit - a.favorit));
-        if (order === 'reverseFavorit')
-            sorted.sort((a, b) => (a.favorit - b.favorit));
-        if (order === 'recipes')
-            sorted.sort((a, b) => (b.recipes - a.recipes));
-        if (order === 'reverseRecipes')
-            sorted.sort((a, b) => (a.recipes - b.recipes));
-        if (order === 'likeRecipe')
-            sorted.sort((a, b) => (b.likeRecipe - a.likeRecipe));
-        if (order === 'reverselikeRecipe')
-            sorted.sort((a, b) => (a.likeRecipe - b.likeRecipe));
+
+        switch (order) {
+            case 'favorit':
+                sorted.sort((a, b) => (b.favorit - a.favorit));
+                break;
+            case 'reverseFavorit':
+                sorted.sort((a, b) => (a.favorit - b.favorit));
+                break;
+            case 'recipes':
+                sorted.sort((a, b) => (b.recipes - a.recipes));
+                break;
+            case 'reverseRecipes':
+                sorted.sort((a, b) => (a.recipes - b.recipes));
+                break;
+            case 'likeRecipe':
+                sorted.sort((a, b) => (b.likeRecipe - a.likeRecipe));
+                break;
+            case 'reverselikeRecipe':
+                sorted.sort((a, b) => (a.likeRecipe - b.likeRecipe));
+                break;
+            default:
+                break;
+        }
         setSortedArray(sorted);
     }, [order]);
+
     return (
         <div className="col-span-4 border bg-white relative w-full divide-y text-sm">
             {/*위쪽 라벨 */}
@@ -82,7 +92,7 @@ const MenusList = ({setSelected}:propsType) => {
                     id='recipes' onClick={orderChangeRecipes}>{arrayTemplate.recipes}</button>
                 <span className="inline-block w-[30%] text-center">{arrayTemplate.matches}</span>
             </div>
-            {/*메뉴 리스트 */}
+            {/*실제 리스트 */}
             {sortedArray?.map((item, index) => (
                 <button key={index} className='flex items-stretch w-full' onClick={() => setSelected(item)}>
                     <span className="flex justify-center items-center  w-[10%] text-center text-gray-400">{index + 1}</span>
