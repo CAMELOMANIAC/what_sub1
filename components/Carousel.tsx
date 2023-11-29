@@ -1,11 +1,11 @@
 import React, { ReactNode, RefObject, useEffect } from 'react';
-import { recipeContextType } from '../interfaces/AddRecipe';
+import { recipeType } from '../interfaces/api/recipes';
 
 type PropsType = {
     children?: ReactNode,
     cardRefs: RefObject<HTMLDivElement[]>,
     crouselRef: RefObject<HTMLDivElement>,
-    recipeArray: recipeContextType[],
+    recipeArray: recipeType[],
 };
 
 const Carousel = ({ children, cardRefs, recipeArray, crouselRef }: PropsType) => {

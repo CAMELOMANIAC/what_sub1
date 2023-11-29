@@ -5,6 +5,9 @@ import { userDataType } from '../../../interfaces/api/users';
 
 //비즈니스 로직은 함수로 만들어서 처리합니다.(함수는 utils/api/ 타입은 interfaces/api에 정의되어 있습니다)
 //서비스 로직은 이곳의 핸들러 함수내에서 작성합니다
+//ui로직(인코딩된 문자열을 요청값으로 전달하고 json객체로 응답값을 받습니다) - 
+//서비스로직(인코딩된 문자열을 각 비즈니스 로직 함수에 맞는 타입으로 변환하고 전달합니다 비즈니스로직이 반환한 값(값 및 에러객체)를 ui로직에게 json객체로 전달합니다) - 
+//비즈니스로직(변환된 값을 받아서 db와 통신하고 반환한 값(값 및 에러객체)을 다시 비즈니스로직에게 전달합니다) -
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id } = req.query
