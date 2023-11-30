@@ -1,5 +1,5 @@
 import { recipeContextType } from "../../interfaces/AddRecipe";
-import { deleteReturnType, updateReturnType } from "../../interfaces/api/db";
+import { updateReturnType } from "../../interfaces/api/db";
 import { recipeType } from "../../interfaces/api/recipes";
 import executeQuery from "../../lib/db";
 
@@ -148,12 +148,12 @@ export const insertRecipeLike = async (recipeId: string, userId: string): Promis
 }
 
 //레피시 좋아요 제거
-export const deleteRecipeLike = async (recipeId: string, userId: string): Promise<deleteReturnType | Error> => {
+export const deleteRecipeLike = async (recipeId: string, userId: string): Promise<updateReturnType | Error> => {
     const query = `DELETE FROM recipe_like_table WHERE recipe_table_recipe_id = ? AND user_table_user_id = ?;`
     const recipeIdValue = recipeId;
     const userIdValue = userId;
     try {
-        const results: deleteReturnType | Error = await executeQuery(
+        const results: updateReturnType | Error = await executeQuery(
             { query: query, values: [recipeIdValue, userIdValue] }
         );
 
@@ -169,7 +169,7 @@ export const deleteRecipeLike = async (recipeId: string, userId: string): Promis
 }
 
 //레시피 좋아요 했었는지 체크
-export const checkRecipeLike = async (recipeId: string, userId: string): Promise<{ recipe_like_table: number } | Error> => {
+export const checkRecipeLike = async (recipeId: string, userId: string): Promise<{ count: number } | Error> => {
 
     const query = `SELECT count(*) as count FROM recipe_like_table 
     WHERE recipe_like_table.recipe_table_recipe_id = ? 
@@ -178,7 +178,7 @@ export const checkRecipeLike = async (recipeId: string, userId: string): Promise
     const recipeIdValue = recipeId;
     const userIdValue = userId;
     try {
-        const results : { recipe_like_table: number } | Error = await executeQuery(
+        const results : { count: number } | Error = await executeQuery(
             { query: query, values: [recipeIdValue, userIdValue] }
         );
 

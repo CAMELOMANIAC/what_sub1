@@ -13,7 +13,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         try {
             const userId = await checkUser(id, pwd);
-            console.log('아이디',userId);
             if (typeof userId === 'string') {
                 const sessionId = await updateSession(userId);
                 console.log('세션',sessionId);

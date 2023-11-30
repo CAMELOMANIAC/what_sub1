@@ -1,6 +1,6 @@
 //레시피 좋아요 목록을 통신해서 반환하는 함수
 export const loadRecipeLike = async () => {
-    const response = await fetch('/api/recipe?likeRecipe=true', {
+    const response = await fetch('/api/recipes/like', {
         method: 'GET',
         credentials: 'include',
     });

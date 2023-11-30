@@ -8,4 +8,3 @@ export type updateReturnType = {
     protocol41: boolean,
     changedRows: number
 }
-export type deleteReturnType = updateReturnType
