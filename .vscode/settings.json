@@ -1,3 +1,4 @@
 {
-    "material-icon-theme.activeIconPack": "react"
+    "material-icon-theme.activeIconPack": "react",
+    "editor.inlineSuggest.showToolbar": "onHover"
 }

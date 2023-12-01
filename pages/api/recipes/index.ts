@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { insertRecipe, loadRecipes } from '../../../utils/api/recipes';
+import { insertRecipe, getRecipes } from '../../../utils/api/recipes';
 import { recipeType } from '../../../interfaces/api/recipes';
 import { checkSession } from '../../../utils/api/users';
 
@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 offset = '0';
             }
 
-            const results: recipeType[] | Error = await loadRecipes({ searchQuery: ' ', offset: Number(offset), limit: Number(limit), filter });
+            const results: recipeType[] | Error = await getRecipes({ searchQuery: ' ', offset: Number(offset), limit: Number(limit), filter });
 
             if (results instanceof Error) {
                 throw results

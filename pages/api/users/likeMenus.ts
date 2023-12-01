@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { loadMenuLike } from '../../../utils/api/menus';
+import { getMenuLike } from '../../../utils/api/menus';
 import { checkSession } from '../../../utils/api/users';
 
 
@@ -12,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const userId = await checkSession(req.headers.cookie);
 
                 if (typeof userId === 'string') {
-                    const results = await loadMenuLike(userId)
+                    const results = await getMenuLike(userId)
 
                     if (results instanceof Error) {
                         throw results;

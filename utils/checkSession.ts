@@ -27,7 +27,7 @@ export async function checkSession(cookie:string) {
                 },
                 credentials: "include" as const,
             };
-            const res = await fetch(process.env.URL + '/api/sessionCheck', options);
+            const res = await fetch(process.env.URL + '/api/users/session', options);
 
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);

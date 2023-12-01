@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { loadTotalMenuInfo } from '../../../utils/api/menus';
+import { getTotalMenuInfo } from '../../../utils/api/menus';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'GET') {
         try {
-            const results = await loadTotalMenuInfo()
+            const results = await getTotalMenuInfo()
 
             if (results instanceof Error) {
                 throw results

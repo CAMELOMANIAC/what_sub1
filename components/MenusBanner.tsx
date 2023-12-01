@@ -25,7 +25,8 @@ const MenusBanner = ({selected,sessionCheck} : propsType) => {
     
     //메뉴선택시 메뉴 좋아요 갯수 정보 불러오는용
     useEffect(() => {
-        fetch(`/api/menu?likeMenuCount=${selected.name}`).then(
+        fetch(`/api/menus/like?menuName=${selected.name}`
+        ).then(
             response => response.json()
         ).then(
             data => setMenuLike(parseInt(data))
@@ -34,8 +35,8 @@ const MenusBanner = ({selected,sessionCheck} : propsType) => {
 
     //메뉴 좋아요 처리
     const insertMenuLike = async (menuName: string) => {
-        const response = await fetch('/api/menu?insert=menuLike', {
-            method: 'POST',
+        const response = await fetch(`/api/menus/like`, {
+            method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
             },

@@ -7,8 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
 import { getCookieValue, loadMenuLike, loadRecipeLike } from '../utils/publicFunction';
 import { RootState } from '../redux/store';
-import { recipeContextType } from '../interfaces/AddRecipe';
 import styled from 'styled-components';
+import { recipeType } from '../interfaces/api/recipes';
 
 type loadingType = {
     pending: number,
@@ -34,7 +34,7 @@ const Recipes = () => {
     const router = useRouter();
     const bannerRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
-    const [recipes, setRecipes] = useState<recipeContextType[]>([]);
+    const [recipes, setRecipes] = useState<recipeType[]>([]);
     const [param, setParam] = useState<string | string[]>(router.query.param);
     const [query, setQuery] = useState<string | string[]>(router.query.query);
     const filter = useSelector((state: RootState) => state.page.FILTER_ARRAY);
@@ -68,9 +68,12 @@ const Recipes = () => {
     //검색 핸들러
     const searchHandler = (loadCount) => {
         if (Object.keys(router.query).length !== 0) {
-            if (query) {//검색어 있을때
+            if (query) {//쿼리 검색일때
                 getRecipes(String(query), page, loadCount, filterQuery)
-            } if (param) {//샌드위치 파라메터로 검색중일때
+            } else if (query === '') {//쿼리검색이지만 값을 안줄때
+                getRecipes('', page, loadCount, filterQuery)
+            }
+            if (param) {//샌드위치 파라메터로 검색중일때
                 getRecipes(String(param), page, loadCount - 1, ['메뉴이름'])
             }
         } else {//검색어가 없을때
@@ -94,24 +97,20 @@ const Recipes = () => {
         //레시피 로딩 상태
         setLoading(loadingState.pending)
         setIsNoMore(false)
-        console.log(filter)
         //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩함수안써도됨
-        fetch('/api/recipe?query=' + encodeURIComponent(query) + `&offset=${offset}&limit=${limit}&filter=${filter}`)
+        fetch(query !== '' ? '/api/recipes/' + encodeURIComponent(query) + `?offset=${offset}&limit=${limit}&filter=${filter}`
+            : `/api/recipes`)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('네트워크 응답이 실패했습니다.');
-                }
                 return response.json();
             })
             .then(data => {
                 setLoading(loadingState.fullfiled)
-                
+
                 if (data.length > 0) {
                     setRecipes(prev => [...prev, ...data]);
                     setPage(prev => prev + data.length)
                 } else {
-                    console.log('더 이상 결과없음')
                     setIsNoMore(true)
                 }
             })
@@ -123,7 +122,6 @@ const Recipes = () => {
 
     // 타겟 요소 선택
     const lastRecipeRef = useRef<HTMLDivElement | null>(null);
-    useEffect(() => { console.log(page) }, [page])
 
     // 컴포넌트가 마운트된 후에 타겟 요소 관찰 시작
     useEffect(() => {

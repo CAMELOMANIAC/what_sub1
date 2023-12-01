@@ -1,26 +1,16 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getRecipeLike } from '../../../utils/api/recipes';
+import { NextApiRequest, NextApiResponse } from 'next'
 import { checkSession } from '../../../utils/api/users';
+
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
+    //이 엔드포인트는 유저 세션을 체크해서 반환만함
     if (req.method === 'GET') {
-        //사용자가한 레시피 좋아요 정보 읽어오기
         try {
             if (req.headers.cookie) {
                 const userId = await checkSession(req.headers.cookie);
 
-                if (typeof userId === 'string') {
-                    const results = await getRecipeLike(userId);
-
-                    if (results instanceof Error) {
-                        throw results;
-                    } else {
-                        res.status(200).json(results)
-                    }
-
-                } else {
-                    throw new Error('잘못된 요청값입니다')
-                }
+                res.status(200).json(userId)
             } else {
                 throw new Error('쿠키 정보가 없습니다')
             }
@@ -35,7 +25,5 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
 }
-
-
 
 export default handler

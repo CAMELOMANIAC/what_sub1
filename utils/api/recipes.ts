@@ -3,7 +3,7 @@ import { updateReturnType } from "../../interfaces/api/db";
 import { recipeType } from "../../interfaces/api/recipes";
 import executeQuery from "../../lib/db";
 
-type loadRecipesArg = {
+type getRecipesArg = {
     searchQuery: string,
     offset: number,
     limit: number,
@@ -11,7 +11,7 @@ type loadRecipesArg = {
 }
 
 //검색어를 통한 레시피 반환
-export const loadRecipes = async ({ searchQuery, offset, limit, filter }: loadRecipesArg): Promise<recipeType[] | Error> => {
+export const getRecipes = async ({ searchQuery, offset, limit, filter }: getRecipesArg): Promise<recipeType[] | Error> => {
     try {
 
         let filterQuery;
@@ -76,7 +76,7 @@ export const loadRecipes = async ({ searchQuery, offset, limit, filter }: loadRe
 }
 
 //좋아요 레시피 반환
-export const loadRecipeLike = async (userId: string): Promise<{ recipe_table_recipe_id: string } | Error> => {
+export const getRecipeLike = async (userId: string): Promise<{ recipe_table_recipe_id: string } | Error> => {
     const query = `SELECT recipe_table_recipe_id FROM recipe_like_table WHERE user_table_user_id = ?;`
     const userIdValue = userId;
     try {
@@ -128,7 +128,7 @@ export const insertRecipe = async (checkedUser: string, recipe: recipeContextTyp
 }
 
 //레피시 좋아요 추가
-export const insertRecipeLike = async (recipeId: string, userId: string): Promise<updateReturnType | Error> => {
+export const insertRecipeLike = async (recipeId: number, userId: string): Promise<updateReturnType | Error> => {
     const query = `INSERT INTO recipe_like_table(recipe_table_recipe_id,user_table_user_id) VALUES (?,?);`
     const recipeIdValue = recipeId;
     const userIdValue = userId;
@@ -148,7 +148,7 @@ export const insertRecipeLike = async (recipeId: string, userId: string): Promis
 }
 
 //레피시 좋아요 제거
-export const deleteRecipeLike = async (recipeId: string, userId: string): Promise<updateReturnType | Error> => {
+export const deleteRecipeLike = async (recipeId: number, userId: string): Promise<updateReturnType | Error> => {
     const query = `DELETE FROM recipe_like_table WHERE recipe_table_recipe_id = ? AND user_table_user_id = ?;`
     const recipeIdValue = recipeId;
     const userIdValue = userId;
@@ -169,7 +169,7 @@ export const deleteRecipeLike = async (recipeId: string, userId: string): Promis
 }
 
 //레시피 좋아요 했었는지 체크
-export const checkRecipeLike = async (recipeId: string, userId: string): Promise<{ count: number } | Error> => {
+export const checkRecipeLike = async (recipeId: number, userId: string): Promise< boolean | Error> => {
 
     const query = `SELECT count(*) as count FROM recipe_like_table 
     WHERE recipe_like_table.recipe_table_recipe_id = ? 
@@ -184,8 +184,10 @@ export const checkRecipeLike = async (recipeId: string, userId: string): Promise
 
         if (Array.isArray(results) && results.length < 1) {
             throw new Error('적합한 결과가 없음')
+        } else if (results[0].count > 0) {
+            return true;
         } else {
-            return results;
+            return false;
         }
     } catch (err) {
         return err

@@ -30,12 +30,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         }
 
-    } else if (req.method === 'POST') {
+    } else if (req.method === 'PUT') {
         //메뉴 좋아요 추가
         try {
             const menuName = req.body
 
-            if (req.headers.cookie && menuName) {//유저 확인
+            if (req.headers.cookie && menuName) {
                 const userId = await checkSession(req.headers.cookie);
                 if (typeof userId === 'string') {
                     const checkMenuLikeResult = await checkMenuLike(menuName, userId);
@@ -48,8 +48,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             res.status(200).json(insertRecipeLikeResult);
                         }
 
-                    } else {
-                        throw new Error('이미 좋아요한 메뉴입니다.')
+                    } else if (checkMenuLikeResult === true) {
+                        const deleteMenuLikeResult = await deleteMenuLike(menuName, userId);
+
+                        if (deleteMenuLikeResult instanceof Error) {
+                            throw deleteMenuLikeResult
+                        } else {
+                            res.status(200).json(deleteMenuLikeResult);
+                        }
+
                     }
                 } else {
                     throw new Error('잘못된 요청값 입니다.')

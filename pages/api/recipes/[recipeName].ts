@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { loadRecipes } from '../../../utils/api/recipes';
+import { getRecipes } from '../../../utils/api/recipes';
 import { recipeType } from '../../../interfaces/api/recipes';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -14,7 +14,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         try {
 
             if (typeof recipeName === 'string') {
-
                 //offset,limit,filter는 옵셔널 쿼리문자열이므로 추가적 처리가 필요
                 if (typeof limit === 'undefined') {
                     limit = '3';
@@ -28,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     filter = ['메뉴이름', '레시피제목', '작성자', '재료', '태그'];
                 }
 
-                const results: recipeType[] | Error = await loadRecipes({ searchQuery: recipeName, offset: Number(offset), limit: Number(limit), filter });
+                const results: recipeType[] | Error = await getRecipes({ searchQuery: recipeName, offset: Number(offset), limit: Number(limit), filter });
                 
                 if (results instanceof Error) {
                     throw results

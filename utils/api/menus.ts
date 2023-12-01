@@ -5,7 +5,7 @@ import { breadNutrientArray, sauceNutrientArray } from "../menuArray";
 
 
 //menu관련 모든 정보 불러오기
-export const loadTotalMenuInfo = async (): Promise<totalMenuInfoType[] | Error> => {
+export const getTotalMenuInfo = async (): Promise<totalMenuInfoType[] | Error> => {
     const query = `SELECT 
     sandwich_table.sandwich_name,
     (SELECT COUNT(*) FROM sandwich_like_table WHERE sandwich_table_sandwich_name = sandwich_table.sandwich_name) AS like_count,
@@ -32,7 +32,7 @@ export const loadTotalMenuInfo = async (): Promise<totalMenuInfoType[] | Error> 
 }
 
 //menu관련 검색된 정보 불러오기
-export const loadMenuInfo = async (sandwichMenu: string): Promise<totalMenuInfoType[] | Error> => {
+export const getMenuInfo = async (sandwichMenu: string): Promise<totalMenuInfoType[] | Error> => {
     const sandwichQuery = sandwichMenu;
 
     const query = `SELECT 
@@ -59,7 +59,7 @@ export const loadMenuInfo = async (sandwichMenu: string): Promise<totalMenuInfoT
 }
 
 //top재료 불러오기
-export const loadTopIngredients = async (sandwichMenu: string, ingredientsType: string): Promise<Array<{ recipe_ingredients: string }> | Error> => {
+export const getTopIngredients = async (sandwichMenu: string, ingredientsType: string): Promise<Array<{ recipe_ingredients: string }> | Error> => {
     const sandwichQuery = sandwichMenu;
 
     const query = `SELECT recipe_ingredients_table.recipe_ingredients, count(*) as occurrence,
@@ -105,7 +105,7 @@ export const loadTopIngredients = async (sandwichMenu: string, ingredientsType: 
 }
 
 //조합재료 불러오기
-export const loadRecipeIngredients = async (sandwichMenu: string, ingredientsType: string): Promise<Array<{ combined_ingredients: string }> | Error> => {
+export const getRecipeIngredients = async (sandwichMenu: string, ingredientsType: string): Promise<Array<{ combined_ingredients: string }> | Error> => {
     const sandwichQuery = sandwichMenu;
     const query = `SELECT subquery.combined_ingredients, COUNT(*) as occurrence, IFNULL(MAX(likes_table.likes), 0) as likes 
     FROM (
@@ -154,7 +154,7 @@ export const loadRecipeIngredients = async (sandwichMenu: string, ingredientsTyp
 }
 
 //좋아요 메뉴 불러오기
-export const loadMenuLike = async (userId: string): Promise<Array<{ sandwich_table_sandwich_name: string }> | Error> => {
+export const getMenuLike = async (userId: string): Promise<Array<{ sandwich_table_sandwich_name: string }> | Error> => {
     const query = `SELECT sandwich_table_sandwich_name FROM sandwich_like_table WHERE user_table_user_id = ?;`
     const userIdValue = userId;
     try {
@@ -231,8 +231,10 @@ export const checkMenuLike = async (menuName: string, userId: string): Promise<b
 
         if (Array.isArray(results) && results.length < 1) {
             throw new Error('적합한 결과가 없음')
-        } else {
+        } else if (results[0].count > 0) {
             return true;
+        } else {
+            return false;
         }
 
     } catch (err) {

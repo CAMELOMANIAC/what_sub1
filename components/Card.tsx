@@ -9,7 +9,7 @@ import { recipeType } from '../interfaces/api/recipes';
 
 type CardProps = {
     recipe: recipeType;
-    className: string;
+    className?: string;
 };
 
 const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) => {
@@ -27,25 +27,25 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         ingredients.push(...ingredient);
     }
 
-    const insertRecipeLike = async (recipe_id: string) => {
-        const response = await fetch('/api/recipe?insert=recipeLike', {
-            method: 'POST',
+    const insertRecipeLike = async (recipeName: string) => {
+        const response = await fetch('/api/recipes/like', {
+            method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
             },
             credentials: 'include',
-            body: JSON.stringify(recipe_id)
+            body: JSON.stringify(recipeName)
         })
         return response.json();
     }
 
     const recipeLikeHandler = async (recipe_id: string) => {
         const result = await insertRecipeLike(recipe_id);
-        if (result === 'insertRecipeLike성공') {
+        if (result.message === '좋아요 등록 성공') {
             setLikeCount(prev => prev + 1)
             dispatch(actionAddRecipeLike(recipe_id))
         }
-        else if (result === 'deleteRecipeLike성공') {
+        else if (result.message === '좋아요 제거 성공') {
             setLikeCount(prev => prev - 1)
             dispatch(actionRemoveRecipeLike(recipe_id))
         }

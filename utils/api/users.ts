@@ -109,7 +109,7 @@ export const checkSession = async (cookie): Promise<string | Error> => {
             if (results instanceof Error) {
                 return results
             } else {
-                return results.user_id;
+                return results[0].user_id;
             }
         }
     } catch (err) {

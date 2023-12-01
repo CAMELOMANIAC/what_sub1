@@ -4,7 +4,7 @@ import { checkSession } from '../utils/checkSession';
 import { loadMenuLike } from '../utils/publicFunction';
 import { useDispatch } from 'react-redux';
 import { actionSetMenuLike } from '../redux/reducer/userReducer';
-import { totalMenuInfoType } from '../pages/api/menu';
+import { totalMenuInfoType } from '../interfaces/api/menus';
 import MenusBanner from '../components/MenusBanner';
 import MenusList from '../components/MenusList';
 import MenusGrid from '../components/MenusGrid';
@@ -15,11 +15,11 @@ export async function getServerSideProps({ req }) {
     const sessionCheck = await checkSession(cookie);
 
     const loadTotalMenuInfo = async () => {
-        const result = await fetch(process.env.URL + '/api/menu?isTotal=true')
+        const result = await fetch(process.env.URL + '/api/menus')
         return result.json();
     }
     const totalMenuInfo = await loadTotalMenuInfo();
-
+    console.log(sessionCheck)
     return {
         props: {
             sessionCheck,
@@ -36,10 +36,10 @@ type props = {
 const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
     const fixedMenuArray: menuArrayType[] = menuArray;
     fixedMenuArray.map(menuArray => {
-        totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)
-            ? (menuArray.recipes = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.recipeCount ?? '0'),
-                menuArray.favorit = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.likeCount ?? '0'),
-                menuArray.likeRecipe = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwichName === menuArray.name)?.recipeLikeCount ?? '0'))
+        totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)
+            ? (menuArray.recipes = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)?.recipe_count ?? '0'),
+                menuArray.favorit = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)?.like_count ?? '0'),
+                menuArray.likeRecipe = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)?.recipe_count ?? '0'))
             : null
     })
     const [selected, setSelected] = useState<menuArrayType>(menuArray[0]);

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { loadRecipeIngredients } from '../../../utils/api/menus';
+import { getRecipeIngredients } from '../../../utils/api/menus';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
@@ -8,7 +8,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             //top3 조합법 요청시
             if (typeof sandwichMenu === 'string') {
-                const results = await loadRecipeIngredients(sandwichMenu, 'sauce');
+                const results = await getRecipeIngredients(sandwichMenu, 'sauce');
 
                 if (results instanceof Error) {
                     throw results
