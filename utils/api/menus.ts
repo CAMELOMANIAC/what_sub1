@@ -3,7 +3,6 @@ import { totalMenuInfoType } from "../../interfaces/api/menus";
 import executeQuery from "../../lib/db";
 import { breadNutrientArray, sauceNutrientArray } from "../menuArray";
 
-
 //menu관련 모든 정보 불러오기
 export const getTotalMenuInfo = async (): Promise<totalMenuInfoType[] | Error> => {
     const query = `SELECT 

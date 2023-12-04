@@ -65,13 +65,16 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
     const [menuLike, setMenuLike] = useState<string>();
     const [menuRecipe, setMenuRecipe] = useState<string>();
     const [recipeLike, setRecipeLike] = useState<string>();
-    const loadTopIngredients = async (query:string, topIngredients:string) => {
-        console.log(query)
-        const response = await fetch(`/api/menu?query=${query}&topIngredients=${topIngredients}`);
+    const loadIngredientsBread = async (query:string) => {
+        const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${query}`);
         return await response.json();
     }
-    const loadMenuInfo = async (query) => {
-        const response = await fetch(`/api/menu?query=${query}`);
+    const loadIngredientsSauce = async (query:string) => {
+        const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${query}`);
+        return await response.json();
+    }
+    const loadMenuInfo = async (query:string) => {
+        const response = await fetch(`/api/menus/${query}`);
         return await response.json();
     }
     //쿼리스트링 변경시
@@ -79,7 +82,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
         if (router.isReady) {
             const { param } = router.query;
             if (router.isReady && selected.length !== 0) {
-                loadTopIngredients(encodeURIComponent(String(param)), 'bread').then(result => {
+                loadIngredientsBread(encodeURIComponent(String(param))).then(result => {
                     let parsedResult = result.map(item => item.recipe_ingredients);
                     setBreadTop(parsedResult);
                     parsedResult = result.map(item => item.likes);
@@ -87,7 +90,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
                     parsedResult = result.map(item => item.occurrence);
                     setBreadTopOccurrence(parsedResult);
                 });
-                loadTopIngredients(encodeURIComponent(String(param)), 'sauce').then(result => {
+                loadIngredientsSauce(encodeURIComponent(String(param))).then(result => {
                     let parsedResult = result.map(item => item.combined_ingredients.split(', '));
                     setSauceTop(parsedResult);
                     parsedResult = result.map(item => item.likes);

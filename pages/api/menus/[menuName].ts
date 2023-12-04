@@ -4,12 +4,12 @@ import { getMenuInfo } from '../../../utils/api/menus';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
-    const { sandwichMenu } = req.query;
+    const { menuName } = req.query;
     if (req.method === 'GET') {
         try {
             //top3 조합법 요청시
-            if (typeof sandwichMenu === 'string') {
-                const results = await getMenuInfo(sandwichMenu)
+            if (typeof menuName === 'string') {
+                const results = await getMenuInfo(menuName)
 
                 if (results instanceof Error) {
                     throw results
