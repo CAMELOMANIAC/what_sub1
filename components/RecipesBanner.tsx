@@ -12,6 +12,8 @@ import { BsFillCheckSquareFill } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import { set_filter_action, add_Filter_action } from '../redux/reducer/pageReducer'
 import { RootState } from '../redux/store';
+import { recipeType } from '../interfaces/api/recipes';
+import { totalMenuInfoType } from '../interfaces/api/menus';
 
 export const StyleTag = styled.button`
     height:100%;
@@ -26,11 +28,14 @@ export const StyleTag = styled.button`
 `
 
 type Props = {
-    className?: string
+    className?: string,
+    recipeData: recipeType[],
+    menuData: totalMenuInfoType[]
 }
 
 //타입스크립트에서 useRef를 컴포넌트 속성에 할당할 수 있도록 forwardRef를 사용해야함 그냥 타입에 넣어버리면 일반적인 속성이 되버림
-const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
+const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData }, ref) => {
+
     const router = useRouter();
     type MenuItem = {
         name: string;
@@ -65,18 +70,19 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
     const [menuLike, setMenuLike] = useState<string>();
     const [menuRecipe, setMenuRecipe] = useState<string>();
     const [recipeLike, setRecipeLike] = useState<string>();
-    const loadIngredientsBread = async (query:string) => {
+    const loadIngredientsBread = async (query: string) => {
         const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${query}`);
         return await response.json();
     }
-    const loadIngredientsSauce = async (query:string) => {
+    const loadIngredientsSauce = async (query: string) => {
         const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${query}`);
         return await response.json();
     }
-    const loadMenuInfo = async (query:string) => {
+    const loadMenuInfo = async (query: string) => {
         const response = await fetch(`/api/menus/${query}`);
         return await response.json();
     }
+
     //쿼리스트링 변경시
     useEffect(() => {
         if (router.isReady) {
@@ -160,7 +166,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
                                             />
                                             {item}
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{Math.round((parseInt(breadTopOccurrence[index])/parseInt(menuRecipe!))*100)}%</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{Math.round((parseInt(breadTopOccurrence[index]) / parseInt(menuRecipe!)) * 100)}%</span>
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{breadTopLike[index]}</span>
                                     </div>
                                 ))}
@@ -187,7 +193,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
                                             ))
                                         }
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{Math.round((parseInt(sauceTopOccurrence[index])/parseInt(menuRecipe!))*100)}%</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{Math.round((parseInt(sauceTopOccurrence[index]) / parseInt(menuRecipe!)) * 100)}%</span>
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopLike[index]}</span>
                                     </div>
                                 ))}
@@ -197,8 +203,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
                 </div>
             ) : (
                 <div className={`absolute w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
-                    <div className='w-[1024px] mx-auto pt-4 pb-10'>
-                        <div className='mb-4'>
+                    <div className='w-[1024px] mx-auto pt-4 pb-8'>
+                        <div className='mb-8'>
                             <div className='flex flex-row justify-start items-center my-2 sticky'>
                                 <SearchBar className='ml-0 mr-2' />
                                 <div className='relative' ref={filterRef}>
@@ -236,27 +242,50 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props> ((props, ref) => {
                         </div>
                         <div className='grid grid-cols-2 grid-flow-row'>
                             <div className='border-l px-4'>
-                                <span className=' font-bold'>추천 검색어 top3</span>
+                                <span className=' font-bold'>추천 메뉴 top3</span>
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
                                     <span className='col-span-5 text-left'>브레드</span>
-                                    <span className='col-span-2'>조합 선택율</span>
-                                    <span className='col-span-2'>평균 좋아요</span>
+                                    <span className='col-span-2'>메뉴 좋아요</span>
+                                    <span className='col-span-2'>레시피 수</span>
                                 </div>
+                                {menuData.map((item, index) => (
+                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row my-2'>
+                                        <span className='col-span-5 flex items-center justify-start'>
+                                            <span className='w-[48px] aspect-square overflow-hidden rounded-md'>
+                                                <img src={`/images/sandwich_menu/${item.sandwich_name}.png`}
+                                                    className='relative object-cover scale-[2.7] origin-[85%_40%]'
+                                                    alt='item.sandwich_name'>
+                                                </img>
+                                            </span>
+                                            {item.sandwich_name}
+                                        </span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{item.like_count}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{item.recipe_count}</span>
+                                    </div>
+                                ))}
                             </div>
                             <div className='border-l px-4'>
                                 <span className=' font-bold'>추천 레시피 top3</span>
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
-                                    <span className='col-span-5 text-left'>조합법</span>
-                                    <span className='col-span-2'>조합 선택율</span>
-                                    <span className='col-span-2'>평균 좋아요</span>
+                                    <span className='col-span-5 text-left'>레시피 이름</span>
+                                    <span className='col-span-2'>좋아요 수</span>
+                                    <span className='col-span-2'>태그</span>
                                 </div>
+                                {recipeData.map((item, index) => (
+                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row h-[48px] my-2'>
+                                        <span className='col-span-5 flex items-center justify-start'>
+                                            {index}
+                                            {item.recipe_name}
+                                        </span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{item.like_count}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{item.tag}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
                 </div>
-            )
-
-            }
+            )}
         </>
     );
 

@@ -55,7 +55,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         <article className={`col-span-2 aspect-[4/3] bg-white rounded-xl p-6 shadow-sm hover:shadow-lg flex flex-col hover:scale-105 transition-transform ${className}`} ref={ref}>
             <div className='flex flex-row items-center'>
                 <div className='inline-block w-[60px] overflow-hidden relative rounded-md aspect-square mr-2'>
-                    <img src={`/images/sandwich_menu/${recipe.sandwich_table_sandwich_name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]' alt='Card_sandwich_type'></img>
+                    <img src={`/images/sandwich_menu/${recipe.sandwich_table_sandwich_name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]' alt={recipe.sandwich_table_sandwich_name}></img>
                 </div>
                 <div className='flex flex-col w-full'>
                     <Link href={`/Recipes?param=${encodeURIComponent(recipe.sandwich_table_sandwich_name)}`} className='text-sm text-gray-400'>{recipe.sandwich_table_sandwich_name}</Link>

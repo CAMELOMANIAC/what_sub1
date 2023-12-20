@@ -193,3 +193,43 @@ export const checkRecipeLike = async (recipeId: number, userId: string): Promise
         return err
     }
 }
+
+//추천메뉴
+export const getRecommendedRecipes = async (): Promise<recipeType[] | Error> => {
+    const query = `SELECT 
+    recipe_table.recipe_name, 
+    GROUP_CONCAT(DISTINCT recipe_ingredients_table.recipe_ingredients) AS recipe_ingredients, 
+    recipe_table.user_table_user_id, 
+    recipe_table.sandwich_table_sandwich_name, 
+    GROUP_CONCAT(DISTINCT recipe_tag_table.tag_table_tag_name) AS tag, 
+    COUNT(DISTINCT reply_table.reply_context) AS reply_count, 
+    COALESCE(like_counts.like_count, 0) AS like_count 
+    FROM recipe_table 
+    LEFT JOIN recipe_ingredients_table ON recipe_table.recipe_id = recipe_ingredients_table.recipe_table_recipe_id 
+    LEFT JOIN recipe_tag_table ON recipe_table.recipe_id = recipe_tag_table.recipe_table_recipe_id 
+    LEFT JOIN reply_table ON recipe_table.recipe_id = reply_table.recipe_table_recipe_id 
+    LEFT JOIN ( 
+    SELECT recipe_table_recipe_id, COUNT(*) AS like_count 
+    FROM recipe_like_table 
+    GROUP BY recipe_table_recipe_id 
+    ) AS like_counts ON recipe_table.recipe_id = like_counts.recipe_table_recipe_id 
+    GROUP BY recipe_table.recipe_id, 
+    recipe_table.recipe_name, 
+    recipe_table.user_table_user_id, 
+    recipe_table.sandwich_table_sandwich_name 
+    LIMIT 3;`
+    
+    try {
+        const results: recipeType[] | Error = await executeQuery(
+            { query: query, values: [] }
+        );
+
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results
+        }
+    } catch (err) {
+        return err;
+    }
+}

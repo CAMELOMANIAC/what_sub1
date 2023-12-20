@@ -5,6 +5,7 @@ import { recipeType } from '../interfaces/api/recipes';
 import Card from '../components/Card';
 import { styled } from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
+
 const CarouselContainer = styled.div`
     &::-webkit-scrollbar {
         display: none;
@@ -28,7 +29,6 @@ export async function getServerSideProps() {
 	};
 }
 
-
 const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 	const [recipeArray] = useState([...recipeData, ...recipeData]);
 	const cardRefs = useRef<HTMLDivElement[]>([]);
@@ -45,7 +45,7 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 			} else {
 				animationId = requestAnimationFrame(carouselMove);
 				if (crouselRef.current) {
-					crouselRef.current.scrollLeft += 0.5;
+					crouselRef.current.scrollLeft += 1;
 				}
 			}
 		};

@@ -9,6 +9,7 @@ import { getCookieValue, loadMenuLike, loadRecipeLike } from '../utils/publicFun
 import { RootState } from '../redux/store';
 import styled from 'styled-components';
 import { recipeType } from '../interfaces/api/recipes';
+import { totalMenuInfoType } from '../interfaces/api/menus';
 
 type loadingType = {
     pending: number,
@@ -29,8 +30,31 @@ const StyledDiv = styled.div`
     height: 200px;
     background-color: #fff;
 `
+export async function getServerSideProps() {
+	//보여줄 레시피 가져오기
+	const loadRecommendRecipes = async () => {
+		const result = await fetch(`${process.env.URL}/api/recipes/recommended`);
+		return result.json();
+	}
+	const loadRecommendMenus = async () => {
+		const result = await fetch(`${process.env.URL}/api/menus/recommended`);
+		return result.json();
+	}
 
-const Recipes = () => {
+	return {
+		props: {
+            recipeData: await loadRecommendRecipes(),
+            menuData: await loadRecommendMenus()
+        },
+	};
+}
+
+type propsType = {
+    recipeData : recipeType[],
+    menuData : totalMenuInfoType[],
+}
+
+const Recipes = ({recipeData,menuData}:propsType) => {
     const router = useRouter();
     const bannerRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
@@ -156,7 +180,7 @@ const Recipes = () => {
             원인추측 : 개발자모드에서 중단점으로 확인했는데 요소를 두번 실행함 아마 부모요소에서 조건으로 Router.isReady를 확인해서 렌더링하고
             자식요소에서 다시 확인해서 렌더링 하도록 했는데 부모가 렌더링을 안했는데 임포트된 리액트js가 자식껄 한번더 확인하니까 
             첫번째 실행에서는 정상적으로 렌더링하고 두번째 실행에서 하이드레이션 오류가 발생한듯*/}
-            <RecipesBanner ref={bannerRef} />
+            <RecipesBanner ref={bannerRef} recipeData={recipeData} menuData={menuData}/>
             <main className={'w-full max-w-screen-lg mx-auto pt-2'} ref={mainRef}>
                 <div className='grid grid-cols-6 grid-flow-row gap-2 min-w-[1024px]'>
                     {query !== '' && param && <EmptyCard></EmptyCard>}
