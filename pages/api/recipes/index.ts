@@ -5,17 +5,17 @@ import { checkSession } from '../../../utils/api/users';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
+    let { limit } = req.query;
+    let { offset } = req.query;
+
     //이 엔드포인트는 모든 레시피 정보를 반환합니다
     if (req.method === 'GET') {
         //모든 레시피 정보 가져오기
         try {
-
-            let { limit } = req.query;
-            let { offset } = req.query;
             const filter = ['메뉴이름', '레시피제목', '작성자', '재료', '태그'];
             //offset,limit는 옵셔널 쿼리문자열이므로 추가적 처리가 필요
             if (typeof limit === 'undefined') {
-                limit = '10';
+                limit = '9';
             }
             if (typeof offset === 'undefined') {
                 offset = '0';

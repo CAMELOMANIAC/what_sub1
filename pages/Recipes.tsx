@@ -105,6 +105,7 @@ const Recipes = ({recipeData,menuData}:propsType) => {
         }
 
     }
+
     //보여줄 레시피불러오기
     useEffect(() => {
         //query 쿼리스트링은 검색어
@@ -112,8 +113,7 @@ const Recipes = ({recipeData,menuData}:propsType) => {
         //param 쿼리스트링은 배너 간단 정보
         setParam(router.query.param)
         //레시피 초기화(체음에는 12개 레시피를 기본 출력)
-        searchHandler(12)
-
+        searchHandler(9)
     }, [router.query, query, param]);
 
     //recipe카드 통신함수
@@ -124,7 +124,7 @@ const Recipes = ({recipeData,menuData}:propsType) => {
         //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩함수안써도됨
         fetch(query !== '' ? '/api/recipes/' + encodeURIComponent(query) + `?offset=${offset}&limit=${limit}&filter=${filter}`
-            : `/api/recipes`)
+            : `/api/recipes?offset=${offset}&limit=${limit}&filter=${filter}`)
             .then(response => {
                 return response.json();
             })
