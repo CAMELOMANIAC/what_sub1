@@ -39,7 +39,7 @@ const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
         totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)
             ? (menuArray.recipes = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)?.recipe_count ?? '0'),
                 menuArray.favorit = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)?.like_count ?? '0'),
-                menuArray.likeRecipe = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)?.recipe_count ?? '0'))
+                menuArray.likeRecipe = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)?.recipe_like_count ?? '0'))
             : null
     })
     const [selected, setSelected] = useState<menuArrayType>(menuArray[0]);
@@ -49,7 +49,6 @@ const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
         if (sessionCheck) {//로그인 세션이 존재하면
             loadMenuLike().then(data => {//메뉴 좋아요 정보 가져와서 전역 상태값에 저장
                 dispatch(actionSetMenuLike(data))
-                console.log(data)
             })
         }
     }, [])

@@ -251,16 +251,16 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData 
                                 {menuData.map((item, index) => (
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row my-2'>
                                         <span className='col-span-5 flex items-center justify-start'>
-                                            <span className='w-[48px] aspect-square overflow-hidden rounded-md'>
+                                            <span className='w-10 aspect-square overflow-hidden rounded-md'>
                                                 <img src={`/images/sandwich_menu/${item.sandwich_name}.png`}
                                                     className='relative object-cover scale-[2.7] origin-[85%_40%]'
                                                     alt='item.sandwich_name'>
                                                 </img>
                                             </span>
-                                            {item.sandwich_name}
+                                            <span className='text-black ml-1 font-bold'>{item.sandwich_name}</span>
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{item.like_count}</span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{item.recipe_count}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black'>{item.like_count}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black'>{item.recipe_count}</span>
                                     </div>
                                 ))}
                             </div>
@@ -272,13 +272,15 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData 
                                     <span className='col-span-2'>태그</span>
                                 </div>
                                 {recipeData.map((item, index) => (
-                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row h-[48px] my-2'>
-                                        <span className='col-span-5 flex items-center justify-start'>
-                                            {index}
-                                            {item.recipe_name}
+                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row h-10 my-2'>
+                                        <span className='col-span-5 flex items-center justify-start text-black font-bold'>
+                                            {index + 1}
+                                            {' ' + item.recipe_name}
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{item.like_count}</span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{item.tag}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black'>{item.like_count}</span>
+                                        <div className='col-span-2 flex items-center text-sm text-black text-ellipsis overflow-hidden'>
+                                            {item.tag}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

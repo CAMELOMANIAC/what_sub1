@@ -13,7 +13,6 @@ type getRecipesArg = {
 //검색어를 통한 레시피 반환
 export const getRecipes = async ({ searchQuery, offset, limit, filter }: getRecipesArg): Promise<recipeType[] | Error> => {
     try {
-        console.log(searchQuery, offset, limit, filter)
         let filterQuery;
         if (Array.isArray(filter)) {
             filterQuery = filter.map((item) => {
