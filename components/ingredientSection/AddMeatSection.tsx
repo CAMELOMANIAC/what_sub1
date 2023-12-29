@@ -15,8 +15,8 @@ const AddMeatSection = ({ prop, param }: propsType) => {
     const [isShow, setIsShow] = useState<boolean>(false);
     return (
         <IngredientsSection>
-            <div className='p-2'>
                 <h3 className='text-xl font-[seoul-metro]'>주메뉴</h3>
+            <div className='p-2'>
                 <p className='p-2 flex items-center h-12'>{param}</p>
             </div>
             <div className='p-2'>
