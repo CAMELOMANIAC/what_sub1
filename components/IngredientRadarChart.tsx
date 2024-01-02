@@ -84,7 +84,7 @@ const IngredientsRadarChart = ({ context }: { context: recipeContextType }) => {
     ]
     if (isServerSide) return null;
     return (
-        <RadarChart outerRadius={90} width={512} height={250} data={data} className="text-sm">
+        <RadarChart outerRadius={90} width={300} height={250} data={data} className="text-sm">
             <PolarGrid />
             <PolarAngleAxis dataKey="subject" />
             <PolarRadiusAxis angle={55} domain={[0, 1]} tickFormatter={(value) => `${value * 100}%`} />

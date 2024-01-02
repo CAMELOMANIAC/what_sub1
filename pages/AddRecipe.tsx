@@ -76,7 +76,7 @@ const AddRecipe = ({ param }: { param: string }) => {
         if (ref.current) {
             ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-    }, []); 
+    }, []);
     const progressBarButtons: progressBarButtonsType[] = [
         { id: 'recipeNameButton', text: '레시피 이름', ref: recipeNameRef, handleClick: () => handleClickHander(recipeNameRef) },
         { id: 'breadButton', text: '빵 선택', ref: breadRef, handleClick: () => handleClickHander(breadRef) },
@@ -165,7 +165,9 @@ const AddRecipe = ({ param }: { param: string }) => {
                                     '\n메뉴 이름에 치즈가 포함된 재료는 이미 치즈의 영양성분이 포함되어 있으나\n 관련 정보가 제공되지 않아 치즈 영양정보가 중복해서 포함될 수 있습니다'}
                             </div>
                         </h3>
-                        <IngredientsRadarChart context={context} />
+                        <div className='flex justify-center'>
+                            <IngredientsRadarChart context={context} />
+                        </div>
                     </div>
 
                     <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
