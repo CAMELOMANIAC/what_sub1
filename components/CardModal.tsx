@@ -3,6 +3,7 @@ import { recipeType } from '../interfaces/api/recipes';
 import Link from 'next/link';
 import { GrClose } from "react-icons/gr";
 import IngredientsRadarChart from './IngredientRadarChart';
+// import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrientArray } from "../utils/menuArray"
 
 type props = {
     recipe: recipeType,
@@ -11,6 +12,21 @@ type props = {
 }
 
 const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
+
+    // const ingredientsArray = recipe.recipe_ingredients.split(',');
+    
+    // const param = (menuNutrientArray.find((item)=>item.name === recipe.sandwich_table_sandwich_name))
+    // let addMeat = ingredientsArray.find((item)=>item === String(menuNutrientArray.map((item)=>item.name)))
+    // let bread = ''
+    // let cheese = ''
+    // let addCheese = ''
+    // let isToasting = ''
+    // let vegetable = []
+    // let pickledVegetable = []
+    // let sauce = []
+    // let addIngredient = []
+    // console.log(addMeat)
+
     return (
         <div className='fixed bg-gray-600/10 top-0 left-0 w-full h-full backdrop-blur-sm z-10'
             onClick={(e) => { if (e.target === e.currentTarget) setIsActive(false) }}>

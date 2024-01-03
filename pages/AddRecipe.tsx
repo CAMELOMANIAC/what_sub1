@@ -108,6 +108,7 @@ const AddRecipe = ({ param }: { param: string }) => {
     const [isComplete, setIsComplete] = useState<boolean>(false);
 
     useEffect(() => {
+        console.log(context)
         setContext(createContext);
         //필수항목배열 확인후 다 작성되면 작성완료 할수있게
         const isNotComplete = Object.entries([recipeName, param, bread.state, toasting.state]).some(([_key, value]) => value === '');
@@ -117,7 +118,7 @@ const AddRecipe = ({ param }: { param: string }) => {
 
     //서버에 전달하는 함수
     const sendRecipe = async () => {
-        const response = await fetch('/api/recipe?insert=recipe', {
+        const response = await fetch('/api/recipes', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -135,9 +136,8 @@ const AddRecipe = ({ param }: { param: string }) => {
     const onClickHandler = () => {
         sendRecipe().then(
             result => {
-                if (result.redirect) {
-                    router.push(result.redirect)
-                }
+                console.log(result)
+                router.push('/Recipes')
             },
             error => console.log(error)
         )

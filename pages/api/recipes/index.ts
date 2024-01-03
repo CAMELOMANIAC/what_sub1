@@ -34,8 +34,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 res.status(500).json({ statusCode: 500, message: err.message });
             }
         }
-    } else if (req.method === 'POST') {
 
+    } else if (req.method === 'POST') {
         //레시피 추가하기
         try {
 
@@ -47,9 +47,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     const insertRecipeResult = await insertRecipe(userId, recipe);
 
                     if (insertRecipeResult instanceof Error) {
+                        console.log('실패')
                         throw insertRecipeResult
                     } else {
-                        res.status(200).json(insertRecipeResult);
+                        res.status(200).json({message:'성공'});
+                        console.log('성공')
                     }
                 }
 

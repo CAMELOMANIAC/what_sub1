@@ -6,6 +6,8 @@ import store from '../redux/store';
 import { AppProps } from 'next/app';
 import { useEffect, useState } from 'react';
 import { Router } from 'next/router';
+
+
 // 전역적으로 사용되는 부분
 export default function MyApp({ Component, pageProps }: AppProps) {
   
