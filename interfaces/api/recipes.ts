@@ -8,3 +8,10 @@ export type recipeType = {
     reply_count: string;
     like_count: string;
 }
+
+export type replyType = {
+    reply_id: number;
+    reply_context: string;
+    recipe_table_recipe_id: number;
+    user_table_user_id: string;
+}

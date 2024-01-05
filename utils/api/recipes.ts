@@ -1,6 +1,6 @@
 import { recipeContextType } from "../../interfaces/AddRecipe";
 import { updateReturnType } from "../../interfaces/api/db";
-import { recipeType } from "../../interfaces/api/recipes";
+import { recipeType, replyType } from "../../interfaces/api/recipes";
 import executeQuery from "../../lib/db";
 
 type getRecipesArg = {
@@ -169,7 +169,7 @@ export const deleteRecipeLike = async (recipeId: number, userId: string): Promis
 }
 
 //레시피 좋아요 했었는지 체크
-export const checkRecipeLike = async (recipeId: number, userId: string): Promise< boolean | Error> => {
+export const checkRecipeLike = async (recipeId: number, userId: string): Promise<boolean | Error> => {
 
     const query = `SELECT count(*) as count FROM recipe_like_table 
     WHERE recipe_like_table.recipe_table_recipe_id = ? 
@@ -178,7 +178,7 @@ export const checkRecipeLike = async (recipeId: number, userId: string): Promise
     const recipeIdValue = recipeId;
     const userIdValue = userId;
     try {
-        const results : { count: number } | Error = await executeQuery(
+        const results: { count: number } | Error = await executeQuery(
             { query: query, values: [recipeIdValue, userIdValue] }
         );
 
@@ -189,6 +189,7 @@ export const checkRecipeLike = async (recipeId: number, userId: string): Promise
         } else {
             return false;
         }
+
     } catch (err) {
         return err
     }
@@ -218,7 +219,7 @@ export const getRecommendedRecipes = async (): Promise<recipeType[] | Error> => 
     recipe_table.user_table_user_id, 
     recipe_table.sandwich_table_sandwich_name 
     LIMIT 3;`
-    
+
     try {
         const results: recipeType[] | Error = await executeQuery(
             { query: query, values: [] }
@@ -229,6 +230,26 @@ export const getRecommendedRecipes = async (): Promise<recipeType[] | Error> => 
         } else {
             return results
         }
+
+    } catch (err) {
+        return err;
+    }
+}
+
+export const getReply = async (recipeId: number): Promise<replyType[] | Error> => {
+    const query = `select * from whatsub.reply_table where recipe_table_recipe_id = ?;`
+
+    try {
+        const results: replyType[] | Error = await executeQuery(
+            { query: query, values: [recipeId] }
+        )
+
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results
+        }
+
     } catch (err) {
         return err;
     }
