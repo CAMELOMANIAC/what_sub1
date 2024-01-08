@@ -4,15 +4,15 @@ import { checkSession } from '../../../utils/api/users';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === 'PUT') {
-        //레시피 좋아요 추가
+        //레시피 좋아요(좋아요 여부 체크후 추가 또는 제거)
         try {
             const recipeId = Number(req.body)
 
             if (req.headers.cookie && recipeId) {
                 const userId = await checkSession(req.headers.cookie);
                 if (typeof userId === 'string') {
-                    console.log(userId)
                     const checkRecipeLikeResult = await checkRecipeLike(recipeId, userId);
+
                     if (checkRecipeLikeResult === false) {
                         const insertRecipeLikeResult = await insertRecipeLike(recipeId, userId);
 

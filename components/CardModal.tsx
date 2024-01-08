@@ -1,5 +1,5 @@
-import React from 'react';
-import { recipeType } from '../interfaces/api/recipes';
+import React, { useEffect, useState } from 'react';
+import { recipeType, replyType } from '../interfaces/api/recipes';
 import Link from 'next/link';
 import { GrClose } from "react-icons/gr";
 import IngredientsRadarChart from './IngredientRadarChart';
@@ -12,6 +12,8 @@ type props = {
     ingredients: string[]
 }
 const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
+    const [reply, setReply] = useState<replyType[]>();
+    const [content, setContent] = useState<string>('');
 
     const ingredientsArray = recipe.recipe_ingredients.split(',');
     //재료에 맞게 재분류
@@ -22,24 +24,75 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
     const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
     const sauce = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
 
-    const response = fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`);
+    const getReply = async () => {
+        try {
+            const response = await fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`);
+            const result: replyType[] = await response.json();
+            console.log(result); // 이곳에 실제 결과값이 출력됩니다.
+            return result;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const insertReply = async () => {
+        try {
+            const response = await fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    recipeId: recipe.recipe_id,
+                    content: content
+                }),
+            });
+            const result: replyType[] = await response.json();
+            console.log(result); // 이곳에 실제 결과값이 출력됩니다.
+            return result;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        getReply().then(result => setReply(result))
+    }, [])
 
     return (
         <div className='fixed bg-gray-600/10 top-0 left-0 w-full h-full backdrop-blur-sm z-10'
             onClick={(e) => { if (e.target === e.currentTarget) setIsActive(false) }}>
-            <article className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1024px] bg-white text-black shadow rounded-lg p-5'>
-                <div className='grid grid-cols-6 gap-4'>
-                    <nav className='col-span-2 border-r-2'>
-                        <ul>
-                            <li>소개</li>
-                            <li>빵</li>
-                            <li>치즈</li>
-                            <li>토스팅</li>
-                            <li>채소</li>
-                            <li>소스</li>
+            <article className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1024px] bg-white text-black shadow rounded-lg'>
+                <div className='grid grid-cols-8 gap-4'>
+                    <nav className='h-full col-span-2 bg-gray-100 rounded-l-lg '>
+                        <ul className='h-full p-10 font-bold flex flex-col'>
+                            <li className='grow border-l-8 border-green-600  flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
+                                <button className='ml-4'>소개</button>
+                            </li>
+                            <li className='grow border-l-8 border-green-600  flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
+                                <button className='ml-4'>빵</button>
+                            </li>
+                            <li className='grow border-l-8 border-green-600  flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
+                                <button className='ml-4'>치즈</button>
+                            </li>
+                            <li className='grow border-l-8 border-green-600  flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
+                                <button className='ml-4'>토스팅</button>
+                            </li>
+                            <li className='grow border-l-8 border-green-600  flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
+                                <button className='ml-4'>채소</button>
+                            </li>
+                            <li className='grow border-l-8 border-green-600 flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
+                                <button className='ml-4'>소스</button>
+                            </li>
                         </ul>
                     </nav>
-                    <div className='col-span-4'>
+                    <div className='col-span-6 p-5'>
                         <div className='grid grid-cols-2'>
                             <section className='col-span-1'>
                                 <div className='flex flex-row items-center'>
@@ -56,7 +109,7 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
                                         </Link>
                                         <h2 className='text-xl font-bold text-ellipsis overflow-hidden whitespace-nowrap w-[220px]'>{recipe.recipe_name}</h2>
                                         <button onClick={() => setIsActive(false)}>
-                                            <GrClose className='absolute right-5 top-5' />
+                                            <GrClose className='absolute right-5 top-5 z-10' />
                                         </button>
                                     </div>
                                 </div>
@@ -89,8 +142,21 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
                                     addIngredient: []
                                 }} />
                             </section>
-                            <section>
+                            <section className='col-span-2'>
                                 댓글
+                                <ul className='max-h-48 overflow-y-auto'>
+                                    {reply?.length && reply?.map((item, index) =>
+                                        <li key={index} className='m-1 border-t-[1px]'>
+                                            <p className='font-bold'>{item.user_table_user_id}</p> {item.reply_context}
+                                        </li>)}
+                                </ul>
+                                <div className='flex m-1'>
+                                    <textarea rows={3} placeholder='바르고 고운 말로 생각을 표현해주세요'
+                                     maxLength={80}
+                                     className='w-5/6 resize-none border-t-[1px]'
+                                     onChange={(e)=>setContent(e.target.value)}></textarea>
+                                    <button type='submit' className='w-1/6 grow rounded-lg bg-green-600 text-white' onClick={insertReply}>댓글 작성</button>
+                                </div>
                             </section>
 
                         </div>

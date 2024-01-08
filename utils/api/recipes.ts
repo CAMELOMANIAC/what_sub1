@@ -237,11 +237,30 @@ export const getRecommendedRecipes = async (): Promise<recipeType[] | Error> => 
 }
 
 export const getReply = async (recipeId: number): Promise<replyType[] | Error> => {
-    const query = `select * from whatsub.reply_table where recipe_table_recipe_id = ?;`
+    const query = `select * from reply_table where recipe_table_recipe_id = ?;`
 
     try {
         const results: replyType[] | Error = await executeQuery(
             { query: query, values: [recipeId] }
+        )
+
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results
+        }
+
+    } catch (err) {
+        return err;
+    }
+}
+
+export const insertReply = async (replyContext: string, recipeId: number, userId:string): Promise<replyType[] | Error> => {
+    const query = `INSERT INTO reply_table (reply_context, recipe_table_recipe_id, user_table_user_id) values (?, ?, ?);`
+
+    try {
+        const results: replyType[] | Error = await executeQuery(
+            { query: query, values: [replyContext,recipeId,userId] }
         )
 
         if (Array.isArray(results) && results.length < 1) {
