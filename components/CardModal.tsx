@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { recipeType, replyType } from '../interfaces/api/recipes';
 import Link from 'next/link';
 import { GrClose } from "react-icons/gr";
 import IngredientsRadarChart from './IngredientRadarChart';
 import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrientArray } from "../utils/menuArray"
 import { TbAlertCircle } from 'react-icons/tb';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 type props = {
     recipe: recipeType,
@@ -14,6 +16,7 @@ type props = {
 const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
     const [reply, setReply] = useState<replyType[]>();
     const [content, setContent] = useState<string>('');
+    const [isLogin, setIslogin] = useState<boolean>(false);
 
     const ingredientsArray = recipe.recipe_ingredients.split(',');
     //재료에 맞게 재분류
@@ -24,11 +27,12 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
     const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
     const sauce = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
 
+    const scrollRef = useRef<HTMLUListElement>(null);
+
     const getReply = async () => {
         try {
             const response = await fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`);
             const result: replyType[] = await response.json();
-            console.log(result); // 이곳에 실제 결과값이 출력됩니다.
             return result;
         } catch (error) {
             console.error(error);
@@ -37,6 +41,28 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
 
     const insertReply = async () => {
         try {
+
+            if (userName.length === 0) {
+                alert('로그인 후 이용 가능합니다.')
+                return
+            }
+            if (content.length === 0) {
+                alert('댓글을 입력해주세요')
+                return
+            }
+            if (content.length > 100) {
+                alert('댓글은 100자 이하로 입력해주세요')
+                return
+            }
+            if (content.length < 1) {
+                alert('댓글은 1자 이상 입력해주세요')
+                return
+            }
+            if (content.includes('<')) {
+                alert('태그 사용 불가')
+                return
+            }
+
             const response = await fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`, {
                 method: 'POST',
                 headers: {
@@ -47,16 +73,39 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
                     content: content
                 }),
             });
-            const result: replyType[] = await response.json();
-            console.log(result); // 이곳에 실제 결과값이 출력됩니다.
-            return result;
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('댓글 등록 성공');
+                setContent('')
+                getReply().then(replyResult => {
+                    setReply(replyResult);
+                    if (scrollRef.current) {
+                        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+                    }
+                })
+                return result;
+            } else {
+                throw new Error(result.message);
+            }
+
         } catch (error) {
-            console.error(error);
+            alert('댓글 등록에 실패 했습니다.')
+            //console.error(error);
         }
     }
 
+    //로그인 여부 체크
+    const userName = useSelector((state: RootState) => state.user.userName);
+
     useEffect(() => {
+        //처음에 값 가져오기
         getReply().then(result => setReply(result))
+        //로그인 여부 체크
+        if (userName.length > 0) {
+            setIslogin(true)
+        }
     }, [])
 
     return (
@@ -64,7 +113,7 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
             onClick={(e) => { if (e.target === e.currentTarget) setIsActive(false) }}>
             <article className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1024px] bg-white text-black shadow rounded-lg'>
                 <div className='grid grid-cols-8 gap-4'>
-                    <nav className='h-full col-span-2 bg-gray-100 rounded-l-lg '>
+                    <nav className='h-full col-span-2 rounded-l-lg border-r'>
                         <ul className='h-full p-10 font-bold flex flex-col'>
                             <li className='grow border-l-8 border-green-600  flex items-center'>
                                 <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
@@ -144,17 +193,18 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
                             </section>
                             <section className='col-span-2'>
                                 댓글
-                                <ul className='max-h-48 overflow-y-auto'>
+                                <ul className='max-h-48 overflow-y-auto' ref={scrollRef}>
                                     {reply?.length && reply?.map((item, index) =>
                                         <li key={index} className='m-1 border-t-[1px]'>
                                             <p className='font-bold'>{item.user_table_user_id}</p> {item.reply_context}
                                         </li>)}
                                 </ul>
                                 <div className='flex m-1'>
-                                    <textarea rows={3} placeholder='바르고 고운 말로 생각을 표현해주세요'
-                                     maxLength={80}
-                                     className='w-5/6 resize-none border-t-[1px]'
-                                     onChange={(e)=>setContent(e.target.value)}></textarea>
+                                    <textarea rows={3} placeholder={isLogin? '바르고 고운 말로 생각을 표현해주세요' : '로그인이 필요한 기능입니다'}
+                                        maxLength={80}
+                                        className='w-5/6 resize-none border-t-[1px]'
+                                        value={content}
+                                        onChange={(e) => { setContent(e.target.value); }}></textarea>
                                     <button type='submit' className='w-1/6 grow rounded-lg bg-green-600 text-white' onClick={insertReply}>댓글 작성</button>
                                 </div>
                             </section>

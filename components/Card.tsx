@@ -42,7 +42,15 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         return response.json();
     }
 
+    //로그인 여부 체크
+    const userName = useSelector((state: RootState) => state.user.userName);
+
     const recipeLikeHandler = async (recipe_id: string) => {
+
+        if (userName.length === 0) {
+            alert('로그인 후 이용 가능합니다.')
+            return
+        }
         const result = await insertRecipeLike(recipe_id);
         if (result.message === '좋아요 등록 성공') {
             setLikeCount(prev => prev + 1)
@@ -58,17 +66,17 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         <>
             <article className={`col-span-2 aspect-[4/3] bg-white rounded-xl p-6 shadow-sm hover:shadow-lg cursor-pointer flex flex-col hover:scale-105 transition-transform ${className}`}
                 ref={ref}
-                onClick={() => { setIsActive(true)} }>
+                onClick={() => { setIsActive(true) }}>
                 <div className='flex flex-row items-center'>
                     <div className='inline-block w-[60px] overflow-hidden relative rounded-md aspect-square mr-2'>
                         <img src={`/images/sandwich_menu/${recipe.sandwich_table_sandwich_name}.png`}
-                        className='relative object-cover scale-[2.7] origin-[85%_40%]'
-                        alt={recipe.sandwich_table_sandwich_name}></img>
+                            className='relative object-cover scale-[2.7] origin-[85%_40%]'
+                            alt={recipe.sandwich_table_sandwich_name}></img>
                     </div>
                     <div className='flex flex-col w-full'>
                         <Link href={`/Recipes?param=${encodeURIComponent(recipe.sandwich_table_sandwich_name)}`}
-                        className='text-sm text-gray-400 hover:text-green-600'
-                        onClick={(e) => { e.stopPropagation();}}>{recipe.sandwich_table_sandwich_name}</Link>
+                            className='text-sm text-gray-400 hover:text-green-600'
+                            onClick={(e) => { e.stopPropagation(); }}>{recipe.sandwich_table_sandwich_name}</Link>
                         <h2 className='text-xl font-bold text-ellipsis overflow-hidden whitespace-nowrap w-[220px]'>{recipe.recipe_name}</h2>
                     </div>
                 </div>
@@ -81,7 +89,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                 <div className='flex flex-row justify-end mt-auto text-gray-400'>
                     <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_table_user_id}</div>
                     <button className='flex items-center mr-2 hover:text-green-600'
-                        onClick={(e) => { e.stopPropagation();}}><HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}</button>
+                        onClick={(e) => { e.stopPropagation(); }}><HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}</button>
                     <button className='flex items-center mr-2 hover:text-green-600 active:scale-150 transition-transform'
                         onClick={(e) => { e.stopPropagation(); recipeLikeHandler(recipe.recipe_id) }}>
                         {likeRecipe.find(item => item == recipe.recipe_id) ? <PiHeartStraightFill className='m-1 text-green-600' /> : <PiHeartStraight className='m-1' />}{likeCount}

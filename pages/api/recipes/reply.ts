@@ -38,9 +38,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     if (results instanceof Error) {
                         throw results
                     } else {
-                        res.status(200).json({message:'댓글 등록 성공'});
+                        res.status(200).json({ message: '댓글 등록 성공' });
                     }
                 }
+            } else {
+                throw new Error('잘못된 요청값 입니다.')
             }
         } catch (err: unknown) {
             if (err instanceof Error) {
