@@ -4,6 +4,7 @@ import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar } from "recharts";
 import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrientArray } from "../utils/menuArray"
 import { Tooltip } from "recharts";
 import { recipeContextType } from "../interfaces/AddRecipe";
+import React from "react";
 
 export const useIsServerSide = () => {
     const [isServerSide, setIsServerSide] = useState(true);
@@ -95,6 +96,7 @@ const IngredientsRadarChart = ({ context }: { context: recipeContextType }) => {
 };
 
 export default IngredientsRadarChart;
+export const MemoizedChart = React.memo(IngredientsRadarChart);
 
 const CustomTooltip = ({ active, payload, label }: { active: boolean, payload: [{ value: number }], label: string }) => {
     if (active && payload && payload.length) {

@@ -67,7 +67,7 @@ const MenusBanner = ({selected,sessionCheck} : propsType) => {
                 <div className='flex flex-row items-center text-white pb-4'>
                     <h1 className='font-bold text-3xl mr-4'>{selected.name}</h1>
                     <button className='flex items-center text-xl' onClick={() => menuLikeHandler(selected.name)}>
-                        {menuLikeArray.includes(selected.name) ? <PiHeartStraightFill className='inline-block' /> : <PiHeartStraight className='inline-block' />}{menuLike}
+                        {menuLikeArray.length && menuLikeArray.includes(selected.name) ? <PiHeartStraightFill className='inline-block' /> : <PiHeartStraight className='inline-block' />}{menuLike}
                     </button>
                 </div>
                 <div className='text-white/70 mb-2'>{selected.summary}</div>

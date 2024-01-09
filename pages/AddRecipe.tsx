@@ -108,7 +108,6 @@ const AddRecipe = ({ param }: { param: string }) => {
     const [isComplete, setIsComplete] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(context)
         setContext(createContext);
         //필수항목배열 확인후 다 작성되면 작성완료 할수있게
         const isNotComplete = Object.entries([recipeName, param, bread.state, toasting.state]).some(([_key, value]) => value === '');

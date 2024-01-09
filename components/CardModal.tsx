@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { recipeType, replyType } from '../interfaces/api/recipes';
 import Link from 'next/link';
 import { GrClose } from "react-icons/gr";
-import IngredientsRadarChart from './IngredientRadarChart';
+import { MemoizedChart } from './IngredientRadarChart';
 import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrientArray } from "../utils/menuArray"
 import { TbAlertCircle } from 'react-icons/tb';
 import { useSelector } from 'react-redux';
@@ -13,19 +13,11 @@ type props = {
     setIsActive: React.Dispatch<React.SetStateAction<boolean>>,
     ingredients: string[]
 }
+
 const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
     const [reply, setReply] = useState<replyType[]>();
     const [content, setContent] = useState<string>('');
     const [isLogin, setIslogin] = useState<boolean>(false);
-
-    const ingredientsArray = recipe.recipe_ingredients.split(',');
-    //재료에 맞게 재분류
-    const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
-    const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-    const bread = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-    const cheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-    const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-    const sauce = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
 
     const scrollRef = useRef<HTMLUListElement>(null);
 
@@ -98,15 +90,37 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
 
     //로그인 여부 체크
     const userName = useSelector((state: RootState) => state.user.userName);
+    const checkLogin = useCallback(() => {userName},[userName])
 
     useEffect(() => {
         //처음에 값 가져오기
         getReply().then(result => setReply(result))
         //로그인 여부 체크
+        checkLogin();
         if (userName.length > 0) {
             setIslogin(true)
         }
+    }, [checkLogin])
+
+    useEffect(() => {
+        //댓글 가져오기
+        getReply().then(result => setReply(result))
+
     }, [])
+
+    const chartPropsMemo = useMemo(() => {
+        //재료에 맞게 재분류
+        const ingredientsArray = recipe.recipe_ingredients.split(',');
+        const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
+        const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+        const bread = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+        const cheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+        const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+        const sauce = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
+    
+        return {param,addMeat,bread,cheese,addCheese,sauce}
+    },[])
+
 
     return (
         <div className='fixed bg-gray-600/10 top-0 left-0 w-full h-full backdrop-blur-sm z-10'
@@ -176,18 +190,18 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
                                             '\n메뉴 이름에 치즈가 포함된 재료는 이미 치즈의 영양성분이 포함되어 있으나\n 관련 정보가 제공되지 않아 치즈 영양정보가 중복해서 포함될 수 있습니다'}
                                     </div>
                                 </h3>
-                                <IngredientsRadarChart context={{
+                                <MemoizedChart context={{
                                     recipeName: '',
                                     tagArray: [],
-                                    param: param!,
-                                    addMeat: addMeat || '',
-                                    bread: bread!,
-                                    cheese: cheese || '',
-                                    addCheese: addCheese || '',
+                                    param: chartPropsMemo.param!,
+                                    addMeat: chartPropsMemo.addMeat || '',
+                                    bread: chartPropsMemo.bread!,
+                                    cheese: chartPropsMemo.cheese || '',
+                                    addCheese: chartPropsMemo.addCheese || '',
                                     isToasting: '',
                                     vegetable: [],
                                     pickledVegetable: [],
-                                    sauce: sauce,
+                                    sauce: chartPropsMemo.sauce,
                                     addIngredient: []
                                 }} />
                             </section>
