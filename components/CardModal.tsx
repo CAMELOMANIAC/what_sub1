@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { recipeType, replyType } from '../interfaces/api/recipes';
 import Link from 'next/link';
 import { GrClose } from "react-icons/gr";
@@ -7,6 +7,12 @@ import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrie
 import { TbAlertCircle } from 'react-icons/tb';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { MdSummarize } from "react-icons/md";
+import { BiSolidBaguette } from "react-icons/bi";
+import { BiSolidCheese } from "react-icons/bi";
+import { MdOutdoorGrill } from "react-icons/md";
+import { GiTomato } from "react-icons/gi";
+import { GiKetchup } from "react-icons/gi";
 
 type props = {
     recipe: recipeType,
@@ -90,11 +96,9 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
 
     //로그인 여부 체크
     const userName = useSelector((state: RootState) => state.user.userName);
-    const checkLogin = useCallback(() => {userName},[userName])
+    const checkLogin = useCallback(() => { userName }, [userName])
 
     useEffect(() => {
-        //처음에 값 가져오기
-        getReply().then(result => setReply(result))
         //로그인 여부 체크
         checkLogin();
         if (userName.length > 0) {
@@ -108,54 +112,54 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
 
     }, [])
 
-    const chartPropsMemo = useMemo(() => {
-        //재료에 맞게 재분류
-        const ingredientsArray = recipe.recipe_ingredients.split(',');
-        const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
-        const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-        const bread = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-        const cheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-        const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-        const sauce = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
-    
-        return {param,addMeat,bread,cheese,addCheese,sauce}
-    },[])
-
+    //재료에 맞게 재분류
+    const ingredientsArray = recipe.recipe_ingredients.split(',');
+    const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
+    const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+    const bread = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+    const cheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+    const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+    const sauce = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
 
     return (
         <div className='fixed bg-gray-600/10 top-0 left-0 w-full h-full backdrop-blur-sm z-10'
             onClick={(e) => { if (e.target === e.currentTarget) setIsActive(false) }}>
             <article className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1024px] bg-white text-black shadow rounded-lg'>
                 <div className='grid grid-cols-8 gap-4'>
-                    <nav className='h-full col-span-2 rounded-l-lg border-r'>
-                        <ul className='h-full p-10 font-bold flex flex-col'>
-                            <li className='grow border-l-8 border-green-600  flex items-center'>
-                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
-                                <button className='ml-4'>소개</button>
+                    <nav className='h-full col-span-2 rounded-l-lg'>
+                        <ul className='h-full py-10 font-bold flex flex-col items-end '>
+                            <li className='relative grow border-r-8 border-green-600 flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600'></div>
+                                <button className='mr-5'>소개<MdSummarize className='inline ml-3'/></button>
                             </li>
-                            <li className='grow border-l-8 border-green-600  flex items-center'>
-                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
-                                <button className='ml-4'>빵</button>
+                            
+                            <li className='relative grow border-r-8 border-green-600 flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600'></div>
+                                <button className='mr-5'>빵<BiSolidBaguette className='inline ml-3'/></button>
                             </li>
-                            <li className='grow border-l-8 border-green-600  flex items-center'>
-                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
-                                <button className='ml-4'>치즈</button>
+                            
+                            <li className='relative grow border-r-8 border-green-600 flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600'></div>
+                                <button className='mr-5'>치즈<BiSolidCheese className='inline ml-3'/></button>
                             </li>
-                            <li className='grow border-l-8 border-green-600  flex items-center'>
-                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
-                                <button className='ml-4'>토스팅</button>
+                            
+                            <li className='relative grow border-r-8 border-green-600 flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600'></div>
+                                <button className='mr-5'>토스팅<MdOutdoorGrill className='inline ml-3'/></button>
                             </li>
-                            <li className='grow border-l-8 border-green-600  flex items-center'>
-                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
-                                <button className='ml-4'>채소</button>
+                            
+                            <li className='relative grow border-r-8 border-green-600 flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600'></div>
+                                <button className='mr-5'>채소<GiTomato className='inline ml-3'/></button>
                             </li>
-                            <li className='grow border-l-8 border-green-600 flex items-center'>
-                                <div className='absolute bg-white w-[18px] h-[18px] -translate-x-[13px] rounded-full border-[3px] border-green-600'></div>
-                                <button className='ml-4'>소스</button>
+                            
+                            <li className='relative grow border-r-8 border-green-600 flex items-center'>
+                                <div className='absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600'></div>
+                                <button className='mr-5'>소스<GiKetchup className='inline ml-3'/></button>
                             </li>
                         </ul>
                     </nav>
-                    <div className='col-span-6 p-5'>
+                    <div className='col-span-6 p-10'>
                         <div className='grid grid-cols-2'>
                             <section className='col-span-1'>
                                 <div className='flex flex-row items-center'>
@@ -193,15 +197,15 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
                                 <MemoizedChart context={{
                                     recipeName: '',
                                     tagArray: [],
-                                    param: chartPropsMemo.param!,
-                                    addMeat: chartPropsMemo.addMeat || '',
-                                    bread: chartPropsMemo.bread!,
-                                    cheese: chartPropsMemo.cheese || '',
-                                    addCheese: chartPropsMemo.addCheese || '',
+                                    param: param!,
+                                    addMeat: addMeat || '',
+                                    bread: bread!,
+                                    cheese: cheese || '',
+                                    addCheese: addCheese || '',
                                     isToasting: '',
                                     vegetable: [],
                                     pickledVegetable: [],
-                                    sauce: chartPropsMemo.sauce,
+                                    sauce: sauce,
                                     addIngredient: []
                                 }} />
                             </section>
@@ -214,7 +218,7 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
                                         </li>)}
                                 </ul>
                                 <div className='flex m-1'>
-                                    <textarea rows={3} placeholder={isLogin? '바르고 고운 말로 생각을 표현해주세요' : '로그인이 필요한 기능입니다'}
+                                    <textarea rows={3} placeholder={isLogin ? '바르고 고운 말로 생각을 표현해주세요' : '로그인이 필요한 기능입니다'}
                                         maxLength={80}
                                         className='w-5/6 resize-none border-t-[1px]'
                                         value={content}

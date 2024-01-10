@@ -40,6 +40,116 @@
     @apply hidden;
   }
 
+
+  .object_container {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    text-align: center;
+    font-family: sans-serif;
+    padding-top: 10px;
+    overflow: hidden;
+  }
+
+  .shape {
+    position: absolute;
+    background-image: url('/images/metro-car.svg');
+    border-radius: 0%;
+    transform: rotate(0deg);
+    width: 100vw;
+    height: 100vh;
+    top: -80px;
+    left: 0px;
+    opacity: 1;
+    filter: blur(0.2px);
+    animation-duration: 0.5s;
+    animation-name: carMove;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    will-change: left;
+    z-index: 10;
+  }
+
+  .shape.two {
+    transition-delay: 2ms;
+    animation-delay: 2ms;
+  }
+
+  .shape.three {
+    transition-delay: 4ms;
+    animation-delay: 4ms;
+  }
+
+  .shape.four {
+    transition-delay: 6ms;
+    animation-delay: 6ms;
+  }
+
+  .shape.five {
+    transition-delay: 8ms;
+    animation-delay: 8ms;
+  }
+
+  .shape.six {
+    transition-delay: 10ms;
+    animation-delay: 10ms;
+  }
+
+  .shape.seven {
+    transition-delay: 12ms;
+    animation-delay: 12ms;
+  }
+
+  .shape.eight {
+    transition-delay: 14ms;
+    animation-delay: 14ms;
+  }
+
+  .shape.nine {
+    transition-delay: 16ms;
+    animation-delay: 16ms;
+  }
+
+  .shape.ten {
+    transition-delay: 18ms;
+    animation-delay: 18ms;
+  }
+
+  .shape.eleven {
+    transition-delay: 20ms;
+    animation-delay: 20ms;
+  }
+
+  .shape.twelve {
+    transition-delay: 22ms;
+    animation-delay: 22ms;
+  }
+
+  .shape.thirteen {
+    transition-delay: 24ms;
+    animation-delay: 24ms;
+  }
+
+  .shape.fourteen {
+    transition-delay: 26ms;
+    animation-delay: 26ms;
+  }
+
+  .shape.fifteen {
+    transition-delay: 28ms;
+    animation-delay: 28ms;
+  }
+
+  @keyframes carMove {
+    from {
+      left: -100vw;
+    }
+
+    to {
+      left: 100vw;
+    }
+  }
+
   @font-face {
     font-family: 'seoul-metro';
     src: url('/font/신지하철체.ttf') format('truetype');

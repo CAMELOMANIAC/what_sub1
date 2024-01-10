@@ -52,10 +52,8 @@ const IngredientsRadarChart = ({ context }: { context: recipeContextType }) => {
                 })
             }
         })
-        console.log(calorie, protein, saturatedFats, sugars, sodium);
-        console.log(calorie / 2000, protein / 50, saturatedFats / 20, sugars / 50, sodium / 2);
     }, [context])
-
+    
     const data = [
         {
             "subject": "칼로리",
