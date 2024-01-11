@@ -2,11 +2,11 @@ import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/Pi';
 import { HiOutlineChatBubbleLeft } from 'react-icons/Hi2';
 import Link from 'next/link';
 import { forwardRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { actionAddRecipeLike, actionRemoveRecipeLike } from "../redux/reducer/userReducer";
 import { recipeType } from '../interfaces/api/recipes';
 import CardModal from './CardModal';
+import { useRecipeLike } from '../utils/card';
 
 type CardProps = {
     recipe: recipeType;
@@ -14,10 +14,9 @@ type CardProps = {
 };
 
 const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) => {
-    const [likeCount, setLikeCount] = useState<number>(parseInt(recipe.like_count));
+    const {likeCount, recipeLikeHandler} = useRecipeLike(recipe);
     const recipeTag: string[] = [];
     const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
-    const dispatch = useDispatch();
     const [isActive, setIsActive] = useState<boolean>(false)
 
     if (recipe.tag) {
@@ -30,37 +29,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         ingredients.push(...ingredient);
     }
 
-    const insertRecipeLike = async (recipeName: string) => {
-        const response = await fetch('/api/recipes/like', {
-            method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: 'include',
-            body: JSON.stringify(recipeName)
-        })
-        return response.json();
-    }
-
-    //로그인 여부 체크
-    const userName = useSelector((state: RootState) => state.user.userName);
-
-    const recipeLikeHandler = async (recipe_id: string) => {
-
-        if (userName.length === 0) {
-            alert('로그인 후 이용 가능합니다.')
-            return
-        }
-        const result = await insertRecipeLike(recipe_id);
-        if (result.message === '좋아요 등록 성공') {
-            setLikeCount(prev => prev + 1)
-            dispatch(actionAddRecipeLike(recipe_id))
-        }
-        else if (result.message === '좋아요 제거 성공') {
-            setLikeCount(prev => prev - 1)
-            dispatch(actionRemoveRecipeLike(recipe_id))
-        }
-    }
 
     return (
         <>
@@ -91,7 +59,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                     <button className='flex items-center mr-2 hover:text-green-600'
                         onClick={(e) => { e.stopPropagation(); }}><HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}</button>
                     <button className='flex items-center mr-2 hover:text-green-600 active:scale-150 transition-transform'
-                        onClick={(e) => { e.stopPropagation(); recipeLikeHandler(recipe.recipe_id) }}>
+                        onClick={(e) => { e.stopPropagation(); recipeLikeHandler() }}>
                         {likeRecipe.find(item => item == recipe.recipe_id) ? <PiHeartStraightFill className='m-1 text-green-600' /> : <PiHeartStraight className='m-1' />}{likeCount}
                     </button>
                 </div>
