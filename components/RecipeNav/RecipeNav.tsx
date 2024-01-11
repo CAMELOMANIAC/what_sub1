@@ -69,7 +69,7 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
     return (
         <NavBackground className='p-6 grid grid-cols-7 grid-rows-1 font-[seoul-metro]'>
             <NavSandwich $activesection={activeSection}>
-                <img src='/images/front_banner.png' className={`w-10`} />
+                <img src='/images/front_banner.png' className='w-10' />
             </NavSandwich>
             {progressBarButtons.map((button) => (
                 <ProgressBar
