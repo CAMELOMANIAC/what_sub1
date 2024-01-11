@@ -5,7 +5,7 @@ import { forwardRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { recipeType } from '../interfaces/api/recipes';
-import CardModal from './CardModal';
+import CardModal from './CardModal/CardModal';
 import { useRecipeLike } from '../utils/card';
 
 type CardProps = {
@@ -28,7 +28,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         const ingredient = recipe.recipe_ingredients.split(',');
         ingredients.push(...ingredient);
     }
-
 
     return (
         <>
