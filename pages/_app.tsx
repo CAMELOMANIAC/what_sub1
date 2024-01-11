@@ -5,50 +5,55 @@ import { Provider } from 'react-redux';
 import store from '../redux/store';
 import { AppProps } from 'next/app';
 import { useEffect, useRef, useState } from 'react';
-import { Router } from 'next/router';
+import { useRouter } from 'next/router';
 
 
 // 전역적으로 사용되는 부분
 export default function MyApp({ Component, pageProps }: AppProps) {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [destination, setDestination] = useState<string>('');
+  const router = useRouter();
+  const sandwichRef = useRef<HTMLImageElement>(null);
+
   useEffect(() => {
     const start = () => {
       setIsLoading(true);
     };
     const end = () => {
+      if (sandwichRef.current)
+        sandwichRef.current.style.animation = 'move 0.5s infinite';
       setTimeout(() => {
         setIsLoading(false);
-      }, 1000); // 0.5초 최소 로딩 유지(애니메이션이 부드럽게 종료될수있게)
+      }, 500); // 0.5초 최소 로딩 유지(애니메이션이 부드럽게 종료될수있게)
     };
+
+    // 라우터 도착위치를 저장하기 위한 함수
+    const handleDestination = (url) => {
+      const pathName = url.split('?')[0]
+
+      switch (pathName) {
+        case '/': setDestination('홈 페이지'); break;
+        case '/AddRecipe': setDestination('레시피 작성 페이지'); break;
+        case '/Menus': setDestination('메뉴 페이지'); break;
+        case '/Recipes': setDestination('레시피 페이지'); break;
+        default: setDestination('페이지 이름 정의 안됨'); break;
+      }
+    }
+
     //next.js는 라우터관련 이벤트를 제공해 주므로 이걸로 로딩 상태값 변경
-    Router.events.on('routeChangeStart', start);
-    Router.events.on('routeChangeComplete', end);
-    Router.events.on('routeChangeError', end);
+    router.events.on('routeChangeStart', start);
+    router.events.on('routeChangeComplete', end);
+    router.events.on('routeChangeError', end);
+    router.events.on('routeChangeStart', handleDestination);
 
     return () => {
-      Router.events.off('routeChangeStart', start);
-      Router.events.off('routeChangeComplete', end);
-      Router.events.off('routeChangeError', end);
+      router.events.off('routeChangeStart', start);
+      router.events.off('routeChangeComplete', end);
+      router.events.off('routeChangeError', end);
+      router.events.off('routeChangeStart', handleDestination);
     };
   }, [])
-
-  const animationRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // 애니메이션을 무한 반복 상태로 시작
-    if (animationRef.current) {
-      animationRef.current.style.animationIterationCount = 'infinite';
-      animationRef.current.style.display = 'block';
-    }
-    // 특정 조건이 충족되면
-    if (isLoading === false && animationRef.current) {
-      // 현재 진행 중인 애니메이션을 완료하고 정지
-      animationRef.current.style.animationIterationCount = '1';
-      animationRef.current.style.display = 'none';
-    }
-  }, [isLoading]);
-
 
   return (
     <>
@@ -60,12 +65,14 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <nav className='mb-12'>{/*globalNav이 가리는 부분을 방지하는 여백*/}
           <GlobalNav></GlobalNav>
         </nav>
-        {<>
-          <div className="object_container">
-            <div className="shape one" ref={animationRef}><br /></div>
-          </div>
-          <Component {...pageProps} />
-        </>}
+        <Component {...pageProps} />
+        {isLoading &&
+          <div className="w-screen h-screen flex flex-col justify-center items-center top-0 left-0 fixed bg-white" >
+            <p className='text-green-600 font-bold text-2xl'>이번열차: <span className='text-yellow-600'>{destination}</span><br /> 열차가 잠시후 도착합니다</p>
+            <div className='overflow-hidden animate-pulse w-full'>
+              <img src={'/images/front_banner.png'} width={100} ref={sandwichRef} className='absolute'></img>
+            </div>
+          </div>}
       </Provider>
     </>
   );
