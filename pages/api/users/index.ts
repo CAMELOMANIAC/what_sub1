@@ -11,19 +11,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === 'GET') {
 		try {
 			const results: userDataType[] | Error = await getUsersData()
+
 			if (results instanceof Error) {
-				res.status(500).json({ statusCode: 500, message: results });
+				throw results
 			} else {
 				res.status(200).json(results);
 			}
-		} catch (err: unknown) {
-			if (err instanceof Error) {
-				res.status(500).json({ statusCode: 500, message: err.message });
-			}
-		}
-
-	} else if (req.method === 'POST') {
-		// POST 요청 처리
+		
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                switch (err.message) {
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
+            }
+        }
 
 	} else {
 		// 그 외의 HTTP 메서드 처리

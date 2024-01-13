@@ -21,14 +21,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     }
 
                 } else {
-                    throw new Error('잘못된 요청값입니다')
+                    throw new Error('잘못된 요청값 입니다.')
                 }
             } else {
-                throw new Error('쿠키 정보가 없습니다')
+                throw new Error('쿠키 정보가 없습니다.')
             }
 
-        } catch (err) {
-            res.status(500).json({ statusCode: 500, message: err.message });
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                switch (err.message) {
+                    case '적합한 결과가 없음':
+                        res.status(204).end(); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    case '쿠키 정보가 없습니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
+            }
         }
 
     } else {

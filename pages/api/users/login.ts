@@ -13,21 +13,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         try {
             const userId = await checkUser(id, pwd);
+
             if (typeof userId === 'string') {
                 const sessionId = await updateSession(userId);
-                console.log('세션',sessionId);
+                console.log('세션', sessionId);
                 res.setHeader('Set-Cookie', [
                     `session=${sessionId}; Path=/; HttpOnly; SameSite=Lax`,
                     `user=${userId}; Path=/; SameSite=Lax`
                 ]);
                 res.status(200).json({ userId: userId })
-            }else{
-                throw new Error('아이디 또는 비밀번호가 일치하지 않습니다.');
+            } else {
+                throw new Error('잘못된 요청값 입니다.');
             }
 
-        } catch (err) {
-            res.status(500).json({ statusCode: 500, message: err.message });
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                switch (err.message) {
+                    case '일치하는 행이 없거나 이미 수정되어 수정할 수 없음':
+                        res.status(204).end(); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
+            }
         }
+
     } else {
         res.status(405).send({ message: '허용되지 않은 메서드입니다' });
     }

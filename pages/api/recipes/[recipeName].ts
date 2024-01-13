@@ -11,6 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     //이 엔드포인트는 recipeName 값에 맞는 결과를 반환합니다
     if (req.method === 'GET') {
+
         try {
 
             if (typeof recipeName === 'string') {
@@ -34,22 +35,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 } else {
                     res.status(200).json(results);
                 }
-
             } else {
-                throw new Error('잘못된 요청값입니다')
+                throw new Error('잘못된 요청값 입니다.')
             }
 
         } catch (err: unknown) {
             if (err instanceof Error) {
-                res.status(500).json({ statusCode: 500, message: err.message });
+                switch (err.message) {
+                    case '적합한 결과가 없음':
+                        res.status(204).end(); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
             }
         }
-    } else if (req.method === 'POST') {
-        // POST 요청 처리
 
     } else {
         // 그 외의 HTTP 메서드 처리
-        res.status(405).send({ message: '허용되지 않은 요청 메서드입니다' });
+        res.status(405).send({ message: '허용되지 않은 요청 메서드 입니다.' });
     }
 }
 

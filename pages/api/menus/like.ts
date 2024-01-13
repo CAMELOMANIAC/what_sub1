@@ -24,9 +24,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 throw new Error('잘못된 요청값 입니다.')
             }
 
+
         } catch (err: unknown) {
             if (err instanceof Error) {
-                res.status(500).json({ statusCode: 500, message: err.message });
+                switch (err.message) {
+                    case '적합한 결과가 없음':
+                        res.status(204).end(); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
             }
         }
 
@@ -67,7 +75,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         } catch (err: unknown) {
             if (err instanceof Error) {
-                res.status(500).json({ statusCode: 500, message: err.message });
+                switch (err.message) {
+                    case '일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음':
+                        res.status(204).end(); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
             }
         }
 
@@ -101,7 +116,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         } catch (err: unknown) {
             if (err instanceof Error) {
-                res.status(500).json({ statusCode: 500, message: err.message });
+                switch (err.message) {
+                    case '일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음':
+                        res.status(204).end(); break;
+                    case '이미 좋아요한 메뉴입니다.':
+                        res.status(204).end(); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
             }
         }
 

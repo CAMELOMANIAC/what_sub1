@@ -31,14 +31,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         } catch (err: unknown) {
             if (err instanceof Error) {
-                res.status(500).json({ statusCode: 500, message: err.message });
+                switch (err.message) {
+                    case '적합한 결과가 없음':
+                        res.status(204).end(); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
             }
         }
 
     } else if (req.method === 'POST') {
         //레시피 추가하기
         try {
-
             if (req.headers.cookie) {
                 const userId = await checkSession(req.headers.cookie);
 
@@ -47,20 +51,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     const insertRecipeResult = await insertRecipe(userId, recipe);
 
                     if (insertRecipeResult instanceof Error) {
-                        console.log('실패')
                         throw insertRecipeResult
                     } else {
                         res.status(200).json({message:'성공'});
-                        console.log('성공')
                     }
                 }
 
             } else {
-                throw new Error('쿠키 값이 없습니다')
+                throw new Error('쿠키 정보가 없습니다.')
             }
 
-        } catch (err) {
-            res.status(500).json({ statusCode: 500, message: err.message });
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                switch (err.message) {
+                    case '쿠키 정보가 없습니다.':
+                        res.status(204).end(); break;
+                    case '일치하는 행이 없거나 이미 수정되어 수정할 수 없음':
+                        res.status(400).json({ message: err.message }); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
+            }
         }
 
     } else {

@@ -27,7 +27,7 @@ const Nav = ({ className, setPage, page }: props) => {
         return (
             <li className='relative grow border-r-8 border-green-600 flex items-center' key={index} ref={(element) => buttonRefArray.current[index] = element}>
                 <div className='absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600'></div>
-                <button className='mr-5 hover:text-lg transition-all duration-200' onClick={() => setPage(index)}>
+                <button className='mr-5 transition-all duration-200' onClick={() => setPage(index)}>
                     {name}{icon}
                 </button>
             </li>
@@ -35,7 +35,7 @@ const Nav = ({ className, setPage, page }: props) => {
     }
 
     //크기변화를 감지하는 ResizeObserver API
-    //li태그가 렌더링 이후에 크기가 변하므로 li태그 크기에 맞게 샌드위치를 조정하도록함
+    //li태그가 렌더링 (fetch로 값을 비동기적으로 가져옴으로) 이후에 크기가 변하므로 li태그 크기에 맞게 샌드위치를 조정하도록함
     useEffect(() => {
         const resizeObserver = new ResizeObserver(() => {
             if (sandwichRef.current) {

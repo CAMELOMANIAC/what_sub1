@@ -264,7 +264,7 @@ export const insertReply = async (replyContext: string, recipeId: number, userId
         )
 
         if (Array.isArray(results) && results.length < 1) {
-            throw new Error('적합한 결과가 없음')
+            throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음')
         } else {
             return results
         }

@@ -14,25 +14,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     //이 엔드포인트는 한명의 유저정보를 불러옵니다
     if (req.method === 'GET') {
-        if (typeof id === 'string') {
-            try {
-                const results: userDataType[] | Error = await getUserData(id)
+
+        try {
+            if (typeof id === 'string') {
+                const results: userDataType[] | Error = await getUserData(id);
+
                 if (results instanceof Error) {
-                    res.status(500).json({ statusCode: 500, message: results.message });
+                    throw results
                 } else {
                     res.status(200).json(results);
                 }
-            } catch (err: unknown) {
-                if (err instanceof Error) {
-                    res.status(500).json({ statusCode: 500, message: err.message });
+                
+            } else {
+                throw new Error('잘못된 요청값 입니다.')
+            }
+
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                switch (err.message) {
+                    case '적합한 결과가 없음':
+                        res.status(204).end(); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
                 }
             }
-        } else {
-            res.status(500).json({ statusCode: 500, message: '응답받은 id값이 잘못된 형식입니다' });
         }
-
-    } else if (req.method === 'POST') {
-        // POST 요청 처리
 
     } else {
         // 그 외의 HTTP 메서드 처리

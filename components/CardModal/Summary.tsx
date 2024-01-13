@@ -39,8 +39,12 @@ const Summary = ({ recipe, ingredients,setIsActive,className }: props) => {
     const getReply = async () => {
         try {
             const response = await fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`);
-            const result: replyType[] = await response.json();
-            return result;
+            if (response.status === 200){
+                const result: replyType[] = await response.json();
+                return result;
+            }else{
+                console.log('댓글없음')
+            }
         } catch (error) {
             console.error(error);
         }

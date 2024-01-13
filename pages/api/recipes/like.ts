@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         if (insertRecipeLikeResult instanceof Error) {
                             throw insertRecipeLikeResult
                         } else {
-                            res.status(200).json({message:'좋아요 등록 성공'});
+                            res.status(200).json({ message: '좋아요 등록 성공' });
                         }
 
                     } else if (checkRecipeLikeResult === true) {
@@ -28,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         if (deleteRecipeLikeResult instanceof Error) {
                             throw deleteRecipeLikeResult
                         } else {
-                            res.status(200).json({message:'좋아요 제거 성공'});
+                            res.status(200).json({ message: '좋아요 제거 성공' });
                         }
 
                     }
@@ -41,7 +41,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         } catch (err: unknown) {
             if (err instanceof Error) {
-                res.status(500).json({ statusCode: 500, message: err.message });
+                switch (err.message) {
+                    case '적합한 결과가 없음':
+                        res.status(204).end(); break;
+                    case '일치하는 행이 없거나 이미 수정되어 수정할 수 없음':
+                        res.status(400).json({ message: err.message }); break;
+                    case '잘못된 요청값 입니다.':
+                        res.status(400).json({ message: err.message }); break;
+                    default:
+                        res.status(500).json({ message: err.message }); break;
+                }
             }
         }
 
