@@ -15,11 +15,13 @@ type loadingType = {
     pending: number,
     fullfiled: number,
     error: number,
+    end: number
 }
 const loadingState: loadingType = {
     pending: 0,
     fullfiled: 1,
     error: -1,
+    end: -2
 }
 const StyledDiv = styled.div`
     display: flex;
@@ -31,30 +33,30 @@ const StyledDiv = styled.div`
     background-color: #fff;
 `
 export async function getServerSideProps() {
-	//보여줄 레시피 가져오기
-	const loadRecommendRecipes = async () => {
-		const result = await fetch(`${process.env.URL}/api/recipes/recommended`);
-		return result.json();
-	}
-	const loadRecommendMenus = async () => {
-		const result = await fetch(`${process.env.URL}/api/menus/recommended`);
-		return result.json();
-	}
+    //보여줄 레시피 가져오기
+    const loadRecommendRecipes = async () => {
+        const result = await fetch(`${process.env.URL}/api/recipes/recommended`);
+        return result.json();
+    }
+    const loadRecommendMenus = async () => {
+        const result = await fetch(`${process.env.URL}/api/menus/recommended`);
+        return result.json();
+    }
 
-	return {
-		props: {
+    return {
+        props: {
             recipeData: await loadRecommendRecipes(),
             menuData: await loadRecommendMenus()
         },
-	};
+    };
 }
 
 type propsType = {
-    recipeData : recipeType[],
-    menuData : totalMenuInfoType[],
+    recipeData: recipeType[],
+    menuData: totalMenuInfoType[],
 }
 
-const Recipes = ({recipeData,menuData}:propsType) => {
+const Recipes = ({ recipeData, menuData }: propsType) => {
     const router = useRouter();
     const bannerRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
@@ -64,7 +66,6 @@ const Recipes = ({recipeData,menuData}:propsType) => {
     const filter = useSelector((state: RootState) => state.page.FILTER_ARRAY);
     const [page, setPage] = useState<number>(0);
     const [loading, setLoading] = useState<number>(loadingState.fullfiled);
-    const [isNoMore, setIsNoMore] = useState<boolean>(false);
 
     const disptach = useDispatch();
     //새로고침시 정보 불러오는용
@@ -120,28 +121,30 @@ const Recipes = ({recipeData,menuData}:propsType) => {
     const getRecipes = (query = '', offset = 0, limit = 3, filter = filterQuery) => {
         //레시피 로딩 상태
         setLoading(loadingState.pending)
-        setIsNoMore(false)
         //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩함수안써도됨
         fetch(query !== '' ? '/api/recipes/' + encodeURIComponent(query) + `?offset=${offset}&limit=${limit}&filter=${filter}`
             : `/api/recipes?offset=${offset}&limit=${limit}&filter=${filter}`)
             .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                setLoading(loadingState.fullfiled)
-
-                if (data.length > 0) {
-                    setRecipes(prev => [...prev, ...data]);
-                    setPage(prev => prev + data.length)
-                } else {
-                    setIsNoMore(true)
+                if (response.status === 200) {
+                    setLoading(loadingState.fullfiled);
+                    return response.json();
+                }
+                if (response.status === 204) {
+                    setLoading(loadingState.end);
+                    return;
+                }
+                if (response.status === 400) {
+                    setLoading(loadingState.error);
+                    return;
                 }
             })
-            .catch(error => {
-                setLoading(loadingState.error)
-                console.error('에러 발생:', error);
-            });
+            .then(data => {
+                if (data) {
+                    setRecipes(prev => [...prev, ...data]);
+                    setPage(prev => prev + data.length)
+                }
+            })
     }
 
     // 타겟 요소 선택
@@ -180,7 +183,7 @@ const Recipes = ({recipeData,menuData}:propsType) => {
             원인추측 : 개발자모드에서 중단점으로 확인했는데 요소를 두번 실행함 아마 부모요소에서 조건으로 Router.isReady를 확인해서 렌더링하고
             자식요소에서 다시 확인해서 렌더링 하도록 했는데 부모가 렌더링을 안했는데 임포트된 리액트js가 자식껄 한번더 확인하니까 
             첫번째 실행에서는 정상적으로 렌더링하고 두번째 실행에서 하이드레이션 오류가 발생한듯*/}
-            <RecipesBanner ref={bannerRef} recipeData={recipeData} menuData={menuData}/>
+            <RecipesBanner ref={bannerRef} recipeData={recipeData} menuData={menuData} />
             <main className={'w-full max-w-screen-lg mx-auto pt-2'} ref={mainRef}>
                 <div className='grid grid-cols-6 grid-flow-row gap-2 min-w-[1024px]'>
                     {query !== '' && param && <EmptyCard></EmptyCard>}
@@ -189,7 +192,7 @@ const Recipes = ({recipeData,menuData}:propsType) => {
                     ))}
                     {loading === loadingState.pending && <StyledDiv>레시피를 불러오고 있어요</StyledDiv>}
                     {loading === loadingState.error && <StyledDiv>레시피 불러오는 중에 문제가 발생했어요</StyledDiv>}
-                    {isNoMore && loading === loadingState.fullfiled && <div className='max-w-5xl h-52 flex justify-center items-center'>레시피를 모두 읽었어요</div>}
+                    {loading === loadingState.end && <div className='max-w-5xl h-52 flex justify-center items-center'>레시피를 모두 읽었어요</div>}
                 </div>
             </main>
         </>
