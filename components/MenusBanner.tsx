@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
-import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/Pi';
+import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
 import { RiPencilFill } from 'react-icons/ri';
 import styled from 'styled-components';
 import Link from 'next/link';

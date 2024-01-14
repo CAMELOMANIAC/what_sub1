@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { recipeType, replyType } from '../../interfaces/api/recipes';
 import Link from 'next/link';
-import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/Pi';
+import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
 import { TbAlertCircle } from 'react-icons/tb';
 import { GrClose } from "react-icons/gr";
 import { breadNutrientArray, cheeseNutrientArray, menuNutrientArray, sauceNutrientArray } from '../../utils/menuArray';

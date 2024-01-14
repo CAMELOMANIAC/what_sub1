@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { PiHeartStraight } from 'react-icons/Pi';
+import { PiHeartStraight } from 'react-icons/pi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { HiFilter } from 'react-icons/hi';
 import Link from 'next/link';

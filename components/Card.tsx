@@ -1,5 +1,5 @@
-import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/Pi';
-import { HiOutlineChatBubbleLeft } from 'react-icons/Hi2';
+import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
+import { HiOutlineChatBubbleLeft } from 'react-icons/hi2';
 import Link from 'next/link';
 import { forwardRef, useState } from 'react';
 import { useSelector } from 'react-redux';
