@@ -17,7 +17,7 @@ type props = {
     className: string
 }
 
-const Summary = ({ recipe, ingredients,setIsActive,className }: props) => {
+const SummaryPage = ({ recipe, ingredients,setIsActive,className }: props) => {
 
     //재료에 맞게 재분류
     const ingredientsArray = recipe.recipe_ingredients.split(',');
@@ -205,4 +205,4 @@ const Summary = ({ recipe, ingredients,setIsActive,className }: props) => {
     );
 };
 
-export default Summary;
+export default SummaryPage;

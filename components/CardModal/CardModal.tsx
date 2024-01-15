@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { recipeType } from '../../interfaces/api/recipes';
 import Nav from './CardNav';
-import Summary from './Summary';
+import SummaryPage from './SummaryPage';
+import IngredientsPage from './IngredientsPage';
 
 type props = {
     recipe: recipeType,
@@ -18,7 +19,8 @@ const CardModal = ({ recipe, setIsActive, ingredients }: props) => {
             <article className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1024px] bg-white text-black shadow rounded-lg'>
                 <div className='grid grid-cols-8 gap-4'>
                     <Nav className='h-full col-span-2 rounded-l-lg' setPage={setPage} page={page}></Nav>
-                    <Summary recipe={recipe} setIsActive={setIsActive} ingredients={ingredients} className='col-span-6 p-10'></Summary>
+                    {page === 0 && <SummaryPage recipe={recipe} setIsActive={setIsActive} ingredients={ingredients} className='col-span-6 p-10'></SummaryPage>}
+                    {page > 0 && <IngredientsPage recipe={recipe} page={page} className='col-span-6 p-10'/>}
                 </div>
             </article>
         </div>
