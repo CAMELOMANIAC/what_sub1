@@ -69,7 +69,7 @@ const Nav = ({ className, setPage, page }: props) => {
     return (
         <nav className={className}>
             <img src='/images/front_banner.png' className='absolute left-10 transition-all duration-200' ref={sandwichRef}></img>
-            <ul className='h-full py-10 font-bold flex flex-col items-end '>
+            <ul className='h-full font-bold flex flex-col items-end '>
                 {buttonArray.map((items, index) => buttons(index, items.name, items.icon))}
             </ul>
         </nav>

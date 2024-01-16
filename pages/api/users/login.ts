@@ -16,7 +16,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
             if (typeof userId === 'string') {
                 const sessionId = await updateSession(userId);
-                console.log('세션', sessionId);
                 res.setHeader('Set-Cookie', [
                     `session=${sessionId}; Path=/; HttpOnly; SameSite=Lax`,
                     `user=${userId}; Path=/; SameSite=Lax`

@@ -3,7 +3,6 @@ import { recipeType, replyType } from '../../interfaces/api/recipes';
 import Link from 'next/link';
 import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
 import { TbAlertCircle } from 'react-icons/tb';
-import { GrClose } from "react-icons/gr";
 import { breadNutrientArray, cheeseNutrientArray, menuNutrientArray, sauceNutrientArray } from '../../utils/menuArray';
 import { useRecipeLike } from '../../utils/card';
 import { useSelector } from 'react-redux';
@@ -13,11 +12,10 @@ import { MemoizedChart } from '../IngredientRadarChart';
 type props = {
     recipe: recipeType,
     ingredients: string[],
-    setIsActive: React.Dispatch<React.SetStateAction<boolean>>,
-    className: string
+    className?: string
 }
 
-const SummaryPage = ({ recipe, ingredients,setIsActive,className }: props) => {
+const SummaryPage = ({ recipe, ingredients, className }: props) => {
 
     //재료에 맞게 재분류
     const ingredientsArray = recipe.recipe_ingredients.split(',');
@@ -39,10 +37,10 @@ const SummaryPage = ({ recipe, ingredients,setIsActive,className }: props) => {
     const getReply = async () => {
         try {
             const response = await fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`);
-            if (response.status === 200){
+            if (response.status === 200) {
                 const result: replyType[] = await response.json();
                 return result;
-            }else{
+            } else {
                 console.log('댓글없음')
             }
         } catch (error) {
@@ -141,9 +139,6 @@ const SummaryPage = ({ recipe, ingredients,setIsActive,className }: props) => {
                                 {recipe.sandwich_table_sandwich_name}
                             </Link>
                             <h2 className='text-xl font-bold text-ellipsis overflow-hidden whitespace-nowrap w-[220px]'>{recipe.recipe_name}</h2>
-                            <button onClick={() => setIsActive(false)}>
-                                <GrClose className='absolute right-5 top-5 z-10' />
-                            </button>
                         </div>
                     </div>
                     <div>{recipe.tag}</div>
