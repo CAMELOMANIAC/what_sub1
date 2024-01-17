@@ -112,7 +112,6 @@ const AddRecipe = ({ param }: { param: string }) => {
         //필수항목배열 확인후 다 작성되면 작성완료 할수있게
         const isNotComplete = Object.entries([recipeName, param, bread.state, toasting.state]).some(([_key, value]) => value === '');
         setIsComplete(!isNotComplete);
-        console.log(isNotComplete);
     }, [recipeName, param, addMeat.state, bread.state, cheese.state, addCheese.state, toasting.state, vegetable.array, pickledVegetable.array, sauce.array, addIngredient.array])
 
     //서버에 전달하는 함수
@@ -170,7 +169,7 @@ const AddRecipe = ({ param }: { param: string }) => {
                     </div>
 
                     <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
-                        <RecipeNameSection prop={RecipeNameProp} ref={recipeNameRef} param={param} />
+                        <RecipeNameSection prop={RecipeNameProp} ref={recipeNameRef} />
                         <AddMeatSection prop={addMeat} param={param} />
                         <BreadSection prop={bread} ref={breadRef} />
                         <CheeseSection prop1={cheese} prop2={addCheese} ref={cheeseRef} />

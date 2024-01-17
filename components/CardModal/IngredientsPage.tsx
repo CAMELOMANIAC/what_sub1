@@ -7,7 +7,7 @@ type imgProps = {
     $image: string
 }
 const ImgDiv = styled.div<imgProps>`
-    background:linear-gradient(rgba(0, 0, 0, 0) 10%, white 70%),     url("${props => props.$image}");
+    background:linear-gradient(rgba(0, 0, 0, 0) 10%, white 100%),     url("${props => props.$image}");
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
@@ -27,7 +27,7 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
     const bread = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
     const breadSummary = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.summary;
     const cheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-    const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+    const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name+' 추가'))?.name;
     const vegetable = vegetableArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
     const pickle = pickleArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
     const sauce = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
@@ -36,33 +36,64 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
         switch (page) {
             case 1: return (
                 <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + bread + '.jpg'}>
-                    <div className='flex flex-col justify-end w-full h-full'>
+                    <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
                         <p className='text-lg font-bold'>{bread}</p>
                         <p className=''>{breadSummary}</p>
                     </div>
                 </ImgDiv>)
             case 2: return (
-                    <div className='flex flex-row h-full'>
-                        {cheese && <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + cheese + '.jpg'}>{cheese}<p>asdasd</p></ImgDiv>}
-                        {addCheese && <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + addCheese + '.jpg'}>{addCheese + ' 추가'}<p>asdasd</p></ImgDiv>}
-                    </div>
+                <div className='flex flex-col h-full'>
+                    {cheese && <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + cheese + '.jpg'}>
+                        <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
+                            <p className='text-lg font-bold'>{cheese}</p>
+                            <p className=''>{cheese}</p>
+                        </div>
+                    </ImgDiv>}
+                    {addCheese && <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + addCheese + '.jpg'}>
+                        <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
+                            <p className='text-lg font-bold'>{addCheese} 추가</p>
+                            <p className=''>{addCheese} 추가</p>
+                        </div>
+                    </ImgDiv>}
+                </div>
             );
             case 3: return <div>토스팅 여부</div>;
             case 4: return (
-                <div className=''>
-                    {vegetable.map((item) =>
-                        <ImgDiv key={item} $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>{item}<p>asdasd</p></ImgDiv>
-                    )}
-                    {pickle.map((item) =>
-                        <ImgDiv key={item} $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>{item}<p>asdasd</p></ImgDiv>
-                    )}
+                <div className='flex flex-col h-full'>
+                    {vegetable.map((item) => {
+                        return (
+                            <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
+                                <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
+                                    <p className='text-lg font-bold'>{item}</p>
+                                    <p className=''>{item}</p>
+                                </div>
+                            </ImgDiv>
+                        )
+                    })}
+                    {pickle.map((item) => {
+                        return (
+                            <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
+                                <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
+                                    <p className='text-lg font-bold'>{item}</p>
+                                    <p className=''>{item}</p>
+                                </div>
+                            </ImgDiv>
+                        )
+                    })}
                 </div>
             );
             case 5: return (
-                <div>
-                    {sauce.map((item) =>
-                        <ImgDiv key={item} $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>{item}</ImgDiv>
-                    )}
+                <div className='flex flex-col h-full'>
+                    {sauce.map((item) => {
+                        return (
+                            <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
+                                <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
+                                    <p className='text-lg font-bold'>{item}</p>
+                                    <p className=''>{item}</p>
+                                </div>
+                            </ImgDiv>
+                        )
+                    })}
                 </div>
             );
             default: return <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + bread + '.jpg'}>{bread}</ImgDiv>;

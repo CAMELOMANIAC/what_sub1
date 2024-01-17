@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, forwardRef, useEffect, useState } from
 import { FiSearch } from 'react-icons/fi';
 import { StyleTag } from '../RecipesBanner';
 import IngredientsSection from './sub/IngredientsSection';
+import { useSearchParams } from 'next/navigation';
 
 export type propsType = {
     prop: {
@@ -9,13 +10,14 @@ export type propsType = {
         setRecipeName: Dispatch<SetStateAction<string>>,
         tagArray: string[],
         setTagArray: Dispatch<SetStateAction<string[]>>
-
     },
-    param: string
 }
-const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop, param }, ref) => {
+
+const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) => {
     const [tagInput, setTagInput] = useState<string>('');
     const [tagData, setTagData] = useState<string[]>([]);
+    const searchParams = useSearchParams();
+    const param = searchParams!.get('param');
 
     //레시피 이름 입력 이벤트 핸들러
     const handleChange = (e) => {
@@ -39,23 +41,44 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop, param }
     //태그검색
     useEffect(() => {
         const tagSearch = async () => {
-            const result = await fetch(`http://localhost:3000/api/tag?tag=${tagInput}`);
-            const data = await result.json();
-            setTagData(data.tag)
+            try {
+                const result = await fetch(`http://localhost:3000/api/tag?tag=${encodeURIComponent(tagInput)}`)
+                if (result.status === 200) {
+                    const data = await result.json();
+                    setTagData(data.map(item => item.tag_name));
+                } else {
+                    throw result
+                }
+            } catch (err) {
+                console.log(err)
+            }
         }
-        tagSearch();
+        if (tagInput.length > 0) {
+            tagSearch();
+        }
     }, [tagInput])
 
     //태그 초기 검색
     useEffect(() => {
         const tagFirstSearch = async () => {
-            const res = await fetch(`http://localhost:3000/api/tag?param=${encodeURIComponent(param)}`);
-            const data = await res.json();
-            setTagData(data.tag);
-            console.log(data.tag);
+            try {
+                const res = await fetch(`http://localhost:3000/api/tag?param=${encodeURIComponent(param!)}`);
+                if (res.status === 200) {
+                    const data = await res.json();
+                    setTagData(data.map(item => item.tag_name));
+                } else {
+                    throw res
+                }
+            } catch (err) {
+                console.log(err)
+            }
         }
         tagFirstSearch();
     }, [])
+
+    useEffect(() => {
+        console.log(tagData)
+    }, [tagData])
 
     return (
         <IngredientsSection ref={ref} id='recipeName'>

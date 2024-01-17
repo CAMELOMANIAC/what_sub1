@@ -5,16 +5,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'GET') {
         const sandwichMenu = req.query.param;
         const tagQuery = req.query.tag;
+        console.log('메뉴', sandwichMenu)
+        console.log('태그', tagQuery)
 
         try {
             if (typeof sandwichMenu === 'string') {
-            //레시피 이름으로 검색시
+                //레시피 이름으로 검색시
                 const result = await getRecipeTag(sandwichMenu)
 
                 if (result instanceof Error) {
+                    console.log('실패')
                     throw result
                 } else {
                     res.status(200).json(result);
+                    console.log('성공')
                 }
 
             } else if (typeof tagQuery === 'string') {
@@ -33,6 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         } catch (err: unknown) {
             if (err instanceof Error) {
+                console.log(err.message)
                 switch (err.message) {
                     case '적합한 결과가 없음':
                         res.status(204).end(); break;
