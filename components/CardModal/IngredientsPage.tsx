@@ -1,6 +1,6 @@
 import React from 'react';
 import { recipeType } from '../../interfaces/api/recipes';
-import { breadNutrientArray, cheeseNutrientArray, menuNutrientArray, pickleArray, sauceNutrientArray, vegetableArray } from '../../utils/menuArray';
+import { breadNutrientArray, cheeseNutrientArray, /*menuNutrientArray,*/ pickleArray, sauceNutrientArray, vegetableArray } from '../../utils/menuArray';
 import { styled } from 'styled-components';
 
 type imgProps = {
@@ -22,8 +22,8 @@ type props = {
 const IngredientsPage = ({ recipe, page, className }: props) => {
     //재료에 맞게 재분류
     const ingredientsArray = recipe.recipe_ingredients.split(',');
-    const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
-    const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+    // const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
+    // const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
     const bread = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
     const breadSummary = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.summary;
     const cheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;

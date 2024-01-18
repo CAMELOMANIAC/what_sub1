@@ -13,7 +13,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'GET') {
 
         try {
-
             if (typeof recipeName === 'string') {
                 //offset,limit,filter는 옵셔널 쿼리문자열이므로 추가적 처리가 필요
                 if (typeof limit === 'undefined') {
@@ -31,6 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const results: recipeType[] | Error = await getRecipes({ searchQuery: recipeName, offset: Number(offset), limit: Number(limit), filter });
                 
                 if (results instanceof Error) {
+                    console.log(results)
                     throw results
                 } else {
                     res.status(200).json(results);

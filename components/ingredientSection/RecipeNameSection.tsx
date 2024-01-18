@@ -76,10 +76,6 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
         tagFirstSearch();
     }, [])
 
-    useEffect(() => {
-        console.log(tagData)
-    }, [tagData])
-
     return (
         <IngredientsSection ref={ref} id='recipeName'>
             <h3 className='text-xl font-[seoul-metro]'>레시피 이름</h3>

@@ -23,7 +23,6 @@ const SearchBar = (props: { className?: string, filterState?: string[] }) => {
       setSearch(String(query))
       if (inputRef.current)
         inputRef.current.value = String(query)
-      console.log(query)
     }
   }, [router.query])
 

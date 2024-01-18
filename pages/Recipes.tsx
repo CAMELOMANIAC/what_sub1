@@ -66,8 +66,8 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
     const filter = useSelector((state: RootState) => state.page.FILTER_ARRAY);
     const [page, setPage] = useState<number>(0);
     const [loading, setLoading] = useState<number>(loadingState.fullfiled);
-
     const disptach = useDispatch();
+
     //새로고침시 정보 불러오는용
     useEffect(() => {
         if (getCookieValue('user').length > 0) {//로그인 정보가 있을경우
@@ -80,6 +80,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
             })
         }
     }, [])
+
     //배너랑 글로벌네비 높이 여백계산(router.query가 변경되면 bannerRef의 높이가 변경되므로 의존성배열에 추가함)
     useEffect(() => {
         if (bannerRef.current) {
@@ -94,11 +95,14 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
     const searchHandler = (loadCount) => {
         if (Object.keys(router.query).length !== 0) {
             if (query) {//쿼리 검색일때
-                getRecipes(String(query), page, loadCount, filterQuery)
+                console.log('쿼리검색일때')
+                
             } else if (query === '') {//쿼리검색이지만 값을 안줄때
+                console.log('//쿼리검색이지만 값을 안줄때')
                 getRecipes('', page, loadCount, filterQuery)
             }
             if (param) {//샌드위치 파라메터로 검색중일때
+                console.log('//샌드위치 파라메터로 검색중일때')
                 getRecipes(String(param), page, loadCount - 1, ['메뉴이름'])
             }
         } else {//검색어가 없을때
@@ -115,7 +119,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
         setParam(router.query.param)
         //레시피 초기화(체음에는 12개 레시피를 기본 출력)
         searchHandler(9)
-    }, [router.query, query, param]);
+    }, [query, param, router]);
 
     //recipe카드 통신함수
     const getRecipes = (query = '', offset = 0, limit = 3, filter = filterQuery) => {
