@@ -96,7 +96,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
                 }
             } else if (router.query.param) {//파라메터로 검색
                 if (typeof router.query.param === 'string') {
-                    getRecipes(router.query.param, page, limit-1, filterQuery)
+                    getRecipes(router.query.param, page, limit-1, '메뉴이름')
                 }
             } else {
                 getRecipes('', page, limit, filterQuery)
@@ -161,7 +161,9 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
             entries.forEach(entry => {
                 // 타겟 요소가 화면에 보이는 경우
                 if (entry.isIntersecting) {
-                    searchHandler(3)
+                    if (loading !== loadingState.end) {
+                        searchHandler(3)
+                    }
                     lastRecipeRef.current && observer.unobserve(lastRecipeRef.current);
                 }
             });
