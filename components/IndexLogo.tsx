@@ -1,33 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import styled from 'styled-components';
 import Logo from './Logo';
 import SandwichBanner from './SandwichBanner';
 import { useRouter } from 'next/router';
 import { MdOutlineArrowBack } from "react-icons/md";
 import { MdOutlineArrowForward } from "react-icons/md";
 
-const LineDeco = styled.div`
-  &:before {
-    content: '';
-    position: absolute;
-    left:0;
-    bottom: 50%;
-    height: 70px; // 줄의 높이를 설정합니다.
-    width: 100vw;
-    background: rgb(22 163 74); // 줄의 색상을 설정합니다.
-    z-index: -1;
-  }
-`
 type PropsType = {
     prevHandler: () => void,
     nextHandler: () => void,
 }
 
-const IndexLogo = ({prevHandler,nextHandler}:PropsType) => {
+const IndexLogo = ({ prevHandler, nextHandler }: PropsType) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [isFocus, setFocus] = useState<boolean>(false);
+    const divRef = useRef<HTMLDivElement>(null);
+    const decoLineRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (isFocus) {
@@ -62,30 +51,40 @@ const IndexLogo = ({prevHandler,nextHandler}:PropsType) => {
             router.push(`/Recipes`)
     }
 
+    useEffect(() => {
+        if (decoLineRef.current && divRef.current) {
+            decoLineRef.current.style.position = `absolute`;
+            decoLineRef.current.style.backgroundColor = `rgb(22 163 74)`;
+            decoLineRef.current.style.width = `100%`;
+            decoLineRef.current.style.height = `80px`;
+            decoLineRef.current.style.left = `0px`;
+            decoLineRef.current.style.top = `${divRef.current.offsetTop+(divRef.current.offsetHeight/2)-40}px`;
+            decoLineRef.current.style.zIndex = `-1`;
+        }
+    }, [])
+
     return (
         <div className='flex flex-col items-center justify-center mx-auto mb-4 rounded-full w-[100%]'>
             <SandwichBanner />
             <div className='flex flex-row'>
                 <button className='flex justify-center items-center font-[seoul-metro] text-xl text-white mr-4' onClick={prevHandler}><MdOutlineArrowBack className='text-2xl'></MdOutlineArrowBack>이전</button>
-                {<LineDeco>
-                    <div className='w-auto bg-white border-[12px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center'>
-                        <span className='flex justify-center items-center w-[70px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square mr-6'>
-                            <button onClick={queryPushHandler}>
-                                <FaSearch />
-                            </button>
-                        </span>
+                <div className='w-auto bg-white border-[12px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center' ref={divRef}>
+                    <span className='flex justify-center items-center w-[70px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square mr-6'>
+                        <button onClick={queryPushHandler}>
+                            <FaSearch />
+                        </button>
+                    </span>
 
-                        <div className='flex flex-col flex-nowrap justify-center items-center mr-6 my-2 text-5xl' onClick={() => setFocus(true)}>
-                            {isFocus ?
-                                <input className='p-3 mt-3 text-lg text-center' type='text' ref={inputRef} onChange={(e) => setSearchQuery(e.currentTarget.value)} onKeyDown={searchEnterHandler}></input> :
-                                <Logo />
-                            }
-                            <div className='font-[seoul-metro] text-gray-600 text-lg'>넌 뭐먹어?</div>
-                        </div>
+                    <div className='flex flex-col flex-nowrap justify-center items-center mr-6 my-2 text-5xl' onClick={() => setFocus(true)}>
+                        {isFocus ?
+                            <input className='p-3 mt-3 text-lg text-center' type='text' ref={inputRef} onChange={(e) => setSearchQuery(e.currentTarget.value)} onKeyDown={searchEnterHandler}></input> :
+                            <Logo />
+                        }
+                        <div className='font-[seoul-metro] text-gray-600 text-lg'>넌 뭐먹어?</div>
                     </div>
-                </LineDeco>
-                }
+                </div>
                 <button className='flex justify-center items-center font-[seoul-metro] text-xl text-white ml-4' onClick={nextHandler}>다음<MdOutlineArrowForward className='text-2xl'></MdOutlineArrowForward></button>
+                <div ref={decoLineRef}></div>
             </div>
         </div>
     );
