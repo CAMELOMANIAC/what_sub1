@@ -138,7 +138,6 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
                 }
                 if (response.status === 204) {
                     setLoading(loadingState.end);
-                    throw response
                 }
                 if (response.status === 400) {
                     setLoading(loadingState.error);
