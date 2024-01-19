@@ -53,23 +53,23 @@ export const breadNutrientArray: nutrientsArrayType[] = [
     { name: '허니오트', weight: 88.6, kcal: 235, protein: 8.8, saturatedFats: 0.6, sugars: 9.3, sodium: 0.306, summary: '고소한 위트빵에 오트밀 가루를 묻혀 고소함과 식감이 두배로' },
 ]
 export const cheeseNutrientArray: nutrientsArrayType[] = [
-    { name: '아메리칸', weight: 10, kcal: 35.3, protein: 1.8, saturatedFats: 1.9, sugars: 0.4, sodium: 0.193 },
-    { name: '슈레드', weight: 14, kcal: 53.6, protein: 3.2, saturatedFats: 2.4, sugars: 0, sodium: 0.0847 },
-    { name: '모짜렐라', weight: 14, kcal: 43.8, protein: 2.8, saturatedFats: 2.1, sugars: 0.2, sodium: 0.0823 },
+    { name: '아메리칸', weight: 10, kcal: 35.3, protein: 1.8, saturatedFats: 1.9, sugars: 0.4, sodium: 0.193, summary: '짭조름하고 익숙한 맛의 치즈'},
+    { name: '슈레드', weight: 14, kcal: 53.6, protein: 3.2, saturatedFats: 2.4, sugars: 0, sodium: 0.0847, summary:'아메리칸 치즈와 몬테레이 치즈가 혼합된 다양한 풍미의 치즈'},
+    { name: '모짜렐라', weight: 14, kcal: 43.8, protein: 2.8, saturatedFats: 2.1, sugars: 0.2, sodium: 0.0823, summary: '부드러운 맛과 쫄깃한 식감의 치즈'},
 ]
 export const sauceNutrientArray: nutrientsArrayType[] = [
-    { name: '머스타드', weight: 21, kcal: 15.3, protein: 1.1, saturatedFats: 0.1, sugars: 0.2, sodium: 0.193 },
-    { name: '레드와인식초', weight: 3.5, kcal: 0.7, protein: 0, saturatedFats: 0, sugars: 0, sodium: 0 },
-    { name: '스위트어니언', weight: 21, kcal: 40.1, protein: 0.1, saturatedFats: 0, sugars: 8.2, sodium: 0.0817 },
-    { name: '허니머스타드', weight: 21, kcal: 38.4, protein: 0.4, saturatedFats: 0.4, sugars: 6.3, sodium: 0.145 },
-    { name: '스위트칠리', weight: 21, kcal: 40, protein: 0.1, saturatedFats: 0, sugars: 9.2, sodium: 0.163 },
-    { name: '스모크바베큐', weight: 21, kcal: 32.8, protein: 0.2, saturatedFats: 0.1, sugars: 7, sodium: 0.132 },
-    { name: '랜치', weight: 21, kcal: 116, protein: 0.3, saturatedFats: 2.1, sugars: 0.6, sodium: 0.128 },
-    { name: '마요네즈', weight: 21, kcal: 158, protein: 0.3, saturatedFats: 2.8, sugars: 0.1, sodium: 0.0981 },
-    { name: '핫칠리', weight: 21, kcal: 41.8, protein: 0.2, saturatedFats: 0.1, sugars: 5.3, sodium: 0.180 },
-    { name: '뉴 사우스웨스트 치폴레', weight: 21, kcal: 96.5, protein: 0.4, saturatedFats: 1.6, sugars: 1, sodium: 0.160 },
-    { name: '홀스래디쉬', weight: 21, kcal: 106, protein: 0.3, saturatedFats: 1.6, sugars: 2.6, sodium: 0.152 },
-    { name: '올리브오일', weight: 3.5, kcal: 124, protein: 0, saturatedFats: 2.1, sugars: 0, sodium: 0 },
+    { name: '머스타드', weight: 21, kcal: 15.3, protein: 1.1, saturatedFats: 0.1, sugars: 0.2, sodium: 0.193, summary: '겨자씨로 만든 오리지날 머스터드 소스' },
+    { name: '레드와인식초', weight: 3.5, kcal: 0.7, protein: 0, saturatedFats: 0, sugars: 0, sodium: 0, summary: '레드와인을 발효시켜 풍미가 가득한 식초' },
+    { name: '스위트어니언', weight: 21, kcal: 40.1, protein: 0.1, saturatedFats: 0, sugars: 8.2, sodium: 0.0817, summary: '써브웨이만의 특제 레시피로 만든 달콤한 양파소스' },
+    { name: '허니머스타드', weight: 21, kcal: 38.4, protein: 0.4, saturatedFats: 0.4, sugars: 6.3, sodium: 0.145, summary: '겨자씨가 아낌없이 들어간 달콤한 머스터드 소스' },
+    { name: '스위트칠리', weight: 21, kcal: 40, protein: 0.1, saturatedFats: 0, sugars: 9.2, sodium: 0.163, summary: '말이 필요없는 고소함의 대명사, 마요네즈 소스' },
+    { name: '스모크바베큐', weight: 21, kcal: 32.8, protein: 0.2, saturatedFats: 0.1, sugars: 7, sodium: 0.132, summary: '스모크 향과 달콤한 바비큐의 완벽한 조화' },
+    { name: '랜치', weight: 21, kcal: 116, protein: 0.3, saturatedFats: 2.1, sugars: 0.6, sodium: 0.128, summary: '고소한 마요네즈와 레몬즙의 만남! 고소함이 두배!' },
+    { name: '마요네즈', weight: 21, kcal: 158, protein: 0.3, saturatedFats: 2.8, sugars: 0.1, sodium: 0.0981, summary: '말이 필요없는 고소함의 대명사, 마요네즈 소스' },
+    { name: '핫칠리', weight: 21, kcal: 41.8, protein: 0.2, saturatedFats: 0.1, sugars: 5.3, sodium: 0.180, summary: '진짜 매운맛을 보고 싶다면? 써브웨이의 핫 칠리!' },
+    { name: '뉴 사우스웨스트 치폴레', weight: 21, kcal: 96.5, protein: 0.4, saturatedFats: 1.6, sugars: 1, sodium: 0.160, summary: '핫 칠리와 고소한 마요네즈가 만난 이국적인 매콤한 맛' },
+    { name: '홀스래디쉬', weight: 21, kcal: 106, protein: 0.3, saturatedFats: 1.6, sugars: 2.6, sodium: 0.152, summary: '고소한 마요네즈와 고추냉이의 이색적인 만남! 매니아층을 사로잡은 매력No.1 소스' },
+    { name: '올리브오일', weight: 3.5, kcal: 124, protein: 0, saturatedFats: 2.1, sugars: 0, sodium: 0, summary: '담백하고 깔끔하게 즐기고 싶다면 주저하지 말고 올리브오일' },
 ]
 
 export const menuNutrientArray: nutrientsArrayType[] = [

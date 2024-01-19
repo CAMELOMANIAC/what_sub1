@@ -150,12 +150,10 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
         await fetchRecipes();
     }
 
-    // 타겟 요소 선택
     const lastRecipeRef = useRef<HTMLDivElement | null>(null);
 
-    // 컴포넌트가 마운트된 후에 타겟 요소 관찰 시작
+    //무한스크롤
     useEffect(() => {
-        // 옵저버 콜백 함수 정의
         const callback = (entries, observer) => {
             entries.forEach(entry => {
                 // 타겟 요소가 화면에 보이는 경우
@@ -163,7 +161,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
                     if (loading !== loadingState.end) {
                         searchHandler(3)
                     }
-                    lastRecipeRef.current && observer.unobserve(lastRecipeRef.current);
+                    observer.unobserve(lastRecipeRef.current);
                 }
             });
         };

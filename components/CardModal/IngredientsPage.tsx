@@ -26,46 +26,46 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
     // const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
     const bread = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
     const breadSummary = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.summary;
-    const cheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
-    const addCheese = cheeseNutrientArray.find(item => ingredientsArray.includes(item.name+' 추가'))?.name;
+    const cheese = cheeseNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
+    const cheeseSummary = cheeseNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.summary);
     const vegetable = vegetableArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
     const pickle = pickleArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
     const sauce = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
+    const sauceSummary = sauceNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.summary);
 
     const Img = () => {
         switch (page) {
             case 1: return (
-                <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + bread + '.jpg'}>
-                    <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
-                        <p className='text-lg font-bold'>{bread}</p>
-                        <p className=''>{breadSummary}</p>
-                    </div>
-                </ImgDiv>)
+                <div className='h-full pb-10'>
+                    <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + bread + '.jpg'}>
+                        <div className='flex flex-col justify-end w-full h-full pl-10'>
+                            <p className='text-lg font-bold'>{bread}</p>
+                            <p className=''>{breadSummary}</p>
+                        </div>
+                    </ImgDiv>
+                </div>)
             case 2: return (
-                <div className='flex flex-col h-full'>
-                    {cheese && <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + cheese + '.jpg'}>
-                        <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
-                            <p className='text-lg font-bold'>{cheese}</p>
-                            <p className=''>{cheese}</p>
-                        </div>
-                    </ImgDiv>}
-                    {addCheese && <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + addCheese + '.jpg'}>
-                        <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
-                            <p className='text-lg font-bold'>{addCheese} 추가</p>
-                            <p className=''>{addCheese} 추가</p>
-                        </div>
-                    </ImgDiv>}
+                <div className='flex flex-col h-full pb-10'>
+                    {cheese.map((item,index) => {
+                        return (
+                            <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
+                                <div className='flex flex-col justify-end w-full h-full pl-10'>
+                                    <p className='text-lg font-bold'>{item}</p>
+                                    <p className=''>{cheeseSummary[index]}</p>
+                                </div>
+                            </ImgDiv>
+                        )
+                    })}
                 </div>
             );
             case 3: return <div>토스팅 여부</div>;
             case 4: return (
-                <div className='flex flex-col h-full'>
+                <div className='flex flex-col w-full h-full pb-10'>
                     {vegetable.map((item) => {
                         return (
                             <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
-                                <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
+                                <div className='flex flex-col justify-end w-full h-full pl-10'>
                                     <p className='text-lg font-bold'>{item}</p>
-                                    <p className=''>{item}</p>
                                 </div>
                             </ImgDiv>
                         )
@@ -73,9 +73,8 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
                     {pickle.map((item) => {
                         return (
                             <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
-                                <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
+                                <div className='flex flex-col justify-end w-full h-full pl-10'>
                                     <p className='text-lg font-bold'>{item}</p>
-                                    <p className=''>{item}</p>
                                 </div>
                             </ImgDiv>
                         )
@@ -83,13 +82,13 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
                 </div>
             );
             case 5: return (
-                <div className='flex flex-col h-full'>
-                    {sauce.map((item) => {
+                <div className='flex flex-col h-full pb-10'>
+                    {sauce.map((item,index) => {
                         return (
                             <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
-                                <div className='flex flex-col justify-end w-full h-full pl-10 pb-10'>
+                                <div className='flex flex-col justify-end w-full h-full pl-10'>
                                     <p className='text-lg font-bold'>{item}</p>
-                                    <p className=''>{item}</p>
+                                    <p className=''>{sauceSummary[index]}</p>
                                 </div>
                             </ImgDiv>
                         )
