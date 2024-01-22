@@ -17,18 +17,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('url',url)
-  }, [url])
-
-  useEffect(() => {
-    console.log('prevurl',prevUrl)
-  }, [prevUrl])
-  
-  useEffect(() => {
     const start = () => {
       setIsLoading(true);
     };
-  
+
     const end = () => {
       if (sandwichRef.current)
         sandwichRef.current.style.animation = 'move 0.5s infinite';
@@ -36,12 +28,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         setIsLoading(false);
       }, 500); // 0.5초 최소 로딩 유지(애니메이션이 부드럽게 종료될수있게)
     };
-  
+
     // 라우터 도착위치를 저장하기 위한 함수
     const handleDestination = (url) => {
       const pathName = url.split('?')[0];
-      setUrl((prev)=>{setPrevUrl(prev); return pathName})
-  
+      setUrl((prev) => { setPrevUrl(prev); return pathName })
+
       switch (pathName) {
         case '/': setDestination('홈 페이지'); break;
         case '/AddRecipe': setDestination('레시피 작성 페이지'); break;
@@ -50,13 +42,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         default: setDestination('페이지 이름 정의 안됨'); break;
       }
     }
-  
+
     //next.js는 라우터관련 이벤트를 제공해 주므로 이걸로 로딩 상태값 변경
     router.events.on('routeChangeStart', start);
     router.events.on('routeChangeComplete', end);
     router.events.on('routeChangeError', end);
     router.events.on('routeChangeStart', handleDestination);
-  
+
     return () => {
       router.events.off('routeChangeStart', start);
       router.events.off('routeChangeComplete', end);
@@ -64,7 +56,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       router.events.off('routeChangeStart', handleDestination);
     };
   }, [])
-  
+
 
   return (
     <>

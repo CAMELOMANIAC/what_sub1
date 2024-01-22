@@ -67,13 +67,13 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
     const disptach = useDispatch();
 
     //배너랑 글로벌네비 높이 여백계산(router.query가 변경되면 bannerRef의 높이가 변경되므로 의존성배열에 추가함)
-    useEffect(() => {
-        if (bannerRef.current) {
-            if (mainRef.current) {
-                mainRef.current.style.marginTop = bannerRef.current.offsetHeight + 50 + 'px';
-            }
-        }
-    }, [bannerRef.current && bannerRef.current.offsetHeight]);
+    // useEffect(() => {
+    //     if (bannerRef.current) {
+    //         if (mainRef.current) {
+    //             mainRef.current.style.marginTop = bannerRef.current.offsetHeight + 50 + 'px';
+    //         }
+    //     }
+    // }, [bannerRef.current && bannerRef.current.offsetHeight]);
 
     //새로고침시 좋아요 정보 불러오는용
     useEffect(() => {

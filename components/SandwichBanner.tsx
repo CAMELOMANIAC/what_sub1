@@ -121,7 +121,6 @@ const SandwichBanner = () => {
                             context.clip();
                             context.clearRect(0, 0, rect.width * scale, rect.height * scale);
                             context.restore();
-                            console.log('지워짐');
 
                             // 클릭 후에도 해당 위치의 이미지 데이터 확인
                             const imageData = context.getImageData(gridX * gridWidth, gridY * gridHeight, gridWidth, gridHeight);
@@ -160,7 +159,6 @@ const SandwichBanner = () => {
                             const angle = Math.atan2(y - centerY, x - centerX);
 
                             setForkPosition({ x, y, angle });
-                            console.log(forkPosition);
                         } else {
                             setForkPosition({ x: 0, y: -100, angle: 0 });
                         }

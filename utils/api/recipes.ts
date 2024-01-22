@@ -63,9 +63,7 @@ export const getRecipes = async ({ searchQuery, offset, limit, filter }: getReci
             query: query,
             values: [...sanitizedQueryArray, limitQuery, offsetQuery]
         });
-
-        console.log('query',query)
-        console.log('values',[...sanitizedQueryArray, limitQuery, offsetQuery])
+        
         if (Array.isArray(results) && results.length < 1) {
             throw new Error('적합한 결과가 없음')
         } else {

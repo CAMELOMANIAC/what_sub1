@@ -35,26 +35,21 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
     let observer: IntersectionObserver;
     useEffect(() => {
         observer = new IntersectionObserver((entries) => {
-            //가장위에 있는 요소 탐지
-            //(IntersectionObserver는 요소를 여러개 감지하면 가장 마지막 요소만 entry.target에 저장하므로 가장위에것을 탐지하게하기 위해서)
-            const firstEntry = entries.reduce((first, entry) => {
-                return (entry.boundingClientRect.top < first.boundingClientRect.top) ? entry : first;
-            });
-            //console.log(firstEntry.target.id);
-
-            if (firstEntry.isIntersecting) {
-                switch (firstEntry.target.id) {
-                    case 'recipeName': setActiveSection(0); break;
-                    case 'bread': setActiveSection(1); break;
-                    case 'cheese': setActiveSection(2); break;
-                    case 'toasting': setActiveSection(3); break;
-                    case 'vegetable': setActiveSection(4); break;
-                    case 'sauce': setActiveSection(5); break;
-                    default: break;
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {//isIntersecting속성은 감지 영역에 들어온 요소만 가지는 속성
+                    switch (entry.target.id) {
+                        case 'recipeName': setActiveSection(0); break;
+                        case 'bread': setActiveSection(1); break;
+                        case 'cheese': setActiveSection(2); break;
+                        case 'toasting': setActiveSection(3); break;
+                        case 'vegetable': setActiveSection(4); break;
+                        case 'sauce': setActiveSection(5); break;
+                        default: break;
+                    }
                 }
-            }
+            })
         }, {
-            threshold: [0.5, 1, 1]
+            threshold: 1
         });
 
         // 관찰할 요소
