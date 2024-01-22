@@ -1,6 +1,6 @@
 import React from 'react';
 import { recipeType } from '../../interfaces/api/recipes';
-import { breadNutrientArray, cheeseNutrientArray, /*menuNutrientArray,*/ pickleArray, sauceNutrientArray, vegetableArray } from '../../utils/menuArray';
+import { breadNutrientArray, cheeseNutrientArray, menuNutrientArray, ingredientsArray as addIngredientsArray, pickleArray, sauceNutrientArray, vegetableArray } from '../../utils/menuArray';
 import { styled } from 'styled-components';
 
 type imgProps = {
@@ -22,8 +22,9 @@ type props = {
 const IngredientsPage = ({ recipe, page, className }: props) => {
     //재료에 맞게 재분류
     const ingredientsArray = recipe.recipe_ingredients.split(',');
-    // const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
-    // const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+    const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
+    const addMeat = menuNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
+    const addIngredient = addIngredientsArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
     const bread = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.name;
     const breadSummary = breadNutrientArray.find(item => ingredientsArray.includes(item.name))?.summary;
     const cheese = cheeseNutrientArray.filter(item => ingredientsArray.includes(item.name)).map((item) => item.name);
@@ -36,6 +37,29 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
     const Img = () => {
         switch (page) {
             case 1: return (
+                <div className='flex flex-col w-full h-full pb-10'>
+                    <ImgDiv className='' $image={'/images/sandwich_menu/' + param + '.png'}>
+                        <div className='flex flex-col justify-end w-full h-full pl-10'>
+                            <p className='text-lg font-bold'>{param}</p>
+                        </div>
+                    </ImgDiv>
+                    {addMeat?.length && <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + addMeat + '.jpg'}>
+                        <div className='flex flex-col justify-end w-full h-full pl-10'>
+                            <p className='text-lg font-bold'>{addMeat}</p>
+                        </div>
+                    </ImgDiv>}
+                    {addIngredient && addIngredient.map((item) => {
+                        return (
+                            <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
+                                <div className='flex flex-col justify-end w-full h-full pl-10'>
+                                    <p className='text-lg font-bold'>{item}</p>
+                                </div>
+                            </ImgDiv>
+                        )
+                    })}
+                </div>
+            );
+            case 2: return (
                 <div className='h-full pb-10'>
                     <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + bread + '.jpg'}>
                         <div className='flex flex-col justify-end w-full h-full pl-10'>
@@ -44,9 +68,9 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
                         </div>
                     </ImgDiv>
                 </div>)
-            case 2: return (
+            case 3: return (
                 <div className='flex flex-col h-full pb-10'>
-                    {cheese.map((item,index) => {
+                    {cheese.map((item, index) => {
                         return (
                             <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
                                 <div className='flex flex-col justify-end w-full h-full pl-10'>
@@ -58,8 +82,8 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
                     })}
                 </div>
             );
-            case 3: return <div>토스팅 여부</div>;
-            case 4: return (
+            case 4: return <div>토스팅 여부</div>;
+            case 5: return (
                 <div className='flex flex-col w-full h-full pb-10'>
                     {vegetable.map((item) => {
                         return (
@@ -81,9 +105,9 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
                     })}
                 </div>
             );
-            case 5: return (
+            case 6: return (
                 <div className='flex flex-col h-full pb-10'>
-                    {sauce.map((item,index) => {
+                    {sauce.map((item, index) => {
                         return (
                             <ImgDiv key={item} className='' $image={'/images/sandwich_menu/ingredients/' + item + '.jpg'}>
                                 <div className='flex flex-col justify-end w-full h-full pl-10'>
