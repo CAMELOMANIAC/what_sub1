@@ -17,7 +17,7 @@
     display: flex;
     justify-content: center;
     @apply bg-gray-50;
-    font-family: 'noto-sans';
+    font-family: 'noto-sans', 'Apple SD 산돌고딕 Neo';
   }
 
   body::after {
@@ -28,7 +28,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.025;
+    opacity: 0.03;
     background-image: url('/images/타일.svg');
     background-repeat: repeat;
     background-size: auto;
@@ -53,11 +53,6 @@
   @font-face {
     font-family: 'seoul-metro';
     src: url('/font/신지하철체.ttf') format('truetype');
-  }
-
-  @font-face {
-    font-family: 'seoul-namsan';
-    src: url('/font/SeoulNamsanM.ttf') format('truetype');
   }
 
   @font-face {
