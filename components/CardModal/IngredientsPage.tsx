@@ -43,9 +43,9 @@ const IngredientsPage = ({ recipe, page, className }: props) => {
                             <p className='text-lg font-bold'>{param}</p>
                         </div>
                     </ImgDiv>
-                    {addMeat?.length && <ImgDiv className='' $image={'/images/sandwich_menu/ingredients/' + addMeat + '.jpg'}>
+                    {addMeat?.length && <ImgDiv className='' $image={'/images/sandwich_menu/' + addMeat + '.png'}>
                         <div className='flex flex-col justify-end w-full h-full pl-10'>
-                            <p className='text-lg font-bold'>{addMeat}</p>
+                            <p className='text-lg font-bold'>{addMeat} 추가</p>
                         </div>
                     </ImgDiv>}
                     {addIngredient && addIngredient.map((item) => {

@@ -31,7 +31,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
 
     return (
         <>
-            <article className={`col-span-2 aspect-[4/3] bg-white rounded-xl p-6 shadow-sm hover:shadow-lg cursor-pointer flex flex-col hover:scale-105 transition-transform ${className}`}
+            <article className={`col-span-2 aspect-[4/3] bg-white border hover:border rounded-xl p-6 shadow-md hover:shadow-xl cursor-pointer flex flex-col hover:scale-105 transition-transform ${className}`}
                 ref={ref}
                 onClick={() => { setIsActive(true) }}>
                 <div className='flex flex-row items-center'>
@@ -47,11 +47,11 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                         <h2 className='text-xl font-bold text-ellipsis overflow-hidden whitespace-nowrap w-[220px]'>{recipe.recipe_name}</h2>
                     </div>
                 </div>
-                <div className='flex flex-row justify-end text-sm w-full text-gray-400'>
+                <div className='flex flex-row justify-end text-sm w-full mb-2 text-gray-400'>
                     {recipeTag.map((item, index) => <span key={index} className={index !== 0 ? 'ml-1' : ''}>{'#' + item}</span>)}
                 </div>
                 <section className='flex flex-row overflow-hidden flex-wrap'>{ingredients.map((item) =>
-                    <img src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></img>
+                    <img src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-[70px] aspect-square rounded-md' alt={item}></img>
                 )}</section>
                 <div className='flex flex-row justify-end mt-auto text-gray-400'>
                     <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_table_user_id}</div>

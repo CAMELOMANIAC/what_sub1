@@ -2,7 +2,7 @@ import React, { forwardRef, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { PiHeartStraight } from 'react-icons/pi';
 import { IoIosArrowBack } from 'react-icons/io';
-import { HiFilter } from 'react-icons/hi';
+import { HiFilter, HiAdjustments } from 'react-icons/hi';
 import Link from 'next/link';
 import { menuArray } from '../utils/menuArray';
 import SearchBar from './SearchBar';
@@ -14,6 +14,9 @@ import { set_filter_action, add_Filter_action } from '../redux/reducer/pageReduc
 import { RootState } from '../redux/store';
 import { recipeType } from '../interfaces/api/recipes';
 import { totalMenuInfoType } from '../interfaces/api/menus';
+import { GiKetchup, GiMeat, GiTomato } from 'react-icons/gi';
+import { BiSolidBaguette, BiSolidCheese } from 'react-icons/bi';
+import { MdOutdoorGrill } from 'react-icons/md';
 
 export const StyleTag = styled.button`
     height:100%;
@@ -26,6 +29,13 @@ export const StyleTag = styled.button`
     font-size:0.875rem;
     color: rgb(107 114 128);
 `
+export const StyledDiv = styled.div`
+    background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))25%, rgb(22 163 74 / var(--tw-bg-opacity))25%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
+`;
+
+export const StyledDiv2 = styled.div`
+    background:linear-gradient(to right, rgb(234 179 8) 0%, rgb(234 179 8) 50%, rgb(22 163 74) 50%, rgb(22 163 74) 100%);
+`;
 
 type Props = {
     className?: string,
@@ -119,7 +129,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData 
     return (
         <>
             {router.isReady && selected.length !== 0 ? (
-                <div className={`absolute flex justify-center w-screen right-0 min-w-[1024px] bg-white border-gray-200 border-b`} ref={ref}>
+                <div className={`relative flex justify-center w-screen right-0 min-w-[1024px] bg-white border-gray-200 border-b`} ref={ref}>
                     <Link href={'/Recipes'} className='py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-lg h-1/2' /></Link>
                     <div className="flex flex-col justify-start pt-4 pb-10 w-[1024px] max-w-[1024px]">
                         <div className='flex flex-row pb-5 pl-4 border-l'>
@@ -202,7 +212,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData 
                     </div>
                 </div>
             ) : (
-                <div className={`absolute w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
+                <div className={`relative w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
                     <div className='w-[1024px] mx-auto pt-4 pb-8'>
                         <div className='mb-8'>
                             <div className='flex flex-row justify-start items-center my-2 sticky'>
@@ -288,6 +298,22 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData 
                     </div>
                 </div>
             )}
+            <StyledDiv2 className='w-full h-fit'>
+                <StyledDiv className='max-w-[1024px] h-fit relative mx-auto p-2 flex flex-row items-center'>
+                    <p className='w-1/4 flex flex-row items-center'><HiAdjustments/>검색결과</p>
+                    <div className='flex flex-row w-full justify-end items-center text-white text-lg gap-1'>
+                        <GiMeat className='mx-3'/>
+                        <BiSolidBaguette className='mx-3'/>
+                        <BiSolidCheese className='mx-3'/>
+                        <MdOutdoorGrill className='mx-3'/>
+                        <MdOutdoorGrill className='mx-3'/>
+                        <GiTomato className='mx-3'/>
+                        <GiKetchup className='mx-3'/>
+                        <p className='border rounded-full px-3 text-sm'>최신 순</p>
+                        <p className='border rounded-full px-3 text-sm'>인기 순</p>
+                    </div>
+                </StyledDiv>
+            </StyledDiv2>
         </>
     );
 
