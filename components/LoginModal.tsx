@@ -69,7 +69,7 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 			리덕스로 받아온 유저이름:{userName}
 			<ul>
 				리덕스로 받아온 좋아요 레시피 번호:
-				{likeRecipe.map(item => <li key={item}>{item}</li>)}
+				{likeRecipe && likeRecipe.map((item,index) => <li key={index}>{item}</li>)}
 			</ul>
 		</div>
 	);

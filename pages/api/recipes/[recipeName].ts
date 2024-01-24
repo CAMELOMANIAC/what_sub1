@@ -8,6 +8,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let { limit } = req.query;
     let { offset } = req.query;
     let { filter } = req.query;
+    let { sort } = req.query;
 
     //이 엔드포인트는 recipeName 값에 맞는 결과를 반환합니다
     if (req.method === 'GET') {
@@ -26,8 +27,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 } else if (typeof filter === 'undefined') {
                     filter = ['메뉴이름', '레시피제목', '작성자', '재료', '태그'];
                 }
+                if (typeof sort != 'string') {
+                    sort = 'recipe_id';
+                }
 
-                const results: recipeType[] | Error = await getRecipes({ searchQuery: recipeName, offset: Number(offset), limit: Number(limit), filter });
+                const results: recipeType[] | Error = await getRecipes({ searchQuery: recipeName, offset: Number(offset), limit: Number(limit), filter, sort });
                 
                 if (results instanceof Error) {
                     console.log(results)

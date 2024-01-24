@@ -7,11 +7,12 @@ type getRecipesArg = {
     searchQuery: string,
     offset: number,
     limit: number,
-    filter: string[]
+    filter: string[],
+    sort: string,
 }
 
 //검색어를 통한 레시피 반환
-export const getRecipes = async ({ searchQuery, offset, limit, filter }: getRecipesArg): Promise<recipeType[] | Error> => {
+export const getRecipes = async ({ searchQuery, offset, limit, filter, sort }: getRecipesArg): Promise<recipeType[] | Error> => {
     try {
         let filterQuery;
         if (Array.isArray(filter)) {
@@ -47,8 +48,9 @@ export const getRecipes = async ({ searchQuery, offset, limit, filter }: getReci
         GROUP BY recipe_table.recipe_id, 
         recipe_table.recipe_name, 
         recipe_table.user_table_user_id, 
-        recipe_table.sandwich_table_sandwich_name
-        HAVING${String(filterQuery).replaceAll(',', 'OR')}
+        recipe_table.sandwich_table_sandwich_name 
+        HAVING ${String(filterQuery).replaceAll(',', 'OR')} 
+        ORDER BY ${sort} DESC 
         LIMIT ? OFFSET ?;
         `
         const sanitizedQueryArray: string[] = [];

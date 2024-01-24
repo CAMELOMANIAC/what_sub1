@@ -40,11 +40,12 @@ export const StyledDiv2 = styled.div`
 type Props = {
     className?: string,
     recipeData: recipeType[],
-    menuData: totalMenuInfoType[]
+    menuData: totalMenuInfoType[],
+    setSorting :React.Dispatch<React.SetStateAction<string>>;
 }
 
 //타입스크립트에서 useRef를 컴포넌트 속성에 할당할 수 있도록 forwardRef를 사용해야함 그냥 타입에 넣어버리면 일반적인 속성이 되버림
-const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData }, ref) => {
+const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData, setSorting }, ref) => {
 
     const router = useRouter();
     type MenuItem = {
@@ -125,6 +126,16 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData 
     //next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
     //서버가 값을 전달하기 전까지는 일단 param이 비어있는 상태이므로 그 사이에 js는 param 값이 없다고 에러를 띄우게된다. param값을 사용하는 요소들은 값을 받고나서 렌더링 할수있도록 조치해줘야한다
+
+    const visibleItem = useSelector((state: RootState) => state.page.VISIBLE_ARRAY)
+    const visibleItemArray = [
+        { name: '미트', element: <GiMeat className='mx-3' /> },
+        { name: '빵', element: <BiSolidBaguette className='mx-3' /> },
+        { name: '치즈', element: <BiSolidCheese className='mx-3' /> },
+        { name: '토스팅', element: <MdOutdoorGrill className='mx-3' /> },
+        { name: '채소', element: <GiTomato className='mx-3' /> },
+        { name: '소스', element: <GiKetchup className='mx-3' /> },
+    ]
 
     return (
         <>
@@ -300,17 +311,12 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData 
             )}
             <StyledDiv2 className='w-full h-fit'>
                 <StyledDiv className='max-w-[1024px] h-fit relative mx-auto p-2 flex flex-row items-center'>
-                    <p className='w-1/4 flex flex-row items-center'><HiAdjustments/>검색결과</p>
-                    <div className='flex flex-row w-full justify-end items-center text-white text-lg gap-1'>
-                        <GiMeat className='mx-3'/>
-                        <BiSolidBaguette className='mx-3'/>
-                        <BiSolidCheese className='mx-3'/>
-                        <MdOutdoorGrill className='mx-3'/>
-                        <MdOutdoorGrill className='mx-3'/>
-                        <GiTomato className='mx-3'/>
-                        <GiKetchup className='mx-3'/>
-                        <p className='border rounded-full px-3 text-sm'>최신 순</p>
-                        <p className='border rounded-full px-3 text-sm'>인기 순</p>
+                    <p className='w-1/4 flex flex-row items-center'><HiAdjustments /> 검색결과</p>
+                    <div className='flex flex-row w-full justify-end items-center text-white text-lg'>
+                        {visibleItemArray.map((item) =>
+                            <button key={item.name} className={visibleItem.includes(item.name)?'text-yellow-300':''}>{item.element}</button>)}
+                        <button className='border rounded-full px-3 mx-1 text-sm' onClick={()=>setSorting('최신순')}>최신순</button>
+                        <button className='border rounded-full px-3 text-sm' onClick={()=>setSorting('인기순')}>인기순</button>
                     </div>
                 </StyledDiv>
             </StyledDiv2>
