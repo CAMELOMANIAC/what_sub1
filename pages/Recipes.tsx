@@ -116,7 +116,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩 함수안써도됨
         const fetchRecipes = async () => {
             try {
-                const response = await fetch(query !== '' ? '/api/recipes/' + encodeURIComponent(query) + `?offset=${offset}&limit=${limit}&filter=${filter}`
+                const response = await fetch(query !== '' ? '/api/recipes/' + encodeURIComponent(query) + `?offset=${offset}&limit=${limit}&filter=${filter}&sort=${sorting==='최신순'?'recipe_id':'like_count'}`
                     : `/api/recipes?offset=${offset}&limit=${limit}&filter=${filter}&sort=${sorting==='최신순'?'recipe_id':'like_count'}`)
 
                 if (response.status === 200) {
@@ -172,14 +172,15 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
 
     //레시피 정렬
     useEffect(() => {
-        let sortedRecipes;
-        if (sorting === '인기순') {
-            sortedRecipes = [...recipes].sort((a, b) => parseInt(a.like_count) - parseInt(b.like_count));
-        } else {
-            sortedRecipes = [...recipes].sort((a, b) => parseInt(a.recipe_id) - parseInt(b.recipe_id));
-        }
-        setRecipes(sortedRecipes);
-        console.log(sorting)
+        // let sortedRecipes;
+        // if (sorting === '인기순') {
+        //     sortedRecipes = [...recipes].sort((a, b) => parseInt(b.like_count) - parseInt(a.like_count));
+        // } else {
+        //     sortedRecipes = [...recipes].sort((a, b) => parseInt(a.recipe_id) - parseInt(b.recipe_id));
+        // }
+        // setRecipes(sortedRecipes);
+        setPage(0);
+        setRecipes([])//레시피 배열을 비우기
     }, [sorting])
     
     
