@@ -144,7 +144,6 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
 
     //무한스크롤
     useEffect(() => {
-        console.log(recipes)
         const callback = (entries, observer) => {
             entries.forEach(entry => {
                 // 타겟 요소가 화면에 보이는 경우

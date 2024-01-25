@@ -25,37 +25,45 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         const tag = recipe.tag.split(',');
         recipeTag.push(...tag);
     }
-    const ingredients: string[] = [];
+    let ingredients: string[] = [];
     if (recipe.recipe_ingredients) {
         const ingredient = recipe.recipe_ingredients.split(',');
+        const meatIngredients: string[] = [];
+        const breadIngredients: string[] = [];
+        const cheeseIngredients: string[] = [];
+        const vegetableIngredients: string[] = [];
+        const sauceIngredients: string[] = [];
         ingredient.forEach((item) => {
             if (visibleItem.includes('미트')) {
                 const itemName = menuNutrientArray.find((meat) => meat.name === item)?.name;
                 if (itemName)
-                    ingredients.push(itemName);
-                ingredientsArray.filter((meat) => meat.name === item).forEach(
-                    item => ingredients.push(item.name));
+                    meatIngredients.push(itemName);
+                if (item.includes('재료'))
+                    ingredientsArray.filter((meat) => meat.name.includes(item)).forEach(
+                        item => meatIngredients.push(item.name));
             }
             if (visibleItem.includes('빵')) {
                 const itemName = breadNutrientArray.find((bread) => bread.name === item)?.name;
                 if (itemName)
-                    ingredients.push(itemName);
+                breadIngredients.push(itemName);
             }
             if (visibleItem.includes('치즈')) {
                 cheeseNutrientArray.filter((cheese) => cheese.name === item).forEach(
-                    item => ingredients.push(item.name));
+                    item => cheeseIngredients.push(item.name));
             }
             if (visibleItem.includes('채소')) {
                 vegetableArray.filter((vegetable) => vegetable.name === item).forEach(
-                    item => ingredients.push(item.name));
+                    item => vegetableIngredients.push(item.name));
                 pickleArray.filter((vegetable) => vegetable.name === item).forEach(
-                    item => ingredients.push(item.name));
+                    item => vegetableIngredients.push(item.name));
             }
             if (visibleItem.includes('소스')) {
                 sauceNutrientArray.filter((vegetable) => vegetable.name === item).forEach(
-                    item => ingredients.push(item.name));
+                    item => sauceIngredients.push(item.name));
             }
         })
+        
+        ingredients = [...meatIngredients,...breadIngredients,...cheeseIngredients,...vegetableIngredients,...sauceIngredients];
         if (visibleItem.includes('토스팅')) {
             if (ingredient.includes('true'))
                 ingredients.push('true');
