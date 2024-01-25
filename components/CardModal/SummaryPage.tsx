@@ -11,11 +11,10 @@ import { MemoizedChart } from '../IngredientRadarChart';
 
 type props = {
     recipe: recipeType,
-    ingredients: string[],
     className?: string
 }
 
-const SummaryPage = ({ recipe, ingredients, className }: props) => {
+const SummaryPage = ({ recipe, className }: props) => {
 
     //재료에 맞게 재분류
     const ingredientsArray = recipe.recipe_ingredients.split(',');
@@ -142,7 +141,7 @@ const SummaryPage = ({ recipe, ingredients, className }: props) => {
                         </div>
                     </div>
                     <div>{recipe.tag}</div>
-                    <div className='flex flex-row overflow-hidden flex-wrap'>{ingredients.map((item) =>
+                    <div className='flex flex-row overflow-hidden flex-wrap'>{ingredientsArray.map((item) =>
                         <img src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></img>
                     )}</div>
                     <div className='flex flex-row justify-end mt-auto text-gray-400'>

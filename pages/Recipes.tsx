@@ -60,7 +60,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
     const router = useRouter();
     const [recipes, setRecipes] = useState<recipeType[]>([]);
     const [sorting, setSorting] = useState<string>('최신순');
-    const filter = useSelector((state: RootState) => state.page.FILTER_ARRAY);
+    const filter: string[] = useSelector((state: RootState) => state.page.FILTER_ARRAY);
     const [page, setPage] = useState<number>(0);
     const [loading, setLoading] = useState<number>(loadingState.fullfiled);
     const disptach = useDispatch();
@@ -192,7 +192,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
             원인추측 : 개발자모드에서 중단점으로 확인했는데 요소를 두번 실행함 아마 부모요소에서 조건으로 Router.isReady를 확인해서 렌더링하고
             자식요소에서 다시 확인해서 렌더링 하도록 했는데 부모가 렌더링을 안했는데 임포트된 리액트js가 자식껄 한번더 확인하니까 
             첫번째 실행에서는 정상적으로 렌더링하고 두번째 실행에서 하이드레이션 오류가 발생한듯*/}
-            <RecipesBanner recipeData={recipeData} menuData={menuData} setSorting={setSorting} />
+            <RecipesBanner recipeData={recipeData} menuData={menuData} sorting={sorting} setSorting={setSorting} />
             <main className={'w-full max-w-screen-lg mx-auto pt-2'}>
                 <div className='grid grid-cols-6 grid-flow-row gap-2 min-w-[1024px]'>
                     {typeof router.query.param === 'string' && <EmptyCard></EmptyCard>}

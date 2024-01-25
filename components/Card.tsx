@@ -1,5 +1,5 @@
 import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
-import { HiOutlineChatBubbleLeft } from 'react-icons/hi2';
+import { HiEllipsisHorizontal, HiOutlineChatBubbleLeft } from 'react-icons/hi2';
 import Link from 'next/link';
 import { forwardRef, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -7,6 +7,7 @@ import { RootState } from '../redux/store';
 import { recipeType } from '../interfaces/api/recipes';
 import CardModal from './CardModal/CardModal';
 import { useRecipeLike } from '../utils/card';
+import { breadNutrientArray, cheeseNutrientArray, ingredientsArray, menuNutrientArray, pickleArray, sauceNutrientArray, vegetableArray } from '../utils/menuArray';
 
 type CardProps = {
     recipe: recipeType;
@@ -14,9 +15,10 @@ type CardProps = {
 };
 
 const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) => {
-    const {likeCount, recipeLikeHandler} = useRecipeLike(recipe);
+    const { likeCount, recipeLikeHandler } = useRecipeLike(recipe);
     const recipeTag: string[] = [];
     const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
+    const visibleItem: string[] = useSelector((state: RootState) => state.page.VISIBLE_ARRAY);
     const [isActive, setIsActive] = useState<boolean>(false)
 
     if (recipe.tag) {
@@ -26,7 +28,38 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
     const ingredients: string[] = [];
     if (recipe.recipe_ingredients) {
         const ingredient = recipe.recipe_ingredients.split(',');
-        ingredients.push(...ingredient);
+        ingredient.forEach((item) => {
+            if (visibleItem.includes('미트')) {
+                const itemName = menuNutrientArray.find((meat) => meat.name === item)?.name;
+                if (itemName)
+                    ingredients.push(itemName);
+                ingredientsArray.filter((meat) => meat.name === item).forEach(
+                    item => ingredients.push(item.name));
+            }
+            if (visibleItem.includes('빵')) {
+                const itemName = breadNutrientArray.find((bread) => bread.name === item)?.name;
+                if (itemName)
+                    ingredients.push(itemName);
+            }
+            if (visibleItem.includes('치즈')) {
+                cheeseNutrientArray.filter((cheese) => cheese.name === item).forEach(
+                    item => ingredients.push(item.name));
+            }
+            if (visibleItem.includes('채소')) {
+                vegetableArray.filter((vegetable) => vegetable.name === item).forEach(
+                    item => ingredients.push(item.name));
+                pickleArray.filter((vegetable) => vegetable.name === item).forEach(
+                    item => ingredients.push(item.name));
+            }
+            if (visibleItem.includes('소스')) {
+                sauceNutrientArray.filter((vegetable) => vegetable.name === item).forEach(
+                    item => ingredients.push(item.name));
+            }
+        })
+        if (visibleItem.includes('토스팅')) {
+            if (ingredient.includes('true'))
+                ingredients.push('true');
+        }
     }
 
     return (
@@ -47,12 +80,15 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                         <h2 className='text-xl font-bold text-ellipsis overflow-hidden whitespace-nowrap w-[220px]'>{recipe.recipe_name}</h2>
                     </div>
                 </div>
-                <div className='flex flex-row justify-end text-sm w-full mb-2 text-gray-400'>
+                <div className='flex flex-row justify-end text-sm w-full h-5 mb-2 text-gray-400'>
                     {recipeTag.map((item, index) => <span key={index} className={index !== 0 ? 'ml-1' : ''}>{'#' + item}</span>)}
                 </div>
-                <section className='flex flex-row overflow-hidden flex-wrap'>{ingredients.map((item) =>
-                    <img src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-[70px] aspect-square rounded-md' alt={item}></img>
-                )}</section>
+                <section className='flex flex-row overflow-hidden flex-wrap h-[140px]'>
+                    {ingredients.map((item, index) =>
+                        index < 7 && <img src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-[70px] h-[70px] rounded-md' alt={item}></img>)
+                    }
+                    {ingredients.length > 7 && <HiEllipsisHorizontal className='text-gray-500 w-[70px] h-fit' />}
+                </section>
                 <div className='flex flex-row justify-end mt-auto text-gray-400'>
                     <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_table_user_id}</div>
                     <button className='flex items-center mr-2 hover:text-green-600'

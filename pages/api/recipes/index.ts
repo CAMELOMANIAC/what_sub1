@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 offset = '0';
             }
             if (typeof sort != 'string') {
-                sort = 'recipe_id';
+                sort = 'like_count';
             }
 
             const results: recipeType[] | Error = await getRecipes({ searchQuery: ' ', offset: Number(offset), limit: Number(limit), filter, sort});

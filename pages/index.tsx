@@ -21,7 +21,6 @@ export async function getServerSideProps() {
 	//보여줄 레시피 가져오기
 	const loadTotalMenuInfo = async () => {
 		const result = await fetch(`${process.env.URL}/api/recipes`);
-
 		return result.json();
 	}
 	return {
