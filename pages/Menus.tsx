@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { menuArray, menuArrayType } from '../utils/menuArray';
 import { checkSession } from '../utils/checkSession';
-import { loadMenuLike } from '../utils/publicFunction';
-import { useDispatch } from 'react-redux';
-import { actionSetMenuLike } from '../redux/reducer/userReducer';
 import { totalMenuInfoType } from '../interfaces/api/menus';
 import MenusBanner from '../components/MenusBanner';
 import MenusList from '../components/MenusList';
 import MenusGrid from '../components/MenusGrid';
-
 
 export async function getServerSideProps({ req }) {
     const cookie = req.headers.cookie;
@@ -43,16 +39,7 @@ const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
             : null
     })
     const [selected, setSelected] = useState<menuArrayType>(menuArray[0]);
-    const dispatch = useDispatch();
-    //새로고침시 좋아요 정보 가져오기
-    useEffect(() => {
-        if (sessionCheck) {//로그인 세션이 존재하면
-            loadMenuLike().then(data => {//메뉴 좋아요 정보 가져와서 전역 상태값에 저장
-                dispatch(actionSetMenuLike(data))
-            })
-        }
-    }, [])
-
+    
     return (
         <>
             <MenusBanner selected={selected} sessionCheck={sessionCheck}></MenusBanner>

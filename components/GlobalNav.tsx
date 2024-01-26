@@ -7,8 +7,8 @@ import { FaUserCircle } from 'react-icons/fa';
 import LoginModal from "./LoginModal";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../redux/store";
-import { actionLoginChangeId } from '../redux/reducer/userReducer';
-import { getCookieValue } from "../utils/publicFunction";
+import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
+import { getCookieValue, loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
 
 const GlobalNav = () => {
     const router = useRouter()
@@ -34,6 +34,15 @@ const GlobalNav = () => {
     useEffect(() => {
             if (userName === '') {
                 dispatch(actionLoginChangeId(getCookieValue('user')))
+            }else{
+                //레시피 좋아요 정보를 전역 상태값으로 저장
+                loadRecipeLike().then(data => {
+                    dispatch(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
+                })
+                //메뉴좋아요 정보를 전역 상태값으로 저장
+                loadMenuLike().then(data => {
+                    dispatch(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
+                })
             }
     }, [])
 

@@ -3,9 +3,7 @@ import Card from '../components/Card';
 import EmptyCard from '../components/EmptyCard';
 import RecipesBanner from '../components/RecipesBanner';
 import { useRouter } from 'next/router';
-import { useSelector, useDispatch } from 'react-redux';
-import { actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
-import { getCookieValue, loadMenuLike, loadRecipeLike } from '../utils/publicFunction';
+import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import styled from 'styled-components';
 import { recipeType } from '../interfaces/api/recipes';
@@ -63,20 +61,6 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
     const filter: string[] = useSelector((state: RootState) => state.page.FILTER_ARRAY);
     const [page, setPage] = useState<number>(0);
     const [loading, setLoading] = useState<number>(loadingState.fullfiled);
-    const disptach = useDispatch();
-
-    //새로고침시 좋아요 정보 불러오는용
-    useEffect(() => {
-        if (getCookieValue('user').length > 0) {//로그인 정보가 있을경우
-            loadRecipeLike().then(data => {//레시피 좋아요 정보 가져와서 전역 상태값에 저장
-                disptach(actionSetRecipeLike(data))
-            })
-
-            loadMenuLike().then(data => {//메뉴 좋아요 정보 가져와서 전역 상태값에 저장
-                disptach(actionSetMenuLike(data))
-            })
-        }
-    }, [])
 
     const searchHandler = (limit: number) => {
         if (router.query) {

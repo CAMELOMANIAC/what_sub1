@@ -9,47 +9,8 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 	const disptach = useDispatch();
 	const userName = useSelector((state: RootState) => state.user.userName);
 	const likeRecipe: string[] = useSelector((state: RootState) => state.user.recipeLikeArray);
+	const likeMenu: string[] = useSelector((state: RootState) => state.user.menuLikeArray);
 	const router = useRouter();
-	const handleKakaoLogin = () => {
-		router.push(`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=http://localhost:3000/api/socialLogIn&client_secret=${process.env.KAKAO_CLIENT_SECRET}`)
-	}
-
-
-	//일반 로그인
-	const handleLogin = () => {
-		fetch('/api/users/login', {
-			method: 'POST',
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				id: id,
-				pwd: pwd
-			}),
-		}).then((response) => {
-			if (!response.ok) {
-				throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
-			} else {
-				return response.json();
-			}
-		}).then((data) => {
-			//로그인 정보를 전역 상태값으로 저장
-			disptach(actionLoginChangeId(data.userId));
-			//레시피 좋아요 정보를 전역 상태값으로 저장
-			loadRecipeLike().then(data => {
-				disptach(actionSetRecipeLike(data))
-				console.log(data)
-			})
-			//메뉴좋아요 정보를 전역 상태값으로 저장
-			loadMenuLike().then(data => {
-				disptach(actionSetMenuLike(data))
-				console.log(data)
-			})
-			console.log('로그인 성공')
-			handleClose();
-		}).catch(error => console.error('Error:', error));
-	}
-
 	const [id, setId] = useState('')
 	const [pwd, setPwd] = useState('')
 	const handleChangeId = (e) => {
@@ -57,6 +18,45 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 	}
 	const handleChangePwd = (e) => {
 		setPwd(e.target.value)
+	}
+
+	const handleKakaoLogin = () => {
+		router.push(`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=http://localhost:3000/api/socialLogIn&client_secret=${process.env.KAKAO_CLIENT_SECRET}`)
+	}
+
+	//일반 로그인
+	const handleLogin = async () => {
+		try {
+			const response = await fetch('/api/users/login', {
+				method: 'POST',
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					id: id,
+					pwd: pwd
+				}),
+			})
+			if (response.status !== 200) {
+				throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+			} else {
+				const result = await response.json();
+
+				//로그인 정보를 전역 상태값으로 저장
+				disptach(actionLoginChangeId(result.userId));
+				//레시피 좋아요 정보를 전역 상태값으로 저장
+				loadRecipeLike().then(data => {
+					disptach(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
+				})
+				//메뉴좋아요 정보를 전역 상태값으로 저장
+				loadMenuLike().then(data => {
+					disptach(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
+				})
+				handleClose();
+			}
+		} catch (err) {
+			console.log(err)
+		}
 	}
 
 	return (
@@ -67,10 +67,8 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 			<button onClick={handleKakaoLogin}>카카오 로그인</button>
 			<button onClick={handleClose}>닫기</button>
 			리덕스로 받아온 유저이름:{userName}
-			<ul>
-				리덕스로 받아온 좋아요 레시피 번호:
-				{likeRecipe && likeRecipe.map((item,index) => <li key={index}>{item}</li>)}
-			</ul>
+			리덕스로 받아온 좋아요 레시피 번호:{likeRecipe.map((item,index)=><span key={index}>{item},</span>)}
+			리덕스로 받아온 좋아요 메뉴 이름:{likeMenu.map((item,index)=><span key={index}>{item},</span>)}
 		</div>
 	);
 }
