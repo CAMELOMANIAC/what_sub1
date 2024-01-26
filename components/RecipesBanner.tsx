@@ -85,12 +85,12 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     }
 
     //추천 브레드 및 추천 소스관련내용
-    const [breadTop, setBreadTop] = useState<string[]>(['1', '2', '3']);
-    const [breadTopLike, setBreadTopLike] = useState<string[]>(['1', '2', '3']);
-    const [breadTopOccurrence, setBreadTopOccurrence] = useState<string[]>(['1', '2', '3']);
-    const [sauceTop, setSauceTop] = useState<string[][]>([['1'], ['2'], ['3']]);
-    const [sauceTopLike, setSauceTopLike] = useState<string[]>(['1', '2', '3']);
-    const [sauceTopOccurrence, setSauceTopOccurrence] = useState<string[]>(['1', '2', '3']);
+    const [breadTop, setBreadTop] = useState<string[]>();
+    const [breadTopLike, setBreadTopLike] = useState<string[]>();
+    const [breadTopOccurrence, setBreadTopOccurrence] = useState<string[]>();
+    const [sauceTop, setSauceTop] = useState<string[][]>();
+    const [sauceTopLike, setSauceTopLike] = useState<string[]>();
+    const [sauceTopOccurrence, setSauceTopOccurrence] = useState<string[]>();
     const [menuLike, setMenuLike] = useState<string>();
     const [menuRecipe, setMenuRecipe] = useState<string>();
     const [recipeLike, setRecipeLike] = useState<string>();
@@ -186,7 +186,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>좋아요 수</span>
                                 </div>
-                                {breadTop.map((item, index) => (
+                                {breadTop && breadTop.map((item, index) => (
                                     <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <img
@@ -196,8 +196,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                             />
                                             {item}
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{Math.round((parseInt(breadTopOccurrence[index]) / parseInt(menuRecipe!)) * 100)}%</span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{breadTopLike[index]}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{breadTopOccurrence && Math.round((parseInt(breadTopOccurrence[index]) / parseInt(menuRecipe!)) * 100)}%</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{breadTopLike && breadTopLike[index]}</span>
                                     </div>
                                 ))}
                             </div>
@@ -208,11 +208,11 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>좋아요 수</span>
                                 </div>
-                                {sauceTop.map((item, index) => (
+                                {sauceTop && sauceTop.map((item, index) => (
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>{
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
-                                                <React.Fragment key={subItem + index}>
+                                                <React.Fragment key={subItem + subIndex}>
                                                     {subIndex !== 0 && '+'}
                                                     <img
                                                         src={'images/sandwich_menu/ingredients/' + subItem + '.jpg'}
@@ -223,8 +223,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                             ))
                                         }
                                         </span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{Math.round((parseInt(sauceTopOccurrence[index]) / parseInt(menuRecipe!)) * 100)}%</span>
-                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopLike[index]}</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopOccurrence && Math.round((parseInt(sauceTopOccurrence[index]) / parseInt(menuRecipe!)) * 100)}%</span>
+                                        <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopLike && sauceTopLike[index]}</span>
                                     </div>
                                 ))}
                             </div>
