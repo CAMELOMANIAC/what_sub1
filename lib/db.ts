@@ -13,7 +13,7 @@ const db = mysql({
 });
 
 //이곳에서 에러처리 하지 않고 에러처리는 비즈니스 로직에서 처리합니다
-const executeQuery = async<T>({ query, values }: { query: string, values: Array<string|number> }): Promise<T|Error> => {
+const executeQuery = async<T>({ query, values }: { query: string, values: Array<string|number|Date> }): Promise<T|Error> => {
   const results = await db.query<T>(query, values); // db.query 함수에도 제네릭을 적용합니다.
   await db.end();
   return results;

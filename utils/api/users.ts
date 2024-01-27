@@ -38,6 +38,25 @@ export const getUserData = async (id: string): Promise<userDataType[] | Error> =
     }
 }
 
+//사용자 이메일 정보
+export const getEmail = async (id: string): Promise<string | Error> => {
+
+    const query = `SELECT user_email FROM user_info_table WHERE BINARY user_table_user_id = ?`
+    const valuesId = id;
+
+    try {
+        const results: string | Error = await executeQuery({ query: query, values: [valuesId] });
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results;
+        }
+    } catch (err) {
+        return err;
+    }
+}
+
+
 //로그인시 아이디,비밀번호 검증
 export const checkUser = async (id: string, pwd: string): Promise<string | Error> => {
 
@@ -111,6 +130,47 @@ export const checkSession = async (cookie): Promise<string | Error> => {
             } else {
                 return results[0].user_id;
             }
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+//유저 테이블에 추가하는 함수
+export const insertUser = async (userId:string, userPwd:string): Promise<updateReturnType | Error> => {
+    const query = 'INSERT INTO user_table (user_id, user_pwd) VALUES (?, ?)'
+    const valuesUserId = userId;
+    const valuesUserPwd = userPwd;
+
+    try {
+        const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesUserId, valuesUserPwd] });
+
+        if ('affectedRows' in results && results.affectedRows === 0) {
+            throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
+        }else {
+            return results;
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+//유저 인포 테이블에 추가하는 함수
+export const insertUserInfo = async (userId:string, authorNumber: string, email:string ): Promise<updateReturnType | Error> => {
+    const query = 'INSERT INTO user_info_table (user_table_user_id, auth, user_email, auth_expired) VALUES (?, ?, ?, ?)'
+    const valuesUserId = userId;
+    const valuesAuthorNumber = authorNumber;
+    const valuesEmail = email;
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + 30);
+
+    try {
+        const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesUserId, valuesAuthorNumber,valuesEmail,date] });
+
+        if ('affectedRows' in results && results.affectedRows === 0) {
+            throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
+        }else {
+            return results;
         }
     } catch (err) {
         return err

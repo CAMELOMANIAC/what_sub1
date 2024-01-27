@@ -100,7 +100,6 @@ const SummaryPage = ({ recipe, className }: props) => {
 
         } catch (error) {
             alert('댓글 등록에 실패 했습니다.')
-            //console.error(error);
         }
     }
 
