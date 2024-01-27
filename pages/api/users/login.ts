@@ -12,17 +12,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const pwd = req.body.pwd;
 
         try {
+            if (!id || !pwd) {
+                throw new Error('잘못된 요청값 입니다.');
+            }
             const userId = await checkUser(id, pwd);
-
+            if (userId instanceof Error) {
+                throw userId
+            }
             if (typeof userId === 'string') {
                 const sessionId = await updateSession(userId);
+                if (sessionId instanceof Error) {
+                    throw userId
+                }
                 res.setHeader('Set-Cookie', [
                     `session=${sessionId}; Path=/; HttpOnly; SameSite=Lax`,
                     `user=${userId}; Path=/; SameSite=Lax`
                 ]);
                 res.status(200).json({ userId: userId })
-            } else {
-                throw new Error('잘못된 요청값 입니다.');
             }
 
         } catch (err: unknown) {

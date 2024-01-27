@@ -23,7 +23,7 @@ const CardModal = ({ recipe, setIsActive }: props) => {
                 </button>
                 <div className='grid grid-cols-8 gap-4'>
                     <Nav className='h-full col-span-2 rounded-l-lg' setPage={setPage} page={page}></Nav>
-                    {page === 0 && <SummaryPage recipe={recipe} className='col-span-6 py-5 pr-5'></SummaryPage>}
+                    {page === 0 && <SummaryPage recipe={recipe} className='col-span-6 py-5 pr-5 pl-1'></SummaryPage>}
                     {page !== 0 && <IngredientsPage recipe={recipe} page={page} className='col-span-6 h-[500px]' />}
                 </div>
             </article>

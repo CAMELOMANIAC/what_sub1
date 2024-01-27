@@ -15,6 +15,7 @@ type mailOptionsType = {
     text: string, // 텍스트 본문
     html?: string //html 태그지원하는 이메일 제공자는 html요소로 보여줄 수 도있음
 }
+//일 500회까지만 가능
 
 export const sendMail = async (mailOptions:mailOptionsType) => {
     try {

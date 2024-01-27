@@ -34,7 +34,17 @@ export const getCookieValue = (key) => {
     return result;
 }
 
-export const validateEmail = (email) => {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;// eslint-disable-line no-useless-escape
-    return re.test(String(email).toLowerCase());
+export const isValidId = (id) => {
+    const regex = /^[a-zA-Z0-9]{1,10}$/;
+    return regex.test(id);
+}
+
+export const isValidPassword = (password) => {
+    const regex = /^.{1,15}$/;
+    return regex.test(password);
+}
+
+export const isValidEmail = (email) => {
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;// eslint-disable-line no-useless-escape
+    return regex.test(String(email).toLowerCase());
 }
