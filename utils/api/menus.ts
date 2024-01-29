@@ -79,7 +79,6 @@ export const getTopIngredients = async (sandwichMenu: string, ingredientsType: s
     LIMIT 3;
     `
     try {
-
         let dynamicValues: string[] = [];
         if (ingredientsType === 'bread') {
             dynamicValues = breadNutrientArray.map((item) => item.name)
@@ -128,7 +127,6 @@ export const getRecipeIngredients = async (sandwichMenu: string, ingredientsType
     `
 
     try {
-
         let dynamicValues: string[] = [];
         if (ingredientsType === 'bread') {
             dynamicValues = breadNutrientArray.map((item) => item.name)

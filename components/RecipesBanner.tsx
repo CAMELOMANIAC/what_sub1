@@ -96,15 +96,30 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     const [recipeLike, setRecipeLike] = useState<string>();
     const loadIngredientsBread = async (query: string) => {
         const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${query}`);
-        return await response.json();
+        if (response.status === 200) {
+            return await response.json();
+        }
+        else {
+            return new Error('실패')
+        }
     }
     const loadIngredientsSauce = async (query: string) => {
         const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${query}`);
-        return await response.json();
+        if (response.status === 200) {
+            return await response.json();
+        }
+        else {
+            return new Error('실패')
+        }
     }
     const loadMenuInfo = async (query: string) => {
         const response = await fetch(`/api/menus/${query}`);
-        return await response.json();
+        if (response.status === 200) {
+            return await response.json();
+        }
+        else {
+            return new Error('실패')
+        }
     }
 
     let selected: MenuItem[] = [];
@@ -119,6 +134,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
             const { param } = router.query;
             if (router.isReady && selected.length !== 0) {
                 loadIngredientsBread(encodeURIComponent(String(param))).then(result => {
+                    if (result instanceof Error){
+                        return
+                    }
                     let parsedResult = result.map(item => item.recipe_ingredients);
                     setBreadTop(parsedResult);
                     parsedResult = result.map(item => item.likes);
@@ -127,6 +145,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     setBreadTopOccurrence(parsedResult);
                 });
                 loadIngredientsSauce(encodeURIComponent(String(param))).then(result => {
+                    if (result instanceof Error){
+                        return
+                    }
                     let parsedResult = result.map(item => item.combined_ingredients.split(', '));
                     setSauceTop(parsedResult);
                     parsedResult = result.map(item => item.likes);
@@ -135,6 +156,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     setSauceTopOccurrence(parsedResult);
                 });
                 loadMenuInfo(encodeURIComponent(String(param))).then(result => {
+                    if (result instanceof Error){
+                        return
+                    }
                     setMenuLike(result[0].like_count);
                     setMenuRecipe(result[0].recipe_count);
                     setRecipeLike(result[0].recipe_like_count);
@@ -278,7 +302,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>메뉴 좋아요</span>
                                     <span className='col-span-2'>레시피 수</span>
                                 </div>
-                                {menuData.map((item, index) => (
+                                {menuData && menuData.map((item, index) => (
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row my-2'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <span className='w-10 aspect-square overflow-hidden rounded-md'>
@@ -301,7 +325,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>좋아요 수</span>
                                     <span className='col-span-2'>태그</span>
                                 </div>
-                                {recipeData.map((item, index) => (
+                                {recipeData && recipeData.map((item, index) => (
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row h-10 my-2'>
                                         <span className='col-span-5 flex items-center justify-start text-black font-bold'>
                                             {index + 1}
@@ -323,13 +347,13 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     <p className='w-1/4 flex flex-row items-center'><HiAdjustments /> 검색결과</p>
                     <div className='flex flex-row w-full justify-end items-center text-white text-lg'>
                         {visibleItemArray.map((item) =>
-                            <button 
+                            <button
                                 key={item.name}
                                 className={visibleItem.includes(item.name) ? 'text-yellow-300' : ''}
-                                onClick={()=>sortHandler(item.name)}>{item.element}
+                                onClick={() => sortHandler(item.name)}>{item.element}
                             </button>)}
-                        <button className={`border rounded-full px-3 mx-1 text-sm ${sorting==='최신순' ? 'text-yellow-300 border-yellow-300':''}`} onClick={() => setSorting('최신순')}>최신순</button>
-                        <button className={`border rounded-full px-3 text-sm ${sorting==='인기순' ? 'text-yellow-300 border-yellow-300':''}`} onClick={() => setSorting('인기순')}>인기순</button>
+                        <button className={`border rounded-full px-3 mx-1 text-sm ${sorting === '최신순' ? 'text-yellow-300 border-yellow-300' : ''}`} onClick={() => setSorting('최신순')}>최신순</button>
+                        <button className={`border rounded-full px-3 text-sm ${sorting === '인기순' ? 'text-yellow-300 border-yellow-300' : ''}`} onClick={() => setSorting('인기순')}>인기순</button>
                     </div>
                 </StyledDiv>
             </StyledDiv2>

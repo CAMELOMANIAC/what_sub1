@@ -5,7 +5,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { sandwichMenu } = req.query;
     if (req.method === 'GET') {
-
         try {
             //top3 조합법 요청시
             if (typeof sandwichMenu === 'string') {
