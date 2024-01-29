@@ -41,9 +41,7 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 					pwd: pwd
 				}),
 			})
-			if (response.status !== 200) {
-				throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
-			} else {
+			if (response.status == 200) {
 				const result = await response.json();
 
 				//로그인 정보를 전역 상태값으로 저장
@@ -57,28 +55,30 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 					disptach(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
 				}).catch(err => { console.log(err) })
 				handleClose();
+			} else{
+				throw await response.json();
 			}
 		} catch (err) {
-			console.log(err)
+			alert(err.message)
 		}
 	}
 
 	//회원가입
-	const handleRegister = async() => {
-		const response = await fetch('api/users/register',{
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: 'include',
-            body: JSON.stringify({
+	const handleRegister = async () => {
+		const response = await fetch('api/users/register', {
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: 'include',
+			body: JSON.stringify({
 				id: id,
 				pwd: pwd,
 				email: email,
 			})
-        })
-		
-		if(response.status === 200){
+		})
+
+		if (response.status === 200) {
 			alert('이메일 전송됨')
 		}
 	}

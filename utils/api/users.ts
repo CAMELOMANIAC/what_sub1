@@ -136,8 +136,54 @@ export const checkSession = async (cookie): Promise<string | Error> => {
     }
 }
 
-//유저 테이블에 추가하는 함수
-export const insertUser = async (userId:string, userPwd:string): Promise<updateReturnType | Error> => {
+//로그인시 인증완료를 마친 회원인지 체크하는 함수
+export const checkAuthComplete = async (userId: string): Promise<true | Error> => {
+    const query = 'SELECT auth FROM user_info_table WHERE user_table_user_id = ?;'
+    const valuesUserId = userId;
+
+    try {
+        const results: { auth: string }[] | Error = await executeQuery({ query: query, values: [valuesUserId] });
+        console.log(results)
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else if (results instanceof Error) {
+            return results
+        } else if (results[0].auth === '1'){
+            return true
+        } else {
+            throw new Error('인증을 완료하지 않은 회원입니다.')
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+//회원가입 메일 인증번호 체크하는 함수
+export const checkAuth = async (authNumber: string): Promise<boolean | Error> => {
+    const query = 'SELECT auth_expired FROM user_info_table WHERE auth = ?;'
+    const valuesAuthNumber = authNumber;
+
+    try {
+        const results: { auth_expired: Date }[] | Error = await executeQuery({ query: query, values: [valuesAuthNumber] });
+
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else if (results instanceof Error) {
+            return results
+        } else {
+            if (results[0].auth_expired > new Date()) {
+                return true;//만료되지 않음
+            } else {
+                return false;//만료됨
+            }
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+//유저 테이블에 아이디와 비밀번호를 추가하는 함수
+export const insertUser = async (userId: string, userPwd: string): Promise<updateReturnType | Error> => {
     const query = 'INSERT INTO user_table (user_id, user_pwd) VALUES (?, ?)'
     const valuesUserId = userId;
     const valuesUserPwd = userPwd;
@@ -147,7 +193,7 @@ export const insertUser = async (userId:string, userPwd:string): Promise<updateR
 
         if ('affectedRows' in results && results.affectedRows === 0) {
             throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
-        }else {
+        } else {
             return results;
         }
     } catch (err) {
@@ -155,9 +201,9 @@ export const insertUser = async (userId:string, userPwd:string): Promise<updateR
     }
 }
 
-//유저 인포 테이블에 추가하는 함수
-export const insertUserInfo = async (userId:string, authorNumber: string, email:string ): Promise<updateReturnType | Error> => {
-    const query = 'INSERT INTO user_info_table (user_table_user_id, auth, user_email, auth_expired) VALUES (?, ?, ?, ?)'
+//유저 인포 테이블에 정보를 추가하는 함수
+export const insertUserInfo = async (userId: string, authorNumber: string, email: string): Promise<updateReturnType | Error> => {
+    const query = 'INSERT INTO user_info_table (user_table_user_id, auth, user_email, auth_expired) VALUES (?, ?, ?, ?)';
     const valuesUserId = userId;
     const valuesAuthorNumber = authorNumber;
     const valuesEmail = email;
@@ -165,11 +211,29 @@ export const insertUserInfo = async (userId:string, authorNumber: string, email:
     date.setMinutes(date.getMinutes() + 30);
 
     try {
-        const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesUserId, valuesAuthorNumber,valuesEmail,date] });
+        const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesUserId, valuesAuthorNumber, valuesEmail, date] });
 
         if ('affectedRows' in results && results.affectedRows === 0) {
             throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
-        }else {
+        } else {
+            return results;
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+//유저인포 테이블에 인증완료정보를 수정하는 함수
+export const updateUserInfo = async (authNumber: string): Promise<updateReturnType | Error> => {
+    const query = "UPDATE user_info_table SET auth='1', auth_expired=NULL WHERE auth = ?";
+    const valuesAuthNumber = authNumber;
+
+    try {
+        const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesAuthNumber] });
+
+        if ('affectedRows' in results && results.affectedRows === 0) {
+            throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
+        } else {
             return results;
         }
     } catch (err) {
