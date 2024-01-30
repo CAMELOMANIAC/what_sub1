@@ -8,9 +8,8 @@ import { checkAuth, updateUserInfo} from '../../../utils/api/users';
 //3. 인증메일 발송-----여기까지 register 엔드포인트로 구현
 
 //4. 인증번호와 만료기한 체크-----여기서부터는 authCheck 엔드포인트에서
-//5. 인증성공시 DB수정
-//6. 실패시 생성되었던 DB제거(인증번호를 기준으로)
-//7. 로그인
+//5. 실패시 생성되었던 DB제거(인증번호를 기준으로)
+//6. 인증성공시 DB수정
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'PUT') {
@@ -21,14 +20,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 throw new Error('잘못된 요청값 입니다.');
             }
 
+            //4. 인증번호와 만료기한 체크
             const response = await checkAuth(authNumber);
             if (response instanceof Error) {
                 throw response
             }
+            //5. 실패시 생성되었던 DB제거(인증번호를 기준으로)
+            //이부분은 사이드이펙트이므로 delete메서드를 사용하지 않음(또한 이 서버,엔드포인트에서만 사용되므로 독립된 엔드포인트를 생성하지 않음)
             if (!response){
+                
                 throw new Error('유효기간이 만료 되었습니다.')
             }
-
+            //6. 인증성공시 DB수정
             const result = await updateUserInfo(authNumber);
             if (result instanceof Error) {
                 throw result

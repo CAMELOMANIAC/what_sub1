@@ -148,7 +148,7 @@ export const checkAuthComplete = async (userId: string): Promise<true | Error> =
             throw new Error('적합한 결과가 없음')
         } else if (results instanceof Error) {
             return results
-        } else if (results[0].auth === '1'){
+        } else if (results[0].auth === '1') {
             return true
         } else {
             throw new Error('인증을 완료하지 않은 회원입니다.')
@@ -235,6 +235,56 @@ export const updateUserInfo = async (authNumber: string): Promise<updateReturnTy
             throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
         } else {
             return results;
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+//만료된 인증번호를 가진 컬럼을 찾는 함수
+export const getExpiredAuth = async (): Promise<Array<{ auth: string }> | Error> => {
+    const query = "SELECT auth FROM user_info_table WHERE auth_expired < ?;";
+    const nowDate = new Date();
+
+    try {
+        const results: Array<{ auth: string }> | Error = await executeQuery({ query: query, values: [nowDate] });
+
+        if (Array.isArray(results) && results.length < 0) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            if (results instanceof Error) {
+                return results
+            } else {
+                return results
+            }
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+//유저인포 제거함수
+export const deleteUserInfo = async (authNumberArray: Array<{ auth: string }>): Promise<boolean | Error> => {
+    const query = "DELETE FROM user_info_table WHERE auth = ?;";
+    const authArray = authNumberArray.map(item => item.auth)
+    const valuesAuthArray = authArray.map((item, index) => {
+        if (index === 0) {
+            return item
+        } else {
+            return ' OR auth = ' + item
+        }
+    });
+    const valuesAuth = valuesAuthArray.toString()
+
+    try {
+        const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesAuth] });
+
+        if ('affectedRows' in results && results.affectedRows === 0) {
+            return true
+        } else if (results instanceof Error) {
+            return results
+        } else {
+            return false;
         }
     } catch (err) {
         return err
