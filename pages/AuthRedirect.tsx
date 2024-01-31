@@ -22,7 +22,7 @@ const AuthRedirect = () => {
                     case 408:
                         setNotice('유효기간이 만료 되었습니다.'); break;
                     case 204:
-                        setNotice('적합한 결과가 없습니다.'); break;
+                        setNotice('인증번호가 잘못되었거나 유효기간이 만료되어 사용할 수 없습니다'); break;
                     default:
                         setNotice('인증이 실패 했습니다.'); break;
                     }

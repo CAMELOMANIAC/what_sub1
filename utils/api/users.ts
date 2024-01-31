@@ -143,7 +143,7 @@ export const checkAuthComplete = async (userId: string): Promise<true | Error> =
 
     try {
         const results: { auth: string }[] | Error = await executeQuery({ query: query, values: [valuesUserId] });
-        console.log(results)
+        
         if (Array.isArray(results) && results.length < 1) {
             throw new Error('적합한 결과가 없음')
         } else if (results instanceof Error) {
@@ -242,29 +242,50 @@ export const updateUserInfo = async (authNumber: string): Promise<updateReturnTy
 }
 
 //만료된 인증번호를 가진 컬럼을 찾는 함수
-export const getExpiredAuth = async (): Promise<Array<{ auth: string }> | Error> => {
-    const query = "SELECT auth FROM user_info_table WHERE auth_expired < ?;";
-    const nowDate = new Date();
-
-    try {
-        const results: Array<{ auth: string }> | Error = await executeQuery({ query: query, values: [nowDate] });
-
-        if (Array.isArray(results) && results.length < 0) {
-            throw new Error('적합한 결과가 없음')
-        } else {
-            if (results instanceof Error) {
-                return results
+export const getExpiredAuth = async (authNumber?: string): Promise<Array<{ auth: string, user_table_user_id: string }> | Error> => {
+    if (authNumber) {
+        const query = "SELECT auth, user_table_user_id FROM user_info_table WHERE auth = ?;";
+        const valuesAuthNumber = authNumber;
+        
+        try {
+            const results: Array<{ auth: string, user_table_user_id: string }> | Error = await executeQuery({ query: query, values: [valuesAuthNumber] });
+            
+            if (Array.isArray(results) && results.length < 0) {
+                throw new Error('적합한 결과가 없음')
             } else {
-                return results
+                if (results instanceof Error) {
+                    return results
+                } else {
+                    return results
+                }
             }
+        } catch (err) {
+            return err
         }
-    } catch (err) {
-        return err
+    } else {
+        const query = "SELECT auth, user_table_user_id FROM user_info_table WHERE auth_expired < ?;";
+        const nowDate = new Date();
+
+        try {
+            const results: Array<{ auth: string, user_table_user_id: string }> | Error = await executeQuery({ query: query, values: [nowDate] });
+
+            if (Array.isArray(results) && results.length < 0) {
+                throw new Error('적합한 결과가 없음')
+            } else {
+                if (results instanceof Error) {
+                    return results
+                } else {
+                    return results
+                }
+            }
+        } catch (err) {
+            return err
+        }
     }
 }
 
 //유저인포 제거함수
-export const deleteUserInfo = async (authNumberArray: Array<{ auth: string }>): Promise<boolean | Error> => {
+export const deleteUserInfo = async (authNumberArray: Array<{ auth: string, user_table_user_id: string }>): Promise<boolean | Error> => {
     const query = "DELETE FROM user_info_table WHERE auth = ?;";
     const authArray = authNumberArray.map(item => item.auth)
     const valuesAuthArray = authArray.map((item, index) => {
@@ -278,6 +299,34 @@ export const deleteUserInfo = async (authNumberArray: Array<{ auth: string }>): 
 
     try {
         const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesAuth] });
+
+        if ('affectedRows' in results && results.affectedRows === 0) {
+            return true
+        } else if (results instanceof Error) {
+            return results
+        } else {
+            return false;
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+//유저 제거함수
+export const deleteUser = async (authNumberArray: Array<{ auth: string, user_table_user_id: string }>): Promise<boolean | Error> => {
+    const query = "DELETE FROM user_table WHERE user_id = ?;";
+    const userIdArray = authNumberArray.map(item => item.user_table_user_id)
+    const valuesUserIdArray = userIdArray.map((item, index) => {
+        if (index === 0) {
+            return item
+        } else {
+            return ' OR user_id = ' + item
+        }
+    });
+    const valuesUserId = valuesUserIdArray.toString()
+
+    try {
+        const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesUserId] });
 
         if ('affectedRows' in results && results.affectedRows === 0) {
             return true

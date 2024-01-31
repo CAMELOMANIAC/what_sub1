@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { sendMail } from '../../../lib/mail';
 import { isValidEmail, isValidId, isValidPassword } from '../../../utils/publicFunction';
-import { getEmail, getUserData, insertUser, insertUserInfo } from '../../../utils/api/users';
+import { deleteUser, deleteUserInfo, getEmail, getExpiredAuth, getUserData, insertUser, insertUserInfo } from '../../../utils/api/users';
 import { v4 as uuidv4 } from 'uuid';
 
 //회원가입 로직
@@ -40,13 +40,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 html: `<a href='${process.env.URL + '/AuthRedirect?authNumber=' + authNumber}'>인증 완료하기.</a>`
             };
 
+            //0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한을 기준으로)
+            const expiredArray = await getExpiredAuth();
+            if (expiredArray instanceof Error === false) {
+                const deleteUserInfoResponse = await deleteUserInfo(expiredArray);
+                const deleteUserResponse = await deleteUser(expiredArray);
+                if (deleteUserInfoResponse instanceof Error || deleteUserResponse instanceof Error) {
+                    console.log(deleteUserInfoResponse,deleteUserResponse)//제거는 사이드 이펙트이므로 메인스트림은 중지시키면 
+                }
+            }
+
             //1.아이디, 이메일 중복체크
             const checkUserId = await getUserData(id);
             if (checkUserId instanceof Error) {
                 if (checkUserId.message !== '적합한 결과가 없음') {
                     throw checkUserId;
                 }
-            }else{
+            } else {
                 throw new Error('이미 요청값이 존재합니다.');
             }
 
@@ -55,7 +65,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 if (checkUserEmail.message !== '적합한 결과가 없음') {
                     throw checkUserEmail
                 }
-            }else{
+            } else {
                 throw new Error('이미 요청값이 존재합니다.');
             }
 

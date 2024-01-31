@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { checkAuth, updateUserInfo} from '../../../utils/api/users';
+import { checkAuth, deleteUser, deleteUserInfo, getExpiredAuth, updateUserInfo } from '../../../utils/api/users';
 
 //회원가입 로직
 //0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한을 기준으로)
@@ -27,8 +27,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
             //5. 실패시 생성되었던 DB제거(인증번호를 기준으로)
             //이부분은 사이드이펙트이므로 delete메서드를 사용하지 않음(또한 이 서버,엔드포인트에서만 사용되므로 독립된 엔드포인트를 생성하지 않음)
-            if (!response){
-                
+            if (!response) {
+                const expiredArray = await getExpiredAuth(authNumber);
+                if (expiredArray instanceof Error === false) {
+                    const deleteUserInfoResponse = await deleteUserInfo(expiredArray);
+                    const deleteUserResponse = await deleteUser(expiredArray);
+                    if (deleteUserInfoResponse instanceof Error || deleteUserResponse instanceof Error) {
+                        console.log(deleteUserInfoResponse,deleteUserResponse)//제거는 사이드 이펙트이므로 메인스트림은 중지시키면 안됨
+                    }
+                }
                 throw new Error('유효기간이 만료 되었습니다.')
             }
             //6. 인증성공시 DB수정

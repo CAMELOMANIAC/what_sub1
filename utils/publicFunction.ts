@@ -34,16 +34,19 @@ export const getCookieValue = (key) => {
     return result;
 }
 
+//정규식으로 아이디 유효성 검사
 export const isValidId = (id) => {
     const regex = /^[a-zA-Z0-9]{1,10}$/;
     return regex.test(id);
 }
 
+//정규식으로 패스워드 유효성 검사
 export const isValidPassword = (password) => {
     const regex = /^.{1,15}$/;
     return regex.test(password);
 }
 
+//정규식으로 이메일 유효성 검사
 export const isValidEmail = (email) => {
     const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;// eslint-disable-line no-useless-escape
     return regex.test(String(email).toLowerCase());
