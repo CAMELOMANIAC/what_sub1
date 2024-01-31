@@ -32,19 +32,22 @@ const GlobalNav = () => {
     const dispatch = useDispatch();
     //새로고침시에 쿠키값을 가져와서 로그인여부를 판단하고 전역상태로 저장
     useEffect(() => {
-            if (userName === '') {
-                dispatch(actionLoginChangeId(getCookieValue('user')))
-            }else{
-                //레시피 좋아요 정보를 전역 상태값으로 저장
-                loadRecipeLike().then(data => {
-                    dispatch(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
-                })
-                //메뉴좋아요 정보를 전역 상태값으로 저장
-                loadMenuLike().then(data => {
-                    dispatch(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
-                })
-            }
+        if (userName === '') {
+            dispatch(actionLoginChangeId(getCookieValue('user')))
+        }
     }, [])
+    useEffect(() => {
+        if (userName !== '') {
+            //레시피 좋아요 정보를 전역 상태값으로 저장
+            loadRecipeLike().then(data => {
+                dispatch(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
+            })
+            //메뉴좋아요 정보를 전역 상태값으로 저장
+            loadMenuLike().then(data => {
+                dispatch(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
+            })
+        }
+    }, [userName])
 
     return (
         <div className="w-full fixed left-0 bg-white z-20 border-gray-200 border-b mb-auto flex align-middle min-w-[500px]">
