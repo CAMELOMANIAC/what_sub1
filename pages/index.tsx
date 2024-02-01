@@ -5,6 +5,8 @@ import { recipeType } from '../interfaces/api/recipes';
 import Card from '../components/Card';
 import { styled } from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { getCookieValue } from '../utils/publicFunction';
 
 const CarouselContainer = styled.div`
     &::-webkit-scrollbar {
@@ -33,7 +35,40 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 	const cardRefs = useRef<HTMLDivElement[]>([]);
 	const crouselRef = useRef<HTMLDivElement>(null);
 	const [isMoving, setIsMoving] = useState<boolean>(true);
+	const router = useRouter();
 
+	//카카오 로그인 리다이렉트 절차
+	useEffect(() => {
+		const kakaoCode = getCookieValue('kakaoCode')
+		const kakaoIdLogin = async () => {
+			try {
+				const response = await fetch(`/api/users/socialKakaoLogin?kakaoCode=${kakaoCode}`)
+				switch (response.status) {
+					case 204: throw new Error('회원이 존재하지 않습니다 회원가입을 페이지로 이동합니다.');
+					case 400: throw new Error('잘못된 요청입니다.');
+					default: throw new Error(String(response.status));
+				}
+			} catch (error) {
+				return error
+			}
+		}
+
+		if (kakaoCode) {
+			try {
+				const login = kakaoIdLogin();
+				login.then(res => {
+					if (res instanceof Error && res.message === '회원이 존재하지 않습니다 회원가입을 페이지로 이동합니다.') {
+						alert(res.message)
+						router.push('/Register')
+					}
+				})
+			} catch (error) {
+				console.log(error)
+			}
+		}
+	}, [router.isReady])
+
+	//캐러셀
 	useEffect(() => {
 		let animationId;
 
@@ -60,7 +95,6 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 
 	useEffect(() => {
 		cardRefs[currentItem].scrollIntoView({ behavior: 'smooth', inline: 'start' })
-		console.log(currentItem)
 	}, [currentItem])
 
 	//setTimeout변수를 저장한 타이머 변수가 렌더링시 매번 초기화되어서 (상태값을 변경하니까 변수들은 초기화됨)

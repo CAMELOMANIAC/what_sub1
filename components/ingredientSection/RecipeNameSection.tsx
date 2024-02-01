@@ -42,7 +42,7 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
     useEffect(() => {
         const tagSearch = async () => {
             try {
-                const result = await fetch(`/api/tag?tag=${encodeURIComponent(tagInput)}`)
+                const result = await fetch(`/api/recipes/tag?tag=${encodeURIComponent(tagInput)}`)
                 if (result.status === 200) {
                     const data = await result.json();
                     setTagData(data.map(item => item.tag_name));
@@ -62,7 +62,7 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
     useEffect(() => {
         const tagFirstSearch = async () => {
             try {
-                const res = await fetch(`/api/tag?param=${encodeURIComponent(param!)}`);
+                const res = await fetch(`/api/recipes/tag?param=${encodeURIComponent(param!)}`);
                 if (res.status === 200) {
                     const data = await res.json();
                     setTagData(data.map(item => item.tag_name));

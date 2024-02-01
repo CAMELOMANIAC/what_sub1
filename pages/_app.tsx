@@ -39,7 +39,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         case '/AddRecipe': setDestination('레시피 작성 페이지'); break;
         case '/Menus': setDestination('메뉴 페이지'); break;
         case '/Recipes': setDestination('레시피 페이지'); break;
-        default: setDestination('페이지 이름 정의 안됨'); break;
+        case '/Register': setDestination('회원가입 페이지'); break;
+        default: setDestination('새로운 페이지'); break;
       }
     }
 

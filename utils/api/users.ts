@@ -143,7 +143,7 @@ export const checkAuthComplete = async (userId: string): Promise<true | Error> =
 
     try {
         const results: { auth: string }[] | Error = await executeQuery({ query: query, values: [valuesUserId] });
-        
+
         if (Array.isArray(results) && results.length < 1) {
             throw new Error('적합한 결과가 없음')
         } else if (results instanceof Error) {
@@ -246,10 +246,10 @@ export const getExpiredAuth = async (authNumber?: string): Promise<Array<{ auth:
     if (authNumber) {
         const query = "SELECT auth, user_table_user_id FROM user_info_table WHERE auth = ?;";
         const valuesAuthNumber = authNumber;
-        
+
         try {
             const results: Array<{ auth: string, user_table_user_id: string }> | Error = await executeQuery({ query: query, values: [valuesAuthNumber] });
-            
+
             if (Array.isArray(results) && results.length < 0) {
                 throw new Error('적합한 결과가 없음')
             } else {
@@ -284,7 +284,7 @@ export const getExpiredAuth = async (authNumber?: string): Promise<Array<{ auth:
     }
 }
 
-//유저인포 제거함수
+//유저인포 여러명 제거
 export const deleteUserInfo = async (authNumberArray: Array<{ auth: string, user_table_user_id: string }>): Promise<boolean | Error> => {
     const query = "DELETE FROM user_info_table WHERE auth = ?;";
     const authArray = authNumberArray.map(item => item.auth)
@@ -312,7 +312,7 @@ export const deleteUserInfo = async (authNumberArray: Array<{ auth: string, user
     }
 }
 
-//유저 제거함수
+//유저 여러명 제거
 export const deleteUser = async (authNumberArray: Array<{ auth: string, user_table_user_id: string }>): Promise<boolean | Error> => {
     const query = "DELETE FROM user_table WHERE user_id = ?;";
     const userIdArray = authNumberArray.map(item => item.user_table_user_id)
@@ -337,5 +337,23 @@ export const deleteUser = async (authNumberArray: Array<{ auth: string, user_tab
         }
     } catch (err) {
         return err
+    }
+}
+
+//사용자 카카오 식별번호가 존재하는지 찾기
+export const checkKakaoId = async (kakaoId: string): Promise<string | Error> => {
+
+    const query = `SELECT user_table_user_id FROM user_info_table WHERE user_kakao = ?`
+    const valuesKakaoId = kakaoId;
+
+    try {
+        const results: string | Error = await executeQuery({ query: query, values: [valuesKakaoId] });
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results[0].user_table_user_id;
+        }
+    } catch (err) {
+        return err;
     }
 }

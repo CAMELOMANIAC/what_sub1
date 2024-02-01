@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (typeof userId === 'string') {
                 const sessionId = await updateSession(userId);
                 if (sessionId instanceof Error) {
-                    throw userId
+                    throw sessionId
                 }
                 res.setHeader('Set-Cookie', [
                     `session=${sessionId}; Path=/; HttpOnly; SameSite=Lax`,

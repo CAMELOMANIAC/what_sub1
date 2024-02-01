@@ -15,7 +15,7 @@ export const loadMenuLike = async () => {
     return await response.json();
 }
 
-//id쿠키에서 id값 가져오는 함수
+//쿠키에서 id값 가져오는 함수
 export const getCookieValue = (key) => {
     const cookieKey = key + "=";
     let result = "";
@@ -32,6 +32,11 @@ export const getCookieValue = (key) => {
         }
     }
     return result;
+}
+
+//쿠키제거 함수
+export const deleteCookie = (cookieName) => {
+    document.cookie = cookieName + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
 }
 
 //정규식으로 아이디 유효성 검사
