@@ -1,18 +1,26 @@
 //레시피 좋아요 목록을 통신해서 반환하는 함수
 export const loadRecipeLike = async () => {
-    const response = await fetch('/api/users/likeRecipes', {
-        method: 'GET',
-        credentials: 'include',
-    });
-    return await response.json();
+    try {
+        const response = await fetch('/api/users/likeRecipes', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        return await response.json();
+    } catch (error) {
+        return [];
+    }
 }
 //메뉴 좋아요 목록을 통신해서 반환하는 함수
 export const loadMenuLike = async () => {
-    const response = await fetch('/api/users/likeMenus', {
-        method: 'GET',
-        credentials: 'include',
-    });
-    return await response.json();
+    try {
+        const response = await fetch('/api/users/likeMenus', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        return await response.json();
+    } catch (error) {
+        return [];
+    }
 }
 
 //쿠키에서 id값 가져오는 함수

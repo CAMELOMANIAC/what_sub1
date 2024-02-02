@@ -223,6 +223,25 @@ export const insertUserInfo = async (userId: string, authorNumber: string, email
     }
 }
 
+//유저 인포 테이블에 카카오 유저 정보를 추가하는 함수
+export const insertKakaoUserInfo = async (userId: string, kakaoCode: string): Promise<updateReturnType | Error> => {
+    const query = 'INSERT INTO user_info_table (user_table_user_id, user_kakao, auth) VALUES (?, ?, 1)';
+    const valuesUserId = userId;
+    const valuesKakaoCode = kakaoCode;
+
+    try {
+        const results: updateReturnType | Error = await executeQuery({ query: query, values: [valuesUserId, valuesKakaoCode] });
+
+        if ('affectedRows' in results && results.affectedRows === 0) {
+            throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
+        } else {
+            return results;
+        }
+    } catch (err) {
+        return err
+    }
+}
+
 //유저인포 테이블에 인증완료정보를 수정하는 함수
 export const updateUserInfo = async (authNumber: string): Promise<updateReturnType | Error> => {
     const query = "UPDATE user_info_table SET auth='1', auth_expired=NULL WHERE auth = ?";

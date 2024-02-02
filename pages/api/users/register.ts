@@ -46,7 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const deleteUserInfoResponse = await deleteUserInfo(expiredArray);
                 const deleteUserResponse = await deleteUser(expiredArray);
                 if (deleteUserInfoResponse instanceof Error || deleteUserResponse instanceof Error) {
-                    console.log(deleteUserInfoResponse,deleteUserResponse)//제거는 사이드 이펙트이므로 메인스트림은 중지시키면 
+                    console.log(deleteUserInfoResponse,deleteUserResponse)//제거는 사이드 이펙트이므로 메인스트림은 중지시키면 안됨
                 }
             }
 

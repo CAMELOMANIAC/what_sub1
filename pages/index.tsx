@@ -44,7 +44,7 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 			try {
 				const response = await fetch(`/api/users/socialKakaoLogin?kakaoCode=${kakaoCode}`)
 				switch (response.status) {
-					case 204: throw new Error('회원이 존재하지 않습니다 회원가입을 페이지로 이동합니다.');
+					case 204: throw new Error('회원이 존재하지 않습니다. 회원가입 페이지로 이동합니다.');
 					case 400: throw new Error('잘못된 요청입니다.');
 					default: throw new Error(String(response.status));
 				}
@@ -57,7 +57,7 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 			try {
 				const login = kakaoIdLogin();
 				login.then(res => {
-					if (res instanceof Error && res.message === '회원이 존재하지 않습니다 회원가입을 페이지로 이동합니다.') {
+					if (res instanceof Error && res.message === '회원이 존재하지 않습니다. 회원가입 페이지로 이동합니다.') {
 						alert(res.message)
 						router.push('/Register')
 					}

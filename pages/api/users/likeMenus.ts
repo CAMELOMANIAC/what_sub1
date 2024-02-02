@@ -10,6 +10,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             if (req.headers.cookie) {
                 const userId = await checkSession(req.headers.cookie);
+                console.log(userId)
+                console.log(typeof userId === 'string')
 
                 if (typeof userId === 'string') {
                     const results = await getMenuLike(userId)

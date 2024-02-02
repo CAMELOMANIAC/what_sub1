@@ -7,7 +7,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'GET') {
         try {
             if (!kakaoCode) {
-                throw new Error('쿠키 정보가 없습니다.')
+                throw new Error('잘못된 요청값 입니다.')
             }
             if (typeof kakaoCode !== 'string') {
                 throw new Error('잘못된 요청값 입니다.')
