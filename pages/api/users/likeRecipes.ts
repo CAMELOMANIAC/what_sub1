@@ -6,6 +6,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'GET') {
         //사용자가한 레시피 좋아요 정보 읽어오기
         try {
+            console.log(req.headers.cookie)
             if (req.headers.cookie) {
                 const userId = await checkSession(req.headers.cookie);
 

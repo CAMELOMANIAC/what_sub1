@@ -9,6 +9,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             if (req.headers.cookie) {
                 const userId = await checkSession(req.headers.cookie);
+                if (userId instanceof Error) {
+                    throw userId
+                }
 
                 res.status(200).json(userId)
             } else {
