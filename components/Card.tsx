@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { recipeType } from '../interfaces/api/recipes';
 import CardModal from './CardModal/CardModal';
-import { useRecipeLike } from '../utils/card';
+import { useRecipeLike } from '../utils/recipesLikeHook';
 import { breadNutrientArray, cheeseNutrientArray, ingredientsArray, menuNutrientArray, pickleArray, sauceNutrientArray, vegetableArray } from '../utils/menuArray';
 
 type CardProps = {

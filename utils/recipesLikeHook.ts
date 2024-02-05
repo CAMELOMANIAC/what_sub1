@@ -11,7 +11,6 @@ export const useRecipeLike = (recipe:recipeType) => {
     const dispatch = useDispatch();
     
     const recipeLikeHandler = async () => {
-
         const insertRecipeLike = async (recipeName: string) => {
             const response = await fetch('/api/recipes/like', {
                 method: 'PUT',
@@ -45,3 +44,5 @@ export const useRecipeLike = (recipe:recipeType) => {
         recipeLikeHandler
     }
 }
+
+export default useRecipeLike;
