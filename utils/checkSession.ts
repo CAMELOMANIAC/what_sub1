@@ -38,7 +38,6 @@ export async function checkSession(cookie:string) {
         }
         return null;
     } catch (error) {
-        console.error("Error fetching session:", error);
         return null;
     }
 }
