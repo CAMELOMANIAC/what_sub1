@@ -68,12 +68,10 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 						dispatch(actionLoginChangeId(getCookieValue('user')))
 						//레시피 좋아요 정보를 전역 상태값으로 저장
 						loadRecipeLike().then(data => {
-							if (data.response === 200)
 								dispatch(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
 						})
 						//메뉴좋아요 정보를 전역 상태값으로 저장
 						loadMenuLike().then(data => {
-							if (data.response === 200)
 								dispatch(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
 						})
 					}

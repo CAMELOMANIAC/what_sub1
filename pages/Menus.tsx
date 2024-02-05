@@ -15,7 +15,6 @@ export async function getServerSideProps({ req }) {
         return result.json();
     }
     const totalMenuInfo = await loadTotalMenuInfo();
-    console.log(sessionCheck)
     return {
         props: {
             sessionCheck,

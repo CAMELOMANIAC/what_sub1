@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
 import { TbAlertCircle } from 'react-icons/tb';
 import { breadNutrientArray, cheeseNutrientArray, menuNutrientArray, sauceNutrientArray } from '../../utils/menuArray';
-import { useRecipeLike } from '../../utils/card';
+import { useRecipeLike } from '../../utils/recipesLikeHook';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { MemoizedChart } from '../IngredientRadarChart';

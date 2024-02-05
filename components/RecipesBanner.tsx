@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { PiHeartStraight } from 'react-icons/pi';
+import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { HiFilter, HiAdjustments } from 'react-icons/hi';
 import Link from 'next/link';
@@ -17,6 +17,7 @@ import { totalMenuInfoType } from '../interfaces/api/menus';
 import { GiKetchup, GiMeat, GiTomato } from 'react-icons/gi';
 import { BiSolidBaguette, BiSolidCheese } from 'react-icons/bi';
 import { MdOutdoorGrill } from 'react-icons/md';
+import useMenuLike from '../utils/menuLikeHook';
 
 export const StyleTag = styled.button`
     height:100%;
@@ -126,15 +127,16 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
 
     if (router.isReady) {
         const { param } = router.query;
-        selected = menuArray.filter((item) => (item.name == String(param).replaceAll('+', ' ')));//쿼리로 값을 전달할때 뛰어쓰기는 +기호로 치환되므로 적절히 조치해야함
+        selected = menuArray.filter((item) => (item.name == String(param).replaceAll('+', ' ')));
     }
+
     //쿼리스트링 변경시
     useEffect(() => {
         if (router.isReady) {
             const { param } = router.query;
             if (router.isReady && selected.length !== 0) {
                 loadIngredientsBread(encodeURIComponent(String(param))).then(result => {
-                    if (result instanceof Error){
+                    if (result instanceof Error) {
                         return
                     }
                     let parsedResult = result.map(item => item.recipe_ingredients);
@@ -145,7 +147,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     setBreadTopOccurrence(parsedResult);
                 });
                 loadIngredientsSauce(encodeURIComponent(String(param))).then(result => {
-                    if (result instanceof Error){
+                    if (result instanceof Error) {
                         return
                     }
                     let parsedResult = result.map(item => item.combined_ingredients.split(', '));
@@ -156,16 +158,21 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     setSauceTopOccurrence(parsedResult);
                 });
                 loadMenuInfo(encodeURIComponent(String(param))).then(result => {
-                    if (result instanceof Error){
+                    if (result instanceof Error) {
                         return
                     }
                     setMenuLike(result[0].like_count);
                     setMenuRecipe(result[0].recipe_count);
                     setRecipeLike(result[0].recipe_like_count);
                 });
+                setSelectedName(selected[0]?.name);
             }
         }
     }, [router.query])
+
+
+    const [selectedName, setSelectedName] = useState('');
+    const { isLike, menuLikeHandler } = useMenuLike(selectedName);
     //next.js는 서바사이드와 클라이언트사이드의 절충이라서 리액트처럼 새로고침 한다고 파라메터객체가 클라이언트에서 바로 새로고침 되지않고 서버에서 값을 다시 받아야 새로고쳐진다
     //(다른 서버사이드렌더링 프레임워크는 그냥 통째로 정보를 전송하니까 에러가 아니라 그냥 빈화면을 보여주겠지만 next.js는 일단 서버쪽을 제외한 화면을 먼저 보여주려하니까 에러발생)
     //서버가 값을 전달하기 전까지는 일단 param이 비어있는 상태이므로 그 사이에 js는 param 값이 없다고 에러를 띄우게된다. param값을 사용하는 요소들은 값을 받고나서 렌더링 할수있도록 조치해줘야한다
@@ -183,7 +190,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                             <div className='whitespace-pre-line'>
                                 <div className='flex items-center m-2'>
                                     <h1 className='font-bold text-3xl inline text-black pb-4'>{selected[0].name}</h1>
-                                    <button className='flex items-center text-xl'><PiHeartStraight className='inline-block' /></button>
+                                    <button className='flex items-center text-xl' onClick={menuLikeHandler}>
+                                        {isLike ? <PiHeartStraightFill className='inline-block' /> : <PiHeartStraight className='inline-block' />}
+                                    </button>
                                 </div>
                                 <div className='flex flex-row text-sm m-2'>
                                     <div className='border-l w-28 px-3'>
