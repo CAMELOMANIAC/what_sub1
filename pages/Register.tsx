@@ -66,7 +66,6 @@ const Register = () => {
             case 409: alert('이미 존재하는 아이디 또는 이메일입니다'); break;
             default: alert('회원가입에 실패했습니다'); break;
         }
-        deleteCookie('kakaoCode')
     }
 
     const handleKakaoAccount = () => {
@@ -76,6 +75,7 @@ const Register = () => {
     useEffect(() => {
         setKakaoCode(getCookieValue('kakaoCode'))
         //사용 후 kakaoCode 쿠키 제거 필요(인덱스 페이지에서 계속 쿠키여부를 확인함)
+        deleteCookie('kakaoCode')
     }, [])
 
     return (

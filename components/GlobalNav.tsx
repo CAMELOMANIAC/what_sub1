@@ -7,8 +7,8 @@ import { FaUserCircle } from 'react-icons/fa';
 import LoginModal from "./LoginModal";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../redux/store";
-import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
-import { getCookieValue, loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
+import { actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
+import { loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
 
 const GlobalNav = () => {
     const router = useRouter()
@@ -30,23 +30,17 @@ const GlobalNav = () => {
     }, [router.events])
 
     const dispatch = useDispatch();
-    //새로고침시에 쿠키값을 가져와서 로그인여부를 판단하고 전역상태로 저장
     useEffect(() => {
-        if (userName === '') {
-            dispatch(actionLoginChangeId(getCookieValue('user')))
-        }
-    }, [])
-    useEffect(() => {
-        if (userName !== '') {
-            //레시피 좋아요 정보를 전역 상태값으로 저장
-            loadRecipeLike().then(data => {
+        //레시피 좋아요 정보를 전역 상태값으로 저장
+        loadRecipeLike().then(data => {
+            if (data.response === 200)
                 dispatch(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
-            })
-            //메뉴좋아요 정보를 전역 상태값으로 저장
-            loadMenuLike().then(data => {
+        })
+        //메뉴좋아요 정보를 전역 상태값으로 저장
+        loadMenuLike().then(data => {
+            if (data.response === 200)
                 dispatch(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
-            })
-        }
+        })
     }, [userName])
 
     return (

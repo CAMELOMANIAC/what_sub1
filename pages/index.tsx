@@ -6,7 +6,9 @@ import Card from '../components/Card';
 import { styled } from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getCookieValue } from '../utils/publicFunction';
+import { getCookieValue, loadMenuLike, loadRecipeLike } from '../utils/publicFunction';
+import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
+import { useDispatch } from 'react-redux';
 
 const CarouselContainer = styled.div`
     &::-webkit-scrollbar {
@@ -36,6 +38,7 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 	const crouselRef = useRef<HTMLDivElement>(null);
 	const [isMoving, setIsMoving] = useState<boolean>(true);
 	const router = useRouter();
+	const dispatch = useDispatch();
 
 	//카카오 로그인 리다이렉트 절차
 	useEffect(() => {
@@ -46,7 +49,7 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 				switch (response.status) {
 					case 204: throw new Error('회원이 존재하지 않습니다. 회원가입 페이지로 이동합니다.');
 					case 400: throw new Error('잘못된 요청입니다.');
-					default: throw new Error(String(response.status));
+					default: throw response.status;
 				}
 			} catch (error) {
 				return error
@@ -60,6 +63,19 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 					if (res instanceof Error && res.message === '회원이 존재하지 않습니다. 회원가입 페이지로 이동합니다.') {
 						alert(res.message)
 						router.push('/Register')
+					} else if (res === 200) {
+						//새로고침시에 쿠키값을 가져와서 로그인여부를 판단하고 전역상태로 저장
+						dispatch(actionLoginChangeId(getCookieValue('user')))
+						//레시피 좋아요 정보를 전역 상태값으로 저장
+						loadRecipeLike().then(data => {
+							if (data.response === 200)
+								dispatch(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
+						})
+						//메뉴좋아요 정보를 전역 상태값으로 저장
+						loadMenuLike().then(data => {
+							if (data.response === 200)
+								dispatch(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
+						})
 					}
 				})
 			} catch (error) {
