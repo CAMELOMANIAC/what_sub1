@@ -59,16 +59,20 @@ const useMenuLike = (menuName: string) => {
             if (result.status === 200) {
                 dispatch(actionRemoveMenuLike(menuName))
                 setMenuLike(prev => prev - 1)
+            } else {
+                console.error(result)
             }
         } else {
             const result = await insertMenuLike();
             if (result.status === 200) {
                 dispatch(actionAddMenuLike(menuName))
                 setMenuLike(prev => prev + 1)
+            } else {
+                console.error(result)
             }
         }
     }
-    
+
     if (menuName) {
         return {
             isLike,
