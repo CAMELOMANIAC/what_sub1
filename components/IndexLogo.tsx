@@ -77,7 +77,7 @@ const IndexLogo = ({ prevHandler, nextHandler }: PropsType) => {
 
                     <div className='flex flex-col flex-nowrap justify-center items-center mr-6 my-2 text-5xl' onClick={() => setFocus(true)}>
                         {isFocus ?
-                            <input className='p-3 mt-3 text-lg text-center' type='text' ref={inputRef} onChange={(e) => setSearchQuery(e.currentTarget.value)} onKeyDown={searchEnterHandler}></input> :
+                            <input className='p-3 mt-3 text-lg text-center font-bold' type='text' ref={inputRef} onChange={(e) => setSearchQuery(e.currentTarget.value)} onKeyDown={searchEnterHandler}></input> :
                             <Logo />
                         }
                         <div className='font-[seoul-metro] text-gray-600 text-lg'>넌 뭐먹어?</div>

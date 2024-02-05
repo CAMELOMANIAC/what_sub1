@@ -13,16 +13,16 @@ const StyledDiv = styled.div`
     background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
 `;
 
-type propsType={
-    selected : menuArrayType,
-    sessionCheck : boolean,
+type propsType = {
+    selected: menuArrayType,
+    sessionCheck: boolean,
 }
 
-const MenusBanner = ({selected,sessionCheck} : propsType) => {
+const MenusBanner = ({ selected, sessionCheck }: propsType) => {
     const menuLikeArray = useSelector((state: RootState) => state.user.menuLikeArray)
     const [menuLike, setMenuLike] = useState<number>(0);
     const dispatch = useDispatch();
-    
+
     //메뉴선택시 메뉴 좋아요 갯수 정보 불러오는용
     useEffect(() => {
         fetch(`/api/menus/like?menuName=${selected.name}`
@@ -81,12 +81,15 @@ const MenusBanner = ({selected,sessionCheck} : propsType) => {
                     }}
                         className='font-bold rounded-full px-3 py-2 mr-2 text-black bg-yellow-500 flex justify-center items-center'>자세히 보기<IoIosArrowForward className='inline-block text-xl' />
                     </Link>
-                    {sessionCheck && <Link href={{
+                    {sessionCheck ? <Link href={{
                         pathname: '/AddRecipe',
                         query: { param: selected.name }
                     }}
                         className='font-bold rounded-full px-3 py-2 mr-2 text-white underline decoration-1 underline-offset-3 flex justify-center items-center'>레시피 작성<RiPencilFill className='inline-block text-xl' />
-                    </Link>}
+                    </Link> : 
+                    <button className='font-bold rounded-full px-3 py-2 mr-2 text-white underline decoration-1 underline-offset-3 flex justify-center items-center' onClick={()=>alert('로그인이 필요한 기능입니다')}>
+                        레시피 작성<RiPencilFill className='inline-block text-xl' />
+                    </button>}
                 </div>
             </div>
         </StyledDiv>
