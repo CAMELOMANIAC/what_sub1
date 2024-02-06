@@ -72,7 +72,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
 
     return (
         <>
-            <article className={`col-span-2 aspect-[4/3] bg-white border hover:border rounded-xl p-6 shadow-md hover:shadow-xl cursor-pointer flex flex-col hover:scale-105 transition-transform ${className}`}
+            <article className={`col-span-2 aspect-[8/7] bg-white border hover:border rounded-xl p-6 shadow-md hover:shadow-xl cursor-pointer flex flex-col hover:scale-105 transition-transform ${className}`}
                 ref={ref}
                 onClick={() => { setIsActive(true) }}>
                 <div className='flex flex-row items-center'>

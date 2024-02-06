@@ -137,10 +137,10 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 	};
 
 	return (
-		<main className=' w-full max-w-screen-xl mx-auto'>
+		<main className=' w-full max-w-screen-xl min-w-[640px] mx-auto'>
 			<IndexLogo prevHandler={prevItem} nextHandler={nextItem} />
 			<Carousel cardRefs={cardRefs} recipeArray={recipeArray} crouselRef={crouselRef}>
-				<CarouselContainer className='max-w-[100vw] pt-12 p-5 flex flex-row gap-2 overflow-x-auto' ref={crouselRef}>
+				<CarouselContainer className='w-screen max-w-screen-xl min-w-[640px] pt-12 p-5 flex flex-row gap-2 overflow-x-auto' ref={crouselRef}>
 					{recipeArray.map((recipe, index) => (
 						<Card key={index} recipe={recipe} ref={(element) => cardRefs[index] = element} className=''></Card>
 					))}

@@ -180,9 +180,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     return (
         <>
             {router.isReady && selected.length !== 0 ? (
-                <div className={`relative flex justify-center w-screen right-0 min-w-[1024px] bg-white border-gray-200 border-b`} ref={ref}>
+                <div className={`relative flex justify-center w-screen right-0 bg-white border-gray-200 border-b min-w-[640px]`} ref={ref}>
                     <Link href={'/Recipes'} className='py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-lg h-1/2' /></Link>
-                    <div className="flex flex-col justify-start pt-4 pb-10 w-[1024px] max-w-[1024px]">
+                    <div className="flex flex-col justify-start pt-4 pb-10 w-full max-w-[1024px]">
                         <div className='flex flex-row pb-5 pl-4 border-l'>
                             <div className='inline-block w-[100px] overflow-hidden relative rounded-md aspect-square'>
                                 <img src={`/images/sandwich_menu/${selected[0].name}.png`} alt={`${selected[0].name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
@@ -211,8 +211,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                             </div>
                         </div>
 
-                        <div className='grid grid-cols-2 grid-flow-row'>
-                            <div className='border-l px-4'>
+                        <div className='grid grid-cols-1 md:grid-cols-2 grid-flow-row'>
+                            <div className='md:border-l md:border-b-0 md:mb-0 px-4 col-span-1 border-b border-l-0 mb-3'>
                                 <span className=' font-bold'>추천 브레드 top3</span>
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
                                     <span className='col-span-5 text-left'>브레드</span>
@@ -234,7 +234,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     </div>
                                 ))}
                             </div>
-                            <div className='border-l px-4'>
+                            <div className='md:border-l md:border-b-0 md:mb-0 px-4 col-span-1 border-b border-l-0 mb-3'>
                                 <span className=' font-bold'>추천 소스 top3</span>
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
                                     <span className='col-span-5 text-left'>조합법</span>
@@ -265,10 +265,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     </div>
                 </div>
             ) : (
-                <div className={`relative w-screen min-w-[1024px] right-0 bg-white border-gray-200 border-b`} ref={ref}>
-                    <div className='w-[1024px] mx-auto pt-4 pb-8'>
+                <div className={`relative w-screen bg-white border-gray-200`} ref={ref}>
+                    <div className='mx-auto pt-4 pb-8 max-w-[1024px] min-w-[640px]'>
                         <div className='mb-8'>
-                            <div className='flex flex-row justify-start items-center my-2 sticky'>
+                            <div className='flex flex-row justify-start items-center my-2'>
                                 <SearchBar className='ml-0 mr-2' />
                                 <div className='relative' ref={filterRef}>
                                     <button className='relative text-green-600 text-2xl w-[42px] h-[42px] text-center align-middle flex justify-center items-center z-10'
@@ -303,11 +303,11 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                             <Link href={`/Recipes?query=허니머스타드`}><StyleTag>허니머스타드</StyleTag></Link>
                             <span className='text-sm text-gray-500'>으로 검색해보세요</span>
                         </div>
-                        <div className='grid grid-cols-2 grid-flow-row'>
-                            <div className='border-l px-4'>
+                        <div className='grid grid-cols-1 md:grid-cols-2 grid-flow-row'>
+                            <div className='md:border-l md:border-b-0 md:mb-0 px-4 col-span-1 border-b border-l-0 mb-3'>
                                 <span className=' font-bold'>추천 메뉴 top3</span>
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
-                                    <span className='col-span-5 text-left'>브레드</span>
+                                    <span className='col-span-5 text-left'>메뉴</span>
                                     <span className='col-span-2'>메뉴 좋아요</span>
                                     <span className='col-span-2'>레시피 수</span>
                                 </div>
@@ -327,7 +327,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     </div>
                                 ))}
                             </div>
-                            <div className='border-l px-4'>
+                            <div className='border-l px-4 col-span-1'>
                                 <span className=' font-bold'>추천 레시피 top3</span>
                                 <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
                                     <span className='col-span-5 text-left'>레시피 이름</span>
@@ -352,7 +352,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                 </div>
             )}
             <StyledDiv2 className='w-full h-fit'>
-                <StyledDiv className='max-w-[1024px] h-fit relative mx-auto p-2 flex flex-row items-center'>
+                <StyledDiv className='max-w-[1024px] min-w-[640px] h-fit relative mx-auto p-2 flex flex-row items-center'>
                     <p className='w-1/4 flex flex-row items-center'><HiAdjustments /> 검색결과</p>
                     <div className='flex flex-row w-full justify-end items-center text-white text-lg'>
                         {visibleItemArray.map((item) =>

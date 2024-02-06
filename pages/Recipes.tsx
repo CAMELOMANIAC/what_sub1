@@ -5,7 +5,6 @@ import RecipesBanner from '../components/RecipesBanner';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import styled from 'styled-components';
 import { recipeType } from '../interfaces/api/recipes';
 import { totalMenuInfoType } from '../interfaces/api/menus';
 import Head from 'next/head';
@@ -22,15 +21,6 @@ const loadingState: loadingType = {
     error: -1,
     end: -2
 }
-const StyledDiv = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    height: 200px;
-    background-color: #fff;
-`
 export async function getServerSideProps() {
     //보여줄 레시피 가져오기
     const loadRecommendRecipes = async () => {
@@ -176,15 +166,15 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
                 <meta name="description" content="서브웨이 조합법을 검색해서 찾아보고 각 조합 재료를 비교하면서 영양정보, 그리고 맛과 관련한 의견을 나눠보세요"/>
             </Head>
             <RecipesBanner recipeData={recipeData} menuData={menuData} sorting={sorting} setSorting={setSorting} />
-            <main className={'w-full max-w-screen-lg mx-auto pt-2'}>
-                <div className='grid grid-cols-6 grid-flow-row gap-2 min-w-[1024px]'>
+            <main className={'w-full max-w-screen-lg mx-auto p-2'}>
+                <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 grid-flow-row gap-2 max-w-[1024px]'>
                     {typeof router.query.param === 'string' && <EmptyCard></EmptyCard>}
                     {recipes.map((recipe, index) => (
                         <Card key={index} recipe={recipe} ref={lastRecipeRef}></Card>
                     ))}
-                    {loading === loadingState.pending && <StyledDiv>레시피를 불러오고 있어요</StyledDiv>}
-                    {loading === loadingState.error && <StyledDiv>레시피 불러오는 중에 문제가 발생했어요</StyledDiv>}
-                    {loading === loadingState.end && <div className='max-w-5xl h-52 flex justify-center items-center'>레시피를 모두 읽었어요</div>}
+                    {loading === loadingState.pending && <div className='col-span-2 md:col-span-4 lg:col-span-6 h-[290px] flex justify-center items-center'>레시피를 불러오고 있어요</div>}
+                    {loading === loadingState.error && <div className='col-span-2 md:col-span-4 lg:col-span-6 h-[290px] flex justify-center items-center'>레시피 불러오는 중에 문제가 발생했어요</div>}
+                    {loading === loadingState.end && <div className='col-span-2 md:col-span-4 lg:col-span-6 h-[290px] flex justify-center items-center'>레시피를 모두 읽었어요</div>}
                 </div>
             </main>
         </>

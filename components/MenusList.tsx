@@ -79,7 +79,7 @@ const MenusList = ({ setSelected }: propsType) => {
     }, [order]);
 
     return (
-        <div className="col-span-4 border bg-white relative w-full divide-y text-sm">
+        <div className="col-span-6 md:col-span-4 border bg-white relative w-full divide-y text-sm">
             {/*위쪽 라벨 */}
             <div className='flex items-center bg-slate-100 text-gray-400'>
                 <span className="inline-block w-[10%] text-center">순위</span>
