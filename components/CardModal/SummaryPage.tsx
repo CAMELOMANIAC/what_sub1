@@ -40,7 +40,7 @@ const SummaryPage = ({ recipe, className }: props) => {
                 const result: replyType[] = await response.json();
                 return result;
             } else {
-                console.log('댓글없음')
+                console.log(response)
             }
         } catch (error) {
             console.error(error);

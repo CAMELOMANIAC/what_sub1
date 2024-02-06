@@ -34,7 +34,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const results: recipeType[] | Error = await getRecipes({ searchQuery: recipeName, offset: Number(offset), limit: Number(limit), filter, sort });
                 
                 if (results instanceof Error) {
-                    console.log(results)
                     throw results
                 } else {
                     res.status(200).json(results);
