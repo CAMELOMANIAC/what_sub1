@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { deleteCookie, getCookieValue } from '../utils/publicFunction';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 const Register = () => {
     const router = useRouter();
@@ -79,26 +80,33 @@ const Register = () => {
     }, [])
 
     return (
-        <div className='w-full h-screen flex flex-col my-auto justify-center items-center'>
-            {kakaoCode === '' ?
-                <>
-                    <input className='border-2' onChange={handleChangeId} placeholder='아이디'></input>
-                    <input className='border-2' onChange={handleChangePwd} placeholder='비밀번호'></input>
-                    <input className='border-2' onChange={handleChangeEmail} placeholder='이메일'></input>
-                    <button onClick={() => handleRegister()}>회원가입</button>
-                    <button onClick={() => handleKakaoAccount()}>카카오 계정으로 회원가입</button>
-                </>
-                :
-                <>{kakaoCode}
-                    <p>카카오 계정으로 회원 가입시 메일 인증 없이 회원가입이 가능하며</p>
-                    <p>로그인 시 아이디, 비밀번호를 입력하지 않고 카카오 계정으로 즉시 로그인 할 수 있습니다.</p>
-                    <input className='border-2' onChange={handleChangeId} placeholder='아이디'></input>
-                    <input className='border-2' onChange={handleChangePwd} placeholder='비밀번호'></input>
-                    <button onClick={() => handleKakaoRegister()}>회원가입</button>
-                    <button onClick={() => setKakaoCode('')}>일반 회원가입으로 전환</button>
-                </>
-            }
-        </div>
+        <>
+            <Head>
+                <title>WhatSub : 회원가입</title>
+                <meta name="robots" content="noindex"/>
+                <meta name="description" content="WhatSub 회원가입 페이지 입니다."/>
+            </Head>
+            <div className='w-full h-screen flex flex-col my-auto justify-center items-center'>
+                {kakaoCode === '' ?
+                    <>
+                        <input className='border-2' onChange={handleChangeId} placeholder='아이디'></input>
+                        <input className='border-2' onChange={handleChangePwd} placeholder='비밀번호'></input>
+                        <input className='border-2' onChange={handleChangeEmail} placeholder='이메일'></input>
+                        <button onClick={() => handleRegister()}>회원가입</button>
+                        <button onClick={() => handleKakaoAccount()}>카카오 계정으로 회원가입</button>
+                    </>
+                    :
+                    <>{kakaoCode}
+                        <p>카카오 계정으로 회원 가입시 메일 인증 없이 회원가입이 가능하며</p>
+                        <p>로그인 시 아이디, 비밀번호를 입력하지 않고 카카오 계정으로 즉시 로그인 할 수 있습니다.</p>
+                        <input className='border-2' onChange={handleChangeId} placeholder='아이디'></input>
+                        <input className='border-2' onChange={handleChangePwd} placeholder='비밀번호'></input>
+                        <button onClick={() => handleKakaoRegister()}>회원가입</button>
+                        <button onClick={() => setKakaoCode('')}>일반 회원가입으로 전환</button>
+                    </>
+                }
+            </div>
+        </>
     );
 };
 

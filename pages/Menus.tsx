@@ -5,6 +5,7 @@ import { totalMenuInfoType } from '../interfaces/api/menus';
 import MenusBanner from '../components/MenusBanner';
 import MenusList from '../components/MenusList';
 import MenusGrid from '../components/MenusGrid';
+import Head from 'next/head';
 
 export async function getServerSideProps({ req }) {
     const cookie = req.headers.cookie;
@@ -38,9 +39,13 @@ const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
             : null
     })
     const [selected, setSelected] = useState<menuArrayType>(menuArray[0]);
-    
+
     return (
         <>
+            <Head>
+                <title>WhatSub : 메뉴</title>
+                <meta name="description" content="서브웨이 샌드위치 메뉴의 인기와 정보를 여기서 한눈으로 비교해보세요."/>
+            </Head>
             <MenusBanner selected={selected} sessionCheck={sessionCheck}></MenusBanner>
             <main className='w-full max-w-screen-xl mx-auto pt-2 mt-[calc(300px+3rem)]'>
                 <div className="grid grid-cols-6 gap-2 w-[1024px]">

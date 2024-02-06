@@ -8,6 +8,7 @@ import { RootState } from '../redux/store';
 import styled from 'styled-components';
 import { recipeType } from '../interfaces/api/recipes';
 import { totalMenuInfoType } from '../interfaces/api/menus';
+import Head from 'next/head';
 
 type loadingType = {
     pending: number,
@@ -100,8 +101,8 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
         //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩 함수안써도됨
         const fetchRecipes = async () => {
             try {
-                const response = await fetch(query !== '' ? '/api/recipes/' + encodeURIComponent(query) + `?offset=${offset}&limit=${limit}&filter=${filter}&sort=${sorting==='최신순'?'recipe_id':'like_count'}`
-                    : `/api/recipes?offset=${offset}&limit=${limit}&filter=${filter}&sort=${sorting==='최신순'?'recipe_id':'like_count'}`)
+                const response = await fetch(query !== '' ? '/api/recipes/' + encodeURIComponent(query) + `?offset=${offset}&limit=${limit}&filter=${filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`
+                    : `/api/recipes?offset=${offset}&limit=${limit}&filter=${filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`)
 
                 if (response.status === 200) {
                     setLoading(loadingState.fullfiled);
@@ -165,16 +166,15 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
         setPage(0);
         setRecipes([])//레시피 배열을 비우기
     }, [sorting])
-    
-    
+
+
 
     return (
         <>
-            {/*문제 발동상황 : 컴포넌트가 (내가보기엔)정상적으로 렌더링됬는데 하이드레이션 오류발생
-            발생 : 부모에서 조건부렌더링할때 {router.isReady && <RecipesBanner ref={bannerRef}/>} 이렇게했을때
-            원인추측 : 개발자모드에서 중단점으로 확인했는데 요소를 두번 실행함 아마 부모요소에서 조건으로 Router.isReady를 확인해서 렌더링하고
-            자식요소에서 다시 확인해서 렌더링 하도록 했는데 부모가 렌더링을 안했는데 임포트된 리액트js가 자식껄 한번더 확인하니까 
-            첫번째 실행에서는 정상적으로 렌더링하고 두번째 실행에서 하이드레이션 오류가 발생한듯*/}
+            <Head>
+                <title>WhatSub : 레시피</title>
+                <meta name="description" content="서브웨이 조합법을 검색해서 찾아보고 각 조합 재료를 비교하면서 영양정보, 그리고 맛과 관련한 의견을 나눠보세요"/>
+            </Head>
             <RecipesBanner recipeData={recipeData} menuData={menuData} sorting={sorting} setSorting={setSorting} />
             <main className={'w-full max-w-screen-lg mx-auto pt-2'}>
                 <div className='grid grid-cols-6 grid-flow-row gap-2 min-w-[1024px]'>

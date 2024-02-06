@@ -62,7 +62,16 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <title>whatSub</title>
-        <meta name="sandwich recipe" content="initial-scale=1.0, width=device-width" />
+        <meta charSet='utf-8' />
+        <meta name="keywords" content="subway recipe, 서브웨이 레시피, 서브웨이 조합법, 서브웨이 칼로리, 서브웨이 일일권장섭취량" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="서브웨이 레시피를 작성하고, 공유하고, 의견을 나눠보세요" />
+        <meta httpEquiv="X-UA-Compatible" content="chrome, IE-edge" />
+        <meta httpEquiv="Subject" content="subway recipes" />
+        <meta httpEquiv="Title" content="WhatSub" />
+        <meta property="og:title" content="서브웨이 레시피 여기서 모아보세요" />
+        <meta property="og:description" content="WhatSub 여러분은 어떻게 서브웨이를 드시나요? 여기서 레시피를 작성하고, 공유하고, 의견을 나눠보세요" />
+        <meta property="og:image" content={`${process.env.URL}/images/front_banner.png`} />
       </Head>
       <Provider store={store}>
         <nav className='mb-12'>{/*globalNav이 가리는 부분을 방지하는 여백*/}

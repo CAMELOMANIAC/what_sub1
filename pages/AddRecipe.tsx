@@ -144,8 +144,9 @@ const AddRecipe = ({ param }: { param: string }) => {
     return (
         <>
             <Head>
-                <title>레시피 추가</title>
-                <meta name="description" content="Page description" />
+                <title>WhatSub : 레시피 작성</title>
+                <meta name="robots" content="noindex"/>
+                <meta name="description" content="서브웨이 레시피 작성 및 수정해보세요"/>
             </Head>
             <main className={'w-full max-w-screen-lg mx-auto mb-[80px] pt-2'}>
                 <div className='w-[1024px] grid grid-cols-6'>

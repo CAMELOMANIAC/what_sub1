@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -11,20 +12,21 @@ const AuthRedirect = () => {
         const authNumber = router.query.authNumber;
         const fetchRegister = async () => {
             try {
-                const response = await fetch(`api/users/authCheck?authNumber=${authNumber}`,{
-                    method:'PUT'})
+                const response = await fetch(`api/users/authCheck?authNumber=${authNumber}`, {
+                    method: 'PUT'
+                })
                 if (response.status === 200) {
                     setNotice('인증이 완료 되었습니다.')
                 } else {
-                    switch (response.status){
-                    case 400:
-                        setNotice('잘못된 요청값 입니다.'); break;
-                    case 408:
-                        setNotice('유효기간이 만료 되었습니다.'); break;
-                    case 204:
-                        setNotice('인증번호가 잘못되었거나 유효기간이 만료되어 사용할 수 없습니다'); break;
-                    default:
-                        setNotice('인증이 실패 했습니다.'); break;
+                    switch (response.status) {
+                        case 400:
+                            setNotice('잘못된 요청값 입니다.'); break;
+                        case 408:
+                            setNotice('유효기간이 만료 되었습니다.'); break;
+                        case 204:
+                            setNotice('인증번호가 잘못되었거나 유효기간이 만료되어 사용할 수 없습니다'); break;
+                        default:
+                            setNotice('인증이 실패 했습니다.'); break;
                     }
                 }
             } catch (error) {
@@ -37,10 +39,15 @@ const AuthRedirect = () => {
     }, [router.isReady])
 
     return (
-        <div>
-            {notice}
-            {notice==='인증이 완료 되었습니다.'&&<Link href={'/'}>홈으로가기</Link>}
-        </div>
+        <>
+            <Head>
+                <meta name="robots" content="noindex" />
+            </Head>
+            <div>
+                {notice}
+                {notice === '인증이 완료 되었습니다.' && <Link href={'/'}>홈으로가기</Link>}
+            </div>
+        </>
     );
 };
 
