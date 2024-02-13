@@ -99,7 +99,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                 </section>
                 <div className='flex flex-row justify-end mt-auto text-gray-400'>
                     <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_table_user_id}</div>
-                    <button className='flex items-center mr-2 hover:text-green-600'
+                    <button className='flex items-center mr-2'
                         onClick={(e) => { e.stopPropagation(); }}><HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}</button>
                     <button className='flex items-center mr-2 hover:text-green-600 active:scale-150 transition-transform'
                         onClick={(e) => { e.stopPropagation(); recipeLikeHandler() }}>

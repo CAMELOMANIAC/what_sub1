@@ -265,10 +265,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     </div>
                 </div>
             ) : (
-                <div className={`relative w-screen bg-white border-gray-200`} ref={ref}>
-                    <div className='mx-auto pt-4 pb-8 max-w-[1024px] min-w-[640px]'>
+                <div className={`relative w-screen bg-white border-gray-200 min-w-[640px]`} ref={ref}>
+                    <div className='mx-auto pt-4 pb-8 max-w-[1024px]'>
                         <div className='mb-8'>
-                            <div className='flex flex-row justify-start items-center my-2'>
+                            <div className='flex flex-row justify-start items-center my-2 sticky'>
                                 <SearchBar className='ml-0 mr-2' />
                                 <div className='relative' ref={filterRef}>
                                     <button className='relative text-green-600 text-2xl w-[42px] h-[42px] text-center align-middle flex justify-center items-center z-10'
@@ -352,7 +352,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                 </div>
             )}
             <StyledDiv2 className='w-full h-fit'>
-                <StyledDiv className='max-w-[1024px] min-w-[640px] h-fit relative mx-auto p-2 flex flex-row items-center'>
+                <StyledDiv className='max-w-[1024px] min-w-[640px] h-fit relative mx-auto py-2 px-4 flex flex-row items-center'>
                     <p className='w-1/4 flex flex-row items-center'><HiAdjustments /> 검색결과</p>
                     <div className='flex flex-row w-full justify-end items-center text-white text-lg'>
                         {visibleItemArray.map((item) =>

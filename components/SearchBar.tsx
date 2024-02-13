@@ -34,7 +34,7 @@ const SearchBar = (props: { className?: string, filterState?: string[] }) => {
 }
 
   return (
-    <div className={`group relative flex flex-wrap items-center focus-within:text-yellow-500 text-green-600 w-[50%] mx-auto ${props.className}`}>
+    <div className={`group relative flex flex-wrap items-center focus-within:text-yellow-500 text-green-600 w-[70%] md:w-[50%] mx-auto ${props.className}`}>
       <input type="search" name="serch" placeholder="다른 사람은 무엇을 먹을까요?" onChange={handleSearch} ref={inputRef}
         className="bg-white w-full placeholder:italic border-2 border-green-600 rounded-full text-sm py-[10px] pl-9 focus:outline-none focus:border-yellow-500 focus:ring-yellow-500 focus:ring-1 text-black input-no-clear" 
         onKeyDown={searchEnterHandler}
