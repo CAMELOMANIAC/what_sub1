@@ -6,6 +6,7 @@ import store from '../redux/store';
 import { AppProps } from 'next/app';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // 전역적으로 사용되는 부분
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -15,6 +16,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const [prevUrl, setPrevUrl] = useState<string | null>();
   const [url, setUrl] = useState<string | null>();
   const router = useRouter();
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     const start = () => {
@@ -72,19 +74,23 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <meta property="og:title" content="서브웨이 레시피 여기서 모아보세요" />
         <meta property="og:description" content="WhatSub 여러분은 어떻게 서브웨이를 드시나요? 여기서 레시피를 작성하고, 공유하고, 의견을 나눠보세요" />
         <meta property="og:image" content={`${process.env.URL}/images/front_banner.png`} />
+        <link rel=" shortcut icon " href={`${process.env.URL}/images/front_banner.ico`}></link>
+        <link rel="icon" href={`${process.env.URL}/images/front_banner.ico`}></link>
       </Head>
       <Provider store={store}>
-        <nav className='mb-12'>{/*globalNav이 가리는 부분을 방지하는 여백*/}
-          <GlobalNav></GlobalNav>
-        </nav>
-        <Component {...pageProps} />
-        {isLoading && (url != prevUrl) &&
-          <div className="w-screen h-screen flex flex-col justify-center items-center top-0 left-0 fixed bg-white" >
-            <p className='text-green-600 font-bold text-2xl'>이번열차: <span className='text-yellow-600'>{destination}</span><br /> 열차가 잠시후 도착합니다</p>
-            <div className='overflow-hidden animate-pulse w-full'>
-              <img src={'/images/front_banner.png'} width={100} ref={sandwichRef} className='absolute'></img>
-            </div>
-          </div>}
+        <QueryClientProvider client={queryClient}>
+          <nav className='mb-12'>{/*globalNav이 가리는 부분을 방지하는 여백*/}
+            <GlobalNav></GlobalNav>
+          </nav>
+          <Component {...pageProps} />
+          {isLoading && (url != prevUrl) &&
+            <div className="w-screen h-screen flex flex-col justify-center items-center top-0 left-0 fixed bg-white" >
+              <p className='text-green-600 font-bold text-2xl'>이번열차: <span className='text-yellow-600'>{destination}</span><br /> 열차가 잠시후 도착합니다</p>
+              <div className='overflow-hidden animate-pulse w-full'>
+                <img src={'/images/front_banner.png'} width={100} ref={sandwichRef} className='absolute'></img>
+              </div>
+            </div>}
+        </QueryClientProvider>
       </Provider>
     </>
   );
