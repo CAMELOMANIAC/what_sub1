@@ -36,7 +36,7 @@ const Nav = ({ className, setPage, page }: props) => {
     }
 
     //크기변화를 감지하는 ResizeObserver API
-    //li태그가 렌더링 (fetch로 값을 비동기적으로 가져옴으로) 이후에 크기가 변하므로 li태그 크기에 맞게 샌드위치를 조정하도록함
+    //li태그가 렌더링 이후에 크기가 변하므로 li태그 크기에 맞게 샌드위치(네비게이션 아이콘)를 조정하도록함
     useEffect(() => {
         const resizeObserver = new ResizeObserver(() => {
             if (sandwichRef.current) {

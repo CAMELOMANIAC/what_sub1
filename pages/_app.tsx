@@ -6,7 +6,7 @@ import store from '../redux/store';
 import { AppProps } from 'next/app';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 // 전역적으로 사용되는 부분
 export default function MyApp({ Component, pageProps }: AppProps) {

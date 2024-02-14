@@ -5,8 +5,9 @@ import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from "../
 import { RootState } from '../redux/store'
 import { loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
 import Link from "next/link";
+import { useMutation } from "react-query";
 
-const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
+const LoginModal = ({ handleClose }:{handleClose: ()=> void}) => {
 	const disptach = useDispatch();
 	const userName = useSelector((state: RootState) => state.user.userName);
 	const router = useRouter();
@@ -24,38 +25,49 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 
 	//일반 로그인 (카카오 로그인은 인덱스 페이지에서 처리-리다이렉트됨)
 	const handleLogin = async () => {
-		try {
+		loginMutation.mutate({ id, pwd });
+	}
+
+	const loginMutation = useMutation(//useMutation의 뮤테이션함수의 매개변수는 두개이상 사용할수없음 MutationFunction<any> 사용하려면 객체로 묶어서 사용
+		async ({ id, pwd }: { id: string, pwd: string }) => {
 			const response = await fetch('/api/users/login', {
 				method: 'POST',
 				headers: {
-					"Content-Type": "application/json",
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
 					id: id,
 					pwd: pwd
 				}),
-			})
-			if (response.status == 200) {
-				const result = await response.json();
+			});
 
-				//로그인 정보를 전역 상태값으로 저장
-				disptach(actionLoginChangeId(result.userId));
-				//레시피 좋아요 정보를 전역 상태값으로 저장
-				loadRecipeLike().then(data => {
-					disptach(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
-				}).catch(err => { console.log(err) })
-				//메뉴좋아요 정보를 전역 상태값으로 저장
-				loadMenuLike().then(data => {
-					disptach(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
-				}).catch(err => { console.log(err) })
-				handleClose();
-			} else {
-				throw await response.json();
+			if (!response.ok) {
+				throw new Error('로그인 실패');
 			}
-		} catch (err) {
-			alert(err.message)
+
+			return response.json();
+		},
+		{
+			onSuccess: async (data) => {
+				//로그인 정보를 전역 상태값으로 저장
+				disptach(actionLoginChangeId(data.userId));
+
+				//레시피 좋아요 정보를 전역 상태값으로 저장
+				const recipeLikeData = await loadRecipeLike();
+				disptach(actionSetRecipeLike(recipeLikeData.map(item => item.recipe_table_recipe_id)));
+
+				//메뉴좋아요 정보를 전역 상태값으로 저장
+				const menuLikeData = await loadMenuLike();
+				disptach(actionSetMenuLike(menuLikeData.map(item => item.sandwich_table_sandwich_name)));
+
+				handleClose();
+			},
+			onError: (error: Error) => {
+				alert(error.message);
+			},
+
 		}
-	}
+	)
 
 
 	return (

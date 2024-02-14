@@ -8,6 +8,7 @@ import { useRecipeLike } from '../../utils/recipesLikeHook';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { MemoizedChart } from '../IngredientRadarChart';
+import { useMutation, useQuery } from 'react-query';
 
 type props = {
     recipe: recipeType,
@@ -33,74 +34,81 @@ const SummaryPage = ({ recipe, className }: props) => {
 
     const scrollRef = useRef<HTMLUListElement>(null);
 
-    const getReply = async () => {
+    useEffect(() => {
+        console.log(reply)
+    }, [reply])
+
+    const getReply = async ({queryKey}) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_key,recipeId] = queryKey;
         try {
-            const response = await fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`);
+            const response = await fetch(`/api/recipes/reply?recipeId=${recipeId}`);
             if (response.status === 200) {
                 const result: replyType[] = await response.json();
                 return result;
-            } else {
-                console.log(response)
             }
         } catch (error) {
             console.error(error);
         }
     }
 
-    const insertReply = async () => {
-        try {
+    const { refetch } = useQuery(['reply',recipe.recipe_id], getReply, {
+        onSuccess: (data) => {
+            if (data){
+                setReply(data)
+            }
+        }
+    })
 
-            if (userName.length === 0) {
-                alert('로그인 후 이용 가능합니다.')
-                return
-            }
-            if (content.length === 0) {
-                alert('댓글을 입력해주세요')
-                return
-            }
-            if (content.length > 100) {
-                alert('댓글은 100자 이하로 입력해주세요')
-                return
-            }
-            if (content.length < 1) {
-                alert('댓글은 1자 이상 입력해주세요')
-                return
-            }
-            if (content.includes('<')) {
-                alert('태그 사용 불가')
-                return
-            }
-
-            const response = await fetch(`/api/recipes/reply?recipeId=${recipe.recipe_id}`, {
+    const mutation = useMutation(
+        async ({ recipe_id }: { recipe_id: string }) => {
+            const response = await fetch(`/api/recipes/reply?recipeId=${recipe_id}`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    recipeId: recipe.recipe_id,
+                    recipeId: recipe_id,
                     content: content
                 }),
             });
-
-            const result = await response.json();
-
-            if (response.ok) {
+            if (!response.ok) {
+                throw new Error('댓글 등록에 실패 했습니다.')
+            }
+        },
+        {
+            onSuccess: () => {
                 alert('댓글 등록 성공');
                 setContent('')
-                getReply().then(replyResult => {
-                    setReply(replyResult);
-                    if (scrollRef.current) {
-                        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-                    }
-                })
-                return result;
-            } else {
-                throw new Error(result.message);
+                refetch();//댓글 등록 성공시 다시 불러오기
             }
-
-        } catch (error) {
-            alert('댓글 등록에 실패 했습니다.')
         }
+    );
+
+    const insertReply = async () => {
+        if (userName.length === 0) {
+            alert('로그인 후 이용 가능합니다.')
+            return
+        }
+        if (content.length === 0) {
+            alert('댓글을 입력해주세요')
+            return
+        }
+        if (content.length > 100) {
+            alert('댓글은 100자 이하로 입력해주세요')
+            return
+        }
+        if (content.length < 1) {
+            alert('댓글은 1자 이상 입력해주세요')
+            return
+        }
+        if (content.includes('<')) {
+            alert('태그 사용 불가')
+            return
+        }
+
+        mutation.mutate({ recipe_id: recipe.recipe_id });
+
     }
 
     //로그인 여부 체크
@@ -114,11 +122,6 @@ const SummaryPage = ({ recipe, className }: props) => {
             setIslogin(true)
         }
     }, [checkLogin])
-
-    useEffect(() => {
-        //댓글 가져오기
-        getReply().then(result => setReply(result))
-    }, [])
 
     return (
         <div className={className}>
@@ -178,10 +181,11 @@ const SummaryPage = ({ recipe, className }: props) => {
                 <section className='col-span-2'>
                     댓글
                     <ul className='max-h-48 overflow-y-auto' ref={scrollRef}>
-                        {reply?.length && reply?.map((item, index) =>
+                        {reply && reply.map((item, index) =>
                             <li key={index} className='m-1 border-t-[1px]'>
                                 <p className='font-bold'>{item.user_table_user_id}</p> {item.reply_context}
-                            </li>)}
+                            </li>
+                        )}
                     </ul>
                     <div className='flex m-1'>
                         <textarea rows={3} placeholder={isLogin ? '바르고 고운 말로 생각을 표현해주세요' : '로그인이 필요한 기능입니다'}
