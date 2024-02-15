@@ -1,8 +1,9 @@
-import React, { Dispatch, SetStateAction, forwardRef, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, forwardRef, useCallback, useEffect, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { StyleTag } from '../RecipesBanner';
 import IngredientsSection from './sub/IngredientsSection';
 import { useSearchParams } from 'next/navigation';
+import { throttle } from '../../utils/publicFunction';
 
 export type propsType = {
     prop: {
@@ -23,7 +24,7 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
     const handleChange = (e) => {
         const value = e.target.value;
         prop.setRecipeName(value);
-    };
+    }
 
     //태그 중복금지 및 빈 문자열 금지
     //인풋을 통한 태그 추가 이벤트 핸들러
@@ -45,27 +46,33 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
             if (result.status === 200) {
                 const data = await result.json();
                 setTagData(data.map(item => item.tag_name));
+            } else if (result.status === 204) {
+                setTagData([]);
             } else {
-                throw result
+                throw result;
             }
         } catch (err) {
             console.log(err)
         }
     }
 
-    //태그검색
-    useEffect(() => {
-        if (tagInput.length > 1) {
-            tagSearch({tag:tagInput});
-        }
-    }, [tagInput])
-
     //태그 초기 검색
     useEffect(() => {
         if (param) {
-            tagSearch({param: param});
+            tagSearch({ param: param })
         }
     }, [])
+    
+    const throttleGetTag = useCallback(throttle((tagQuery:string) => {
+        if (tagQuery.length > 1) {
+            //태그검색
+            tagSearch({ tag: tagQuery })
+        }
+    }, 800), []);
+
+    useEffect(() => {
+        throttleGetTag(tagInput);
+    }, [tagInput])
 
     return (
         <IngredientsSection ref={ref} id='recipeName'>

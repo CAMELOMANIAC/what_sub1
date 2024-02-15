@@ -66,13 +66,17 @@ export const isValidEmail = (email) => {
 }
 
 //스로틀링 함수
-export const throttle = (callback: (...args: unknown[]) => unknown, delay: number): ((...args: unknown[]) => void) => {
-    let timer: NodeJS.Timeout | null;
+export const throttle = (callback: (...args: unknown[]) => void, delay: number): ((...args: unknown[]) => void) => {
+    let timer: NodeJS.Timeout | null = null;
+    let lastArgs: unknown[] | null = null;
     return (...args: unknown[]): void => {
+        lastArgs = args;
         if (!timer) {
             timer = setTimeout(() => {
-                callback(...args);
                 timer = null;
+                if (lastArgs) {
+                    callback(...lastArgs);
+                }
             }, delay);
         }
     }
