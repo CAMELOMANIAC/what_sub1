@@ -34,7 +34,7 @@ export const getRecipes = async ({ searchQuery, offset, limit, filter, sort }: g
         recipe_table.user_table_user_id, 
         recipe_table.sandwich_table_sandwich_name, 
         GROUP_CONCAT(DISTINCT recipe_tag_table.tag_table_tag_name) AS tag,
-        COUNT(DISTINCT reply_table.reply_context) AS reply_count,
+        COUNT(DISTINCT reply_table.reply_id) AS reply_count,
         COALESCE(like_counts.like_count, 0) AS like_count
         FROM recipe_table 
         LEFT JOIN recipe_ingredients_table ON recipe_table.recipe_id = recipe_ingredients_table.recipe_table_recipe_id

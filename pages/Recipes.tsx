@@ -87,8 +87,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
     const getRecipes = async (query = '', offset = 0, limit = 3, filter = filterQuery) => {
         //레시피 로딩 상태
         setLoading(loadingState.pending)
-        //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함
-        //node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩 함수안써도됨
+        //클라이언트에서 서버로 값을 보낼때 한글은 인코딩해야함(node.js서버에서는 쿼리값이 자동으로 디코딩되서 디코딩 함수안써도됨)
         const fetchRecipes = async () => {
             try {
                 const response = await fetch(query !== '' ? '/api/recipes/' + encodeURIComponent(query) + `?offset=${offset}&limit=${limit}&filter=${filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`
