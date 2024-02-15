@@ -64,3 +64,16 @@ export const isValidEmail = (email) => {
     const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;// eslint-disable-line no-useless-escape
     return regex.test(String(email).toLowerCase());
 }
+
+//스로틀링 함수
+export const throttle = (callback: (...args: unknown[]) => unknown, delay: number): ((...args: unknown[]) => void) => {
+    let timer: NodeJS.Timeout | null;
+    return (...args: unknown[]): void => {
+        if (!timer) {
+            timer = setTimeout(() => {
+                callback(...args);
+                timer = null;
+            }, delay);
+        }
+    }
+}
