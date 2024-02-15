@@ -38,42 +38,33 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
         }
     }
 
+    const tagSearch = async ({ tag, param }: { tag: string; param?: never } | { tag?: never; param: string }) => {
+        try {
+            const result = await fetch(tag ? `/api/recipes/tag?tag=${encodeURIComponent(tag)}`
+                : param ? `/api/recipes/tag?param=${encodeURIComponent(param)}` : '')
+            if (result.status === 200) {
+                const data = await result.json();
+                setTagData(data.map(item => item.tag_name));
+            } else {
+                throw result
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     //태그검색
     useEffect(() => {
-        const tagSearch = async () => {
-            try {
-                const result = await fetch(`/api/recipes/tag?tag=${encodeURIComponent(tagInput)}`)
-                if (result.status === 200) {
-                    const data = await result.json();
-                    setTagData(data.map(item => item.tag_name));
-                } else {
-                    throw result
-                }
-            } catch (err) {
-                console.log(err)
-            }
-        }
-        if (tagInput.length > 0) {
-            tagSearch();
+        if (tagInput.length > 1) {
+            tagSearch({tag:tagInput});
         }
     }, [tagInput])
 
     //태그 초기 검색
     useEffect(() => {
-        const tagFirstSearch = async () => {
-            try {
-                const res = await fetch(`/api/recipes/tag?param=${encodeURIComponent(param!)}`);
-                if (res.status === 200) {
-                    const data = await res.json();
-                    setTagData(data.map(item => item.tag_name));
-                } else {
-                    throw res
-                }
-            } catch (err) {
-                console.log(err)
-            }
+        if (param) {
+            tagSearch({param: param});
         }
-        tagFirstSearch();
     }, [])
 
     return (
