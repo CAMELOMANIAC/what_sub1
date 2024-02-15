@@ -8,7 +8,7 @@ import { useRecipeLike } from '../../utils/recipesLikeHook';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { MemoizedChart } from '../IngredientRadarChart';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 type props = {
     recipe: recipeType,
@@ -34,13 +34,9 @@ const SummaryPage = ({ recipe, className }: props) => {
 
     const scrollRef = useRef<HTMLUListElement>(null);
 
-    useEffect(() => {
-        console.log(reply)
-    }, [reply])
-
-    const getReply = async ({queryKey}) => {
+    const getReply = async ({ queryKey }) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_key,recipeId] = queryKey;
+        const [_key, recipeId] = queryKey;
         try {
             const response = await fetch(`/api/recipes/reply?recipeId=${recipeId}`);
             if (response.status === 200) {
@@ -52,13 +48,22 @@ const SummaryPage = ({ recipe, className }: props) => {
         }
     }
 
-    const { refetch } = useQuery(['reply',recipe.recipe_id], getReply, {
+    const { refetch } = useQuery(['reply', recipe.recipe_id], getReply, {
+        staleTime: 1000 * 60 * 1,
         onSuccess: (data) => {
-            if (data){
+            if (data) {
                 setReply(data)
             }
         }
     })
+
+    const queryClient = useQueryClient();
+    useEffect(() => {//초기 렌더링시 캐시에 저장된 댓글 불러오기(쿼리키가 존재하면 통신하지 않으므로 직접 상태값에 추가)
+        const data: replyType[] | undefined = queryClient.getQueryData(['reply', recipe.recipe_id])
+        if (data) {
+            setReply(data)
+        }
+    }, [])
 
     const mutation = useMutation(
         async ({ recipe_id }: { recipe_id: string }) => {
