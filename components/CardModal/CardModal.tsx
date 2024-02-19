@@ -17,7 +17,7 @@ const CardModal = ({ recipe, setIsActive }: props) => {
     return (
         <div className='fixed bg-gray-600/10 top-0 left-0 w-full h-full backdrop-blur-sm z-10'
             onClick={(e) => { if (e.target === e.currentTarget) setIsActive(false) }}>
-            <article className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1024px] bg-white text-black shadow rounded-lg'>
+            <article className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1024px] bg-white text-black shadow-lg rounded-lg'>
                 <button className={'fixed right-5 top-5 z-10'} onClick={() => setIsActive(false)}>
                     <GrClose/>
                 </button>

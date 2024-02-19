@@ -50,6 +50,15 @@
     }
   }
 
+  @keyframes vibration {
+    from {
+      transform: translateX(-1px);
+    }
+    to {
+      transform: translateX(1px);
+    }
+  }
+
   @font-face {
     font-family: 'seoul-metro';
     src: url('/font/신지하철체.ttf') format('truetype');
