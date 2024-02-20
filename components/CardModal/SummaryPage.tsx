@@ -35,8 +35,7 @@ const SummaryPage = ({ recipe, className }: props) => {
     const scrollRef = useRef<HTMLUListElement>(null);
 
     const getReply = async ({ queryKey }) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_key, recipeId] = queryKey;
+        const [_key, recipeId] = queryKey;//eslint-disable-line
         try {
             const response = await fetch(`/api/recipes/reply?recipeId=${recipeId}`);
             if (response.status === 200) {

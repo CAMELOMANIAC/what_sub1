@@ -4,12 +4,12 @@ import { useDispatch } from "react-redux";
 import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from "../redux/reducer/userReducer";
 import { loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
 import Link from "next/link";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import Logo from "./Logo";
 import { GrClose } from "react-icons/gr";
 
 const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
-	const disptach = useDispatch();
+	const dispatch = useDispatch();
 	const router = useRouter();
 	const [id, setId] = useState('')
 	const [pwd, setPwd] = useState('')
@@ -28,6 +28,9 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 		loginMutation.mutate({ id, pwd });
 	}
 
+	const recipeLikeQuery = useQuery('recipeLike', loadRecipeLike, { enabled: false });
+	const menuLikeQuery = useQuery('menuLike', loadMenuLike, { enabled: false });
+
 	const loginMutation = useMutation(//useMutation의 뮤테이션함수의 매개변수는 두개이상 사용할수없음 MutationFunction<any> 사용하려면 객체로 묶어서 사용
 		async ({ id, pwd }: { id: string, pwd: string }) => {
 			const response = await fetch('/api/users/login', {
@@ -42,7 +45,7 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 			});
 
 			if (!response.ok) {
-				throw new Error('로그인 실패');
+				throw new Error((await response.json()).message);
 			}
 
 			return response.json();
@@ -50,16 +53,15 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 		{
 			onSuccess: async (data) => {
 				//로그인 정보를 전역 상태값으로 저장
-				disptach(actionLoginChangeId(data.userId));
+				dispatch(actionLoginChangeId(data.userId));
 
 				//레시피 좋아요 정보를 전역 상태값으로 저장
-				const recipeLikeData = await loadRecipeLike();
-				disptach(actionSetRecipeLike(recipeLikeData.map(item => item.recipe_table_recipe_id)));
+				const { data: recipeLikeData } = await recipeLikeQuery.refetch();
+				dispatch(actionSetRecipeLike(recipeLikeData.map(item => item.recipe_table_recipe_id)));
 
 				//메뉴좋아요 정보를 전역 상태값으로 저장
-				const menuLikeData = await loadMenuLike();
-				disptach(actionSetMenuLike(menuLikeData.map(item => item.sandwich_table_sandwich_name)));
-
+				const { data: menuLikeData } = await menuLikeQuery.refetch();
+				dispatch(actionSetMenuLike(menuLikeData.map(item => item.sandwich_table_sandwich_name)));
 				handleClose();
 			},
 			onError: (error: Error) => {

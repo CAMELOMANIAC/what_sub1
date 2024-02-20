@@ -11,6 +11,8 @@ const useMenuLike = (menuName: string) => {
     const isLike = menuLikeArray.includes(menuName);
 
     useEffect(() => {
+        if (menuName.length === 0) return;
+        
         const getMenuLike = async () => {
             try {
                 const response = await fetch(`/api/menus/like/${menuName}`)

@@ -14,6 +14,7 @@ import ToastingSection from '../components/ingredientSection/ToastingSection';
 import RecipeNameSection from '../components/ingredientSection/RecipeNameSection';
 import { recipeContextType } from '../interfaces/AddRecipe';
 import RecipeNav from '../components/RecipeNav/RecipeNav';
+import { useMutation } from 'react-query';
 
 export type progressBarButtonsType = {
     id: string,
@@ -115,7 +116,7 @@ const AddRecipe = ({ param }: { param: string }) => {
     }, [recipeName, param, addMeat.state, bread.state, cheese.state, addCheese.state, toasting.state, vegetable.array, pickledVegetable.array, sauce.array, addIngredient.array])
 
     //서버에 전달하는 함수
-    const sendRecipe = async () => {
+    const RecipeMutation = useMutation(async () => {
         const response = await fetch('/api/recipes', {
             method: 'POST',
             headers: {
@@ -124,29 +125,20 @@ const AddRecipe = ({ param }: { param: string }) => {
             credentials: 'include',
             body: JSON.stringify(context)
         })
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
         return response.json();
-    }
+    }, { onSuccess: () => router.push('/Recipes') });
 
     const router = useRouter();
-    const onClickHandler = () => {
-        sendRecipe().then(
-            result => {
-                console.log(result)
-                router.push('/Recipes')
-            },
-            error => console.log(error)
-        )
+    const recipeAddHandler = () => {
+        RecipeMutation.mutate();
     }
 
     return (
         <>
             <Head>
                 <title>WhatSub : 레시피 작성</title>
-                <meta name="robots" content="noindex"/>
-                <meta name="description" content="서브웨이 레시피 작성 및 수정해보세요"/>
+                <meta name="robots" content="noindex" />
+                <meta name="description" content="서브웨이 레시피 작성 및 수정해보세요" />
             </Head>
             <main className={'w-full max-w-screen-lg mx-auto mb-[80px] pt-2'}>
                 <div className='w-[1024px] grid grid-cols-6'>
@@ -179,7 +171,7 @@ const AddRecipe = ({ param }: { param: string }) => {
                         <VegetableSection prop1={vegetable} prop2={pickledVegetable} ref={vegetableRef} />
                         <SauceSection prop={sauce} ref={sauceRef} />
 
-                        <button className="bg-white rounded-md shadow-sm p-6" onClick={onClickHandler}>
+                        <button className="bg-white rounded-md shadow-sm p-6" onClick={recipeAddHandler}>
                             <h3 className='text-xl font-[seoul-metro]'>작성완료</h3>
                         </button>
 

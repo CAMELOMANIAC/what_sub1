@@ -77,8 +77,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <link rel=" shortcut icon " href={`${process.env.URL}/images/front_banner.ico`}></link>
         <link rel="icon" href={`${process.env.URL}/images/front_banner.ico`}></link>
       </Head>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
           <nav className='mb-12'>{/*globalNav이 가리는 부분을 방지하는 여백*/}
             <GlobalNav></GlobalNav>
           </nav>
@@ -90,8 +90,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 <img src={'/images/front_banner.png'} width={100} ref={sandwichRef} className='absolute'></img>
               </div>
             </div>}
-        </QueryClientProvider>
-      </Provider>
+        </Provider>
+      </QueryClientProvider>
     </>
   );
 }

@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { getCookieValue, loadMenuLike, loadRecipeLike } from '../utils/publicFunction';
 import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from '../redux/reducer/userReducer';
 import { useDispatch } from 'react-redux';
+import { useQuery } from 'react-query';
 
 const CarouselContainer = styled.div`
     &::-webkit-scrollbar {
@@ -40,45 +41,40 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 	const router = useRouter();
 	const dispatch = useDispatch();
 
+	const recipeLikeQuery = useQuery('recipeLike', loadRecipeLike, { enabled: false });
+	const menuLikeQuery = useQuery('menuLike', loadMenuLike, { enabled: false });
+
+	const kakaoLoginQuery = useQuery('kakaoLogin', async () => {
+		const kakaoCode = getCookieValue('kakaoCode');
+		const response = await fetch(`/api/users/socialKakaoLogin?kakaoCode=${kakaoCode}`);
+		switch (response.status) {
+			case 204: throw new Error('회원이 존재하지 않습니다. 회원가입 페이지로 이동합니다.');
+			case 400: throw new Error('잘못된 요청입니다.');
+		}
+	}, {
+		enabled: false,
+		onSuccess: async () => {
+			//새로고침시에 쿠키값을 가져와서 로그인여부를 판단하고 전역상태로 저장
+			dispatch(actionLoginChangeId(getCookieValue('user')))
+			//레시피 좋아요 정보를 전역 상태값으로 저장
+			const { data: recipeLikeData } = await recipeLikeQuery.refetch();
+			dispatch(actionSetRecipeLike(recipeLikeData.map(item => item.recipe_table_recipe_id)));
+
+			//메뉴좋아요 정보를 전역 상태값으로 저장
+			const { data: menuLikeData } = await menuLikeQuery.refetch();
+			dispatch(actionSetMenuLike(menuLikeData.map(item => item.sandwich_table_sandwich_name)));
+		},
+		onError: (error: Error) => {
+			alert(error.message)
+			router.push('/Register')
+		}
+	})
+
 	//카카오 로그인 리다이렉트 절차
 	useEffect(() => {
-		const kakaoCode = getCookieValue('kakaoCode')
-		const kakaoIdLogin = async () => {
-			try {
-				const response = await fetch(`/api/users/socialKakaoLogin?kakaoCode=${kakaoCode}`)
-				switch (response.status) {
-					case 204: throw new Error('회원이 존재하지 않습니다. 회원가입 페이지로 이동합니다.');
-					case 400: throw new Error('잘못된 요청입니다.');
-					default: throw response.status;
-				}
-			} catch (error) {
-				return error
-			}
-		}
-
+		const kakaoCode = getCookieValue('kakaoCode');
 		if (kakaoCode) {
-			try {
-				const login = kakaoIdLogin();
-				login.then(res => {
-					if (res instanceof Error && res.message === '회원이 존재하지 않습니다. 회원가입 페이지로 이동합니다.') {
-						alert(res.message)
-						router.push('/Register')
-					} else if (res === 200) {
-						//새로고침시에 쿠키값을 가져와서 로그인여부를 판단하고 전역상태로 저장
-						dispatch(actionLoginChangeId(getCookieValue('user')))
-						//레시피 좋아요 정보를 전역 상태값으로 저장
-						loadRecipeLike().then(data => {
-								dispatch(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)))
-						})
-						//메뉴좋아요 정보를 전역 상태값으로 저장
-						loadMenuLike().then(data => {
-								dispatch(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)))
-						})
-					}
-				})
-			} catch (error) {
-				console.log(error)
-			}
+			kakaoLoginQuery.refetch();
 		}
 	}, [router.isReady])
 

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Logo from '../components/Logo';
 import useAnimation from '../utils/animationHook';
+import { useMutation } from 'react-query';
 
 const Register = () => {
     const router = useRouter();
@@ -25,14 +26,7 @@ const Register = () => {
         setCheckPwd(e.target.value)
     }
 
-
-    //일반 회원가입
-    const handleRegister = async () => {
-        if (pwd !== checkPwd) {
-            alert('비밀번호가 일치하지 않습니다')
-            return;
-        }
-
+    const registerMutation = useMutation(async () => {
         const response = await fetch('api/users/register', {
             method: 'POST',
             headers: {
@@ -52,10 +46,18 @@ const Register = () => {
             case 409: alert('이미 존재하는 아이디 또는 이메일입니다'); break;
             default: alert('회원가입에 실패했습니다'); break;
         }
+    })
+
+    //일반 회원가입
+    const handleRegister = async () => {
+        if (pwd !== checkPwd) {
+            alert('비밀번호가 일치하지 않습니다')
+            return;
+        }
+        registerMutation.mutate();
     }
 
-    //카카오계정으로 회원가입
-    const handleKakaoRegister = async () => {
+    const kakaoRegisterMutation = useMutation(async () => {
         const response = await fetch('api/users/socialKakaoRegister', {
             method: 'POST',
             headers: {
@@ -74,6 +76,15 @@ const Register = () => {
             case 409: alert('이미 존재하는 아이디 또는 이메일입니다'); break;
             default: alert('회원가입에 실패했습니다'); break;
         }
+    })
+
+    //카카오계정으로 회원가입
+    const handleKakaoRegister = async () => {
+        if (pwd !== checkPwd) {
+            alert('비밀번호가 일치하지 않습니다')
+            return;
+        }
+        kakaoRegisterMutation.mutate();
     }
 
     const handleKakaoAccount = () => {
