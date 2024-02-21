@@ -10,8 +10,10 @@ const nextConfig = {
     //'MYSQL_HOST': 'whatsub-db.fefvdedbfjaeg6hr.koreacentral.azurecontainer.io',
     'MYSQL_PORT': '3306',
     'MYSQL_DATABASE': 'whatsub',
-    'MYSQL_USER': 'root',
-    'MYSQL_PASSWORD': '1234',
+    // 'MYSQL_USER': 'root',
+    // 'MYSQL_PASSWORD': '1234',
+    'MYSQL_USER': 'yugyusang',
+    'MYSQL_PASSWORD': 'Rbtkddl00!@',
     
     'MAIL_ID': 'yugyusang12@gmail.com',
     'MAIL_PASSWORD': 'panc qwaz auiw klsd',
