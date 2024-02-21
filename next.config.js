@@ -5,8 +5,8 @@ const nextConfig = {
     styledComponents: true,
   },
   env: {
-    'MYSQL_HOST': '127.0.0.1',
-    
+    //'MYSQL_HOST': '127.0.0.1',
+    'MYSQL_HOST':'whatsub-mysql-db.mysql.database.azure.com',
     //'MYSQL_HOST': 'whatsub-db.fefvdedbfjaeg6hr.koreacentral.azurecontainer.io',
     'MYSQL_PORT': '3306',
     'MYSQL_DATABASE': 'whatsub',
