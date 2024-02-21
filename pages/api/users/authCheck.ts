@@ -25,24 +25,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (response instanceof Error) {
                 throw response
             }
-            //5. 실패시 생성되었던 DB제거(인증번호를 기준으로)
-            //이부분은 사이드이펙트이므로 delete메서드를 사용하지 않음(또한 이 서버,엔드포인트에서만 사용되므로 독립된 엔드포인트를 생성하지 않음)
-            // if (!response) {
-            //     const expiredArray = await getExpiredAuth(authNumber);
-            //     if (expiredArray instanceof Error === false) {
-            //         const deleteUserInfoResponse = await deleteUserInfo(expiredArray);
-            //         if (deleteUserInfoResponse instanceof Error) {
-            //             console.log(deleteUserInfoResponse.message);
-            //             return;//문제가 발생하더라도 인증성공여부에는 영향을 주지 않으므로 return으로 처리
-            //         }
-            //         const deleteUserResponse = await deleteUser(expiredArray);
-            //         if (deleteUserResponse instanceof Error) {
-            //             console.log(deleteUserResponse.message);
-            //             return;//문제가 발생하더라도 인증성공여부에는 영향을 주지 않으므로 return으로 처리
-            //         }
-            //         throw new Error('유효기간이 만료 되었습니다.')
-            //     }
-            // }
             //6. 인증성공시 DB수정
             const result = await updateUserInfo(authNumber);
             if (result instanceof Error) {
