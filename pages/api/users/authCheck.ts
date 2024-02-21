@@ -31,12 +31,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const expiredArray = await getExpiredAuth(authNumber);
                 if (expiredArray instanceof Error === false) {
                     const deleteUserInfoResponse = await deleteUserInfo(expiredArray);
-                    const deleteUserResponse = await deleteUser(expiredArray);
-                    if (deleteUserInfoResponse instanceof Error || deleteUserResponse instanceof Error) {
-                        console.log(deleteUserInfoResponse,deleteUserResponse)//제거는 사이드 이펙트이므로 메인스트림은 중지시키면 안됨
+                    if (deleteUserInfoResponse instanceof Error) {
+                        console.log(deleteUserInfoResponse.message);
+                        return;//문제가 발생하더라도 인증성공여부에는 영향을 주지 않으므로 return으로 처리
                     }
+                    const deleteUserResponse = await deleteUser(expiredArray);
+                    if (deleteUserResponse instanceof Error) {
+                        console.log(deleteUserResponse.message);
+                        return;//문제가 발생하더라도 인증성공여부에는 영향을 주지 않으므로 return으로 처리
+                    }
+                    throw new Error('유효기간이 만료 되었습니다.')
                 }
-                throw new Error('유효기간이 만료 되었습니다.')
             }
             //6. 인증성공시 DB수정
             const result = await updateUserInfo(authNumber);
