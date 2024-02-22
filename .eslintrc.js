@@ -8,7 +8,7 @@ module.exports = {
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended",
-        "next"
+        "next/core-web-vitals",
     ],
     "overrides": [
         {
@@ -35,7 +35,8 @@ module.exports = {
     "rules": {
         "react/react-in-jsx-scope": "off",
         'no-unused-vars': "off",
-        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        "@next/next/no-img-element": "off",
     },
     "settings": {
         "react": {
