@@ -32,7 +32,7 @@ const GlobalNav = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(actionLoginChangeId(getCookieValue('user')))
-    }, [])
+    }, [dispatch])
 
     return (
         <div className="w-full fixed left-0 bg-white z-20 border-gray-200 border-b mb-auto flex align-middle min-w-[500px]">

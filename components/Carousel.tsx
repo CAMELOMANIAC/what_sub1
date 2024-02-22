@@ -20,7 +20,7 @@ const Carousel = ({ children, cardRefs, recipeArray, crouselRef }: PropsType) =>
         return () => {
             observer.disconnect(); //옵저버 연결 해제
         }
-    }, [cardRefs])
+    }, [cardRefs])//eslint-disable-line
 
     useEffect(()=>{},[])
     //요소가 감지되면 실행될 콜백

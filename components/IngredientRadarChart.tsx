@@ -21,6 +21,7 @@ const IngredientsRadarChart = ({ context }: { context: recipeContextType }) => {
     const [saturatedFats, setSaturatedFats] = useState<number>(0);
     const [sugars, setSugars] = useState<number>(0);
     const [sodium, setSodium] = useState<number>(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const nutrientsArray = [...breadNutrientArray, ...cheeseNutrientArray, ...sauceNutrientArray, ...menuNutrientArray];
 
     useEffect(() => {
@@ -52,7 +53,7 @@ const IngredientsRadarChart = ({ context }: { context: recipeContextType }) => {
                 })
             }
         })
-    }, [context])
+    }, [context, nutrientsArray])
     
     const data = [
         {

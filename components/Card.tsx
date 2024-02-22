@@ -45,7 +45,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
             if (visibleItem.includes('빵')) {
                 const itemName = breadNutrientArray.find((bread) => bread.name === item)?.name;
                 if (itemName)
-                breadIngredients.push(itemName);
+                    breadIngredients.push(itemName);
             }
             if (visibleItem.includes('치즈')) {
                 cheeseNutrientArray.filter((cheese) => cheese.name === item).forEach(
@@ -62,8 +62,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                     item => sauceIngredients.push(item.name));
             }
         })
-        
-        ingredients = [...meatIngredients,...breadIngredients,...cheeseIngredients,...vegetableIngredients,...sauceIngredients];
+
+        ingredients = [...meatIngredients, ...breadIngredients, ...cheeseIngredients, ...vegetableIngredients, ...sauceIngredients];
         if (visibleItem.includes('토스팅')) {
             if (ingredient.includes('true'))
                 ingredients.push('true');
@@ -114,9 +114,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         </>
     );
 });
-///나중에 React.memo를 사용해서 최적화해야함
-// 전역상태값 likeRecipe를 부모 페이지 컴포넌트로부터 prop로 받도록 바꿔서 likeRecipe를 사용하는 모든 카드 컴포넌트가 재렌더링하지 않도록
-// 부모 페이지 컴포넌트가 재랜더링이 필요한 컴포넌트에만 props값을 변경해서 전달하게끔 해야됨
 
 Card.displayName = 'Card';
 export default Card;
