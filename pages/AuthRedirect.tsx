@@ -36,7 +36,7 @@ const AuthRedirect = () => {
         if (typeof authNumber !== 'undefined') {
             fetchRegister();
         }
-    }, [router.isReady])
+    }, [router.isReady, router.query.authNumber])
 
     return (
         <>

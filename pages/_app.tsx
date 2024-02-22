@@ -58,7 +58,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       router.events.off('routeChangeError', end);
       router.events.off('routeChangeStart', handleDestination);
     };
-  }, [])
+  }, [router.events])
 
   return (
     <>
@@ -87,7 +87,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <div className="w-screen h-screen flex flex-col justify-center items-center top-0 left-0 fixed bg-white" >
               <p className='text-green-600 font-bold text-2xl'>이번열차: <span className='text-yellow-600'>{destination}</span><br /> 열차가 잠시후 도착합니다</p>
               <div className='overflow-hidden animate-pulse w-full'>
-                <img src={'/images/front_banner.png'} width={100} ref={sandwichRef} className='absolute'></img>
+                <img src={'/images/front_banner.png'} width={100} ref={sandwichRef} className='absolute' alt='front_banner'></img>
               </div>
             </div>}
         </Provider>

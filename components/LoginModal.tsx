@@ -71,7 +71,6 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 		}
 	)
 
-
 	return (
 		<div className='fixed bg-gray-600/10 top-0 left-0 w-full h-full backdrop-blur-sm' onClick={(e) => { if (e.target === e.currentTarget) handleClose() }}>
 			<article className='w-[500px] h-[550px] bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-lg rounded-lg flex flex-col justify-center items-center'>

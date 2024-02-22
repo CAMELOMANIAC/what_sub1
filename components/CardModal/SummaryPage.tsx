@@ -62,7 +62,7 @@ const SummaryPage = ({ recipe, className }: props) => {
         if (data) {
             setReply(data)
         }
-    }, [])
+    }, [queryClient, recipe.recipe_id])
 
     const mutation = useMutation(
         async ({ recipe_id }: { recipe_id: string }) => {
@@ -125,7 +125,7 @@ const SummaryPage = ({ recipe, className }: props) => {
         if (userName.length > 0) {
             setIslogin(true)
         }
-    }, [checkLogin])
+    }, [checkLogin, userName.length])
 
     return (
         <div className={className}>

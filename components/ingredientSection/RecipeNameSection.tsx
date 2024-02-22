@@ -61,9 +61,10 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
         if (param) {
             tagSearch({ param: param })
         }
-    }, [])
+    }, [param])
 
     //태그 검색 스로틀링(tagInput이 변경될때마다 0.7초마다 검색)
+    //eslint-disable-next-line
     const throttleGetTag = useCallback(throttle((tagQuery: string) => {//tagInput이 상태값이므로 할당된 함수가 새로 생성되므로 useCallback으로 변하지 않게 해줌
         if (tagQuery.length > 1) {
             //태그검색
@@ -73,7 +74,7 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
 
     useEffect(() => {
         throttleGetTag(tagInput);
-    }, [tagInput])
+    }, [tagInput, throttleGetTag])
 
     return (
         <IngredientsSection ref={ref} id='recipeName'>

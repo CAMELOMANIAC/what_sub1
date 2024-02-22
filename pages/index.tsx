@@ -69,14 +69,14 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 			router.push('/Register')
 		}
 	})
+	const kakaoLoginQueryRef = useRef(kakaoLoginQuery);
 
-	//카카오 로그인 리다이렉트 절차
 	useEffect(() => {
 		const kakaoCode = getCookieValue('kakaoCode');
 		if (kakaoCode) {
-			kakaoLoginQuery.refetch();
+			kakaoLoginQueryRef.current.refetch();
 		}
-	}, [router.isReady])
+	}, [router.isReady]);
 
 	//캐러셀
 	useEffect(() => {

@@ -86,7 +86,7 @@ const AddRecipe = ({ param }: { param: string }) => {
         { id: 'vegetableButton', text: '채소 선택', ref: vegetableRef, handleClick: () => handleClickHander(vegetableRef) },
         { id: 'sauceButton', text: '소스 선택', ref: sauceRef, handleClick: () => handleClickHander(sauceRef) },
     ];
-    const createContext = () => {
+    const createContext = useCallback(() => {
         const recipeContext: recipeContextType = {
             recipeName: recipeName,
             tagArray: tagArray,
@@ -102,7 +102,7 @@ const AddRecipe = ({ param }: { param: string }) => {
             addIngredient: addIngredient.array
         }
         return recipeContext;
-    }
+    },[addCheese.state, addIngredient.array, addMeat.state, bread.state, cheese.state, isToasting, param, pickledVegetable.array, recipeName, sauce.array, tagArray, vegetable.array])
     //서버에 작성한 레시피를 제출하거나 거미줄차트에 전달해줄 props상태 객체를 작성
     const [context, setContext] = useState<recipeContextType>(createContext);
     //완료여부 확인 상태
@@ -113,7 +113,7 @@ const AddRecipe = ({ param }: { param: string }) => {
         //필수항목배열 확인후 다 작성되면 작성완료 할수있게
         const isNotComplete = Object.entries([recipeName, param, bread.state, toasting.state]).some(([_key, value]) => value === '');
         setIsComplete(!isNotComplete);
-    }, [recipeName, param, addMeat.state, bread.state, cheese.state, addCheese.state, toasting.state, vegetable.array, pickledVegetable.array, sauce.array, addIngredient.array])
+    }, [recipeName, param, addMeat.state, bread.state, cheese.state, addCheese.state, toasting.state, vegetable.array, pickledVegetable.array, sauce.array, addIngredient.array, createContext])
 
     //서버에 전달하는 함수
     const RecipeMutation = useMutation(async () => {

@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useRef, useEffect } from 'react';
+import React, { forwardRef, useState, useRef, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -151,6 +151,13 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                 throw new Error('실패')
             }
         }, { enabled: !!router.query.param });
+    const selected: MenuItem[] = useMemo(() => {
+        if (router.isReady) {
+            return menuArray.filter((item) => (item.name == String(router.query.param).replaceAll('+', ' ')));
+        } else
+            return [];
+    }, [router.isReady, router.query.param]);
+
     useEffect(() => {
         if (menuInfo.data) {
             setMenuLike(menuInfo.data[0].like_count);
@@ -159,10 +166,6 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         }
     }, [menuInfo.data]);
 
-    let selected: MenuItem[] = [];
-    if (router.isReady) {
-        selected = menuArray.filter((item) => (item.name == String(router.query.param).replaceAll('+', ' ')));
-    }
 
     //쿼리스트링 변경시
     useEffect(() => {
@@ -171,7 +174,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                 setSelectedName(selected[0]?.name);
             }
         }
-    }, [router.query])
+    }, [router.isReady, router.query, selected])
 
     const [selectedName, setSelectedName] = useState('');
     const { isLike, menuLikeHandler } = useMenuLike(selectedName);
