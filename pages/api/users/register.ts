@@ -42,14 +42,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
             //0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한을 기준으로)
             const expiredArray = await getExpiredAuth();
-            if (expiredArray instanceof Error === false) {
-                const deleteUserInfoResponse = await deleteUserInfo(expiredArray);
-                const deleteUserResponse = await deleteUser(expiredArray);
-                if (deleteUserInfoResponse instanceof Error || deleteUserResponse instanceof Error) {
-                    console.log(deleteUserInfoResponse,deleteUserResponse)//제거는 사이드 이펙트이므로 메인스트림은 중지시키면 안됨
-                }
+            if (!(expiredArray instanceof Error)){
+                const deleteUserInfoResult = await deleteUserInfo(expiredArray);
+                const deleteUserResult = await deleteUser(expiredArray);
+                console.log(deleteUserInfoResult, deleteUserResult);
             }
-
+            
             //1.아이디, 이메일 중복체크
             const checkUserId = await getUserData(id);
             if (checkUserId instanceof Error) {
