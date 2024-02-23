@@ -15,10 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - name: Use Node.js LTS
-        uses: actions/setup-node@v2
-        with:
-          node-version: 'lts/*'
       - uses: actions/checkout@v3
         with:
           submodules: true
