@@ -44,10 +44,9 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
     //api 통신을 위해 필요한 값들
     const filterQuery = filter.join('&filter=')
 
-    const recipeQuery = useInfiniteQuery(['recipes', router.query.query, router.query.param, 0, 9, 3, filterQuery, sorting],
+    const {refetch,fetchNextPage,hasNextPage,isLoading,isFetching,isError} = useInfiniteQuery(['recipes', router.query.query, router.query.param, 0, 9, 3, filterQuery, sorting],
         async ({ queryKey, pageParam = 0 }) => {
-            const [_key, query, param, offset, limit, dynamicLimit, filter, sorting] = queryKey;//eslint-disable-line
-            console.log(dynamicLimit)
+            const [, query, param, offset, limit, dynamicLimit, filter, sorting] = queryKey;
             const response = await fetch(query || param ? '/api/recipes/' + encodeURIComponent(String(param ? param : query)) + `?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? (param ? (Number(limit) - 1) : limit) : dynamicLimit}&filter=${param ? ['메뉴이름'] : filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`
                 : `/api/recipes?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`)
             if (response.status === 200)
@@ -68,20 +67,20 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
 
     //초기 레시피 불러오기
     useEffect(() => {
-        recipeQuery.refetch();
-    }, [router.isReady])//eslint-disable-line
+        refetch();
+    }, [refetch, router.isReady])
     //레시피 초기화
     useEffect(() => {
-        recipeQuery.refetch();
+        refetch();
         setEndRecipe(false);
-    }, [sorting, router.query]);//eslint-disable-line
+    }, [sorting, router.query, refetch]);
 
     const scrollAnchor = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && !endRecipe) {
-                recipeQuery.fetchNextPage();
+                fetchNextPage();
             }
         }, { threshold: 0.9 });
 
@@ -92,7 +91,7 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
         return () => {
             observer.disconnect();
         }
-    }, [endRecipe])//eslint-disable-line
+    }, [endRecipe, fetchNextPage])
 
     return (
         <>
@@ -113,9 +112,9 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
                                 레시피를 모두 읽었어요
                             </>
                             : <>
-                                {recipeQuery.hasNextPage && '스크롤을 내려서 더 읽어 볼까요?'}
-                                {recipeQuery.isLoading || recipeQuery.isFetching && '레시피를 불러오고 있어요'}
-                                {recipeQuery.isError && '레시피 불러오는 중에 문제가 발생했어요'}
+                                {hasNextPage && '스크롤을 내려서 더 읽어 볼까요?'}
+                                {isLoading || isFetching && '레시피를 불러오고 있어요'}
+                                {isError && '레시피 불러오는 중에 문제가 발생했어요'}
                             </>
                         }
                     </div>

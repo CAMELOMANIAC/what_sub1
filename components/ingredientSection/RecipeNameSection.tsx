@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, forwardRef, useCallback, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, forwardRef, useEffect, useRef, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { StyleTag } from '../RecipesBanner';
 import IngredientsSection from './sub/IngredientsSection';
@@ -63,18 +63,16 @@ const RecipeNameSection = forwardRef<HTMLDivElement, propsType>(({ prop }, ref) 
         }
     }, [param])
 
-    //태그 검색 스로틀링(tagInput이 변경될때마다 0.7초마다 검색)
-    //eslint-disable-next-line
-    const throttleGetTag = useCallback(throttle((tagQuery: string) => {//tagInput이 상태값이므로 할당된 함수가 새로 생성되므로 useCallback으로 변하지 않게 해줌
-        if (tagQuery.length > 1) {
-            //태그검색
-            tagSearch({ tag: tagQuery })
+    //태그 검색 스로틀링(재렌더링 될때마다 throttle을 할당한 변수가 달라져서 setTimeout이 초기화가 되므로 useRef를 사용하여 throttle을 할당해줌)
+    const trottleRef = useRef(throttle((tagInput: string) => {
+        if (tagInput.length > 1) {
+            tagSearch({ tag: tagInput })
         }
-    }, 1000), []);
+    }, 1000));
 
     useEffect(() => {
-        throttleGetTag(tagInput);
-    }, [tagInput, throttleGetTag])
+        trottleRef.current(tagInput);
+    }, [tagInput])
 
     return (
         <IngredientsSection ref={ref} id='recipeName'>
