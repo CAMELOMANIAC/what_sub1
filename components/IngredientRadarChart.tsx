@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { RadarChart } from "recharts";
-import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar } from "recharts";
+import { RadarChart } from 'recharts/lib/chart/RadarChart';
+import { PolarAngleAxis } from 'recharts/lib/polar/PolarAngleAxis';
+import { PolarGrid } from 'recharts/lib/polar/PolarGrid';
+import { PolarRadiusAxis } from 'recharts/lib/polar/PolarRadiusAxis';
+import { Radar } from 'recharts/lib/polar/Radar';
 import { breadNutrientArray, cheeseNutrientArray, sauceNutrientArray, menuNutrientArray } from "../utils/menuArray"
 import { Tooltip } from "recharts";
 import { recipeContextType } from "../interfaces/AddRecipe";
@@ -53,7 +56,7 @@ const IngredientsRadarChart = ({ context }: { context: recipeContextType }) => {
             }
         })
     }, [context])
-    
+
     const data = [
         {
             "subject": "칼로리",
