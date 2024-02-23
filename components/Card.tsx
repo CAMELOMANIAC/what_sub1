@@ -8,6 +8,7 @@ import { recipeType } from '../interfaces/api/recipes';
 import CardModal from './CardModal/CardModal';
 import { useRecipeLike } from '../utils/recipesLikeHook';
 import { breadNutrientArray, cheeseNutrientArray, ingredientsArray, menuNutrientArray, pickleArray, sauceNutrientArray, vegetableArray } from '../utils/menuArray';
+import Image from 'next/image';
 
 type CardProps = {
     recipe: recipeType;
@@ -77,9 +78,11 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                 onClick={() => { setIsActive(true) }}>
                 <div className='flex flex-row items-center'>
                     <div className='inline-block w-[60px] overflow-hidden relative rounded-md aspect-square mr-2'>
-                        <img src={`/images/sandwich_menu/${recipe.sandwich_table_sandwich_name}.png`}
+                        <Image src={`/images/sandwich_menu/${recipe.sandwich_table_sandwich_name}.png`}
                             className='relative object-cover scale-[2.7] origin-[85%_40%]'
-                            alt={recipe.sandwich_table_sandwich_name}></img>
+                            alt={recipe.sandwich_table_sandwich_name}
+                            width={120}
+                            height={120} />
                     </div>
                     <div className='flex flex-col w-full'>
                         <Link href={`/Recipes?param=${encodeURIComponent(recipe.sandwich_table_sandwich_name)}`}
@@ -93,14 +96,20 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                 </div>
                 <section className='flex flex-row overflow-hidden flex-wrap h-[140px]'>
                     {ingredients.map((item, index) =>
-                        index < 7 && <img src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-[70px] h-[70px] rounded-md' alt={item}></img>)
+                        index < 7 && <Image src={'/images/sandwich_menu/ingredients/' + item + '.jpg'}
+                            key={item} className='object-cover w-[70px] h-[70px] rounded-md' 
+                            alt={item}
+                            width={120}
+                            height={120}></Image>)
                     }
                     {ingredients.length > 7 && <HiEllipsisHorizontal className='text-gray-500 w-[70px] h-fit' />}
                 </section>
                 <div className='flex flex-row justify-end mt-auto text-gray-400'>
                     <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_table_user_id}</div>
                     <button className='flex items-center mr-2'
-                        onClick={(e) => { e.stopPropagation(); }}><HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}</button>
+                        onClick={(e) => { e.stopPropagation(); }}>
+                        <HiOutlineChatBubbleLeft className='m-1' />{recipe.reply_count}
+                    </button>
                     <button className='flex items-center mr-2 hover:text-green-600 active:scale-150 transition-transform'
                         onClick={(e) => { e.stopPropagation(); recipeLikeHandler() }}>
                         {likeRecipe.find(item => item == recipe.recipe_id) ? <PiHeartStraightFill className='m-1 text-green-600' /> : <PiHeartStraight className='m-1' />}{likeCount}

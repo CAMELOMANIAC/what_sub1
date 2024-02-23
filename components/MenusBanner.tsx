@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { menuArrayType } from '../utils/menuArray';
 import useMenuLike from '../utils/menuLikeHook';
+import Image from 'next/image';
 
 const StyledDiv = styled.div`
     background: linear-gradient(45deg, rgb(234 179 8 / var(--tw-bg-opacity))0%, rgb(234 179 8 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity))40%, rgb(22 163 74 / var(--tw-bg-opacity)) 100%);
@@ -22,7 +23,7 @@ const MenusBanner = ({ selected, sessionCheck }: propsType) => {
         <StyledDiv className="absolute w-screen min-w-[1024px] right-0 mx-auto h-[300px] grid grid-cols-6 bg-white overflow-hidden">
             {/*메뉴 간단정보*/}
             <div className="col-span-3 h-[300px]">
-                <img src={`/images/sandwich_menu/${selected.name}.png`} alt={selected.name} className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></img>
+                <Image width={600} height={600} src={`/images/sandwich_menu/${selected.name}.png`} alt={selected.name} className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></Image>
             </div>
             <div className="col-span-3 whitespace-pre-line flex flex-col justify-center">
                 <div className='flex flex-row items-center text-white pb-4'>
@@ -33,7 +34,7 @@ const MenusBanner = ({ selected, sessionCheck }: propsType) => {
                 </div>
                 <div className='text-white/70 mb-2'>{selected.summary}</div>
                 <div className='flex flex-row'>{selected.ingredients.map((item) =>
-                    <img src={'/images/sandwich_menu/ingredients/' + item} key={item} className='object-cover w-10 aspect-square rounded-md mr-1 mb-8' alt='item'></img>
+                    <Image width={100} height={100} src={'/images/sandwich_menu/ingredients/' + item} key={item} className='object-cover w-10 aspect-square rounded-md mr-1 mb-8' alt='item'></Image>
                 )}</div>
                 <div className='flex flex-row'>
                     <Link href={{

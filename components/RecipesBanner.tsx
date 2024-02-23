@@ -19,6 +19,7 @@ import { BiSolidBaguette, BiSolidCheese } from 'react-icons/bi';
 import { MdOutdoorGrill } from 'react-icons/md';
 import useMenuLike from '../utils/menuLikeHook';
 import { useQuery } from 'react-query';
+import Image from 'next/image';
 
 export const StyleTag = styled.button`
     height:100%;
@@ -190,7 +191,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     <div className="flex flex-col justify-start pt-4 pb-10 w-full max-w-[1024px]">
                         <div className='flex flex-row pb-5 pl-4 border-l'>
                             <div className='inline-block w-[100px] overflow-hidden relative rounded-md aspect-square'>
-                                <img src={`/images/sandwich_menu/${selected[0].name}.png`} alt={`${selected[0].name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                                <Image width={350} height={350} src={`/images/sandwich_menu/${selected[0].name}.png`} alt={`${selected[0].name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]'></Image>
                             </div>
                             <div className='whitespace-pre-line'>
                                 <div className='flex items-center m-2'>
@@ -227,8 +228,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                 {breadTop && breadTop.map((item, index) => (
                                     <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
                                         <span className='col-span-5 flex items-center justify-start'>
-                                            <img
-                                                src={'images/sandwich_menu/ingredients/' + item + '.jpg'}
+                                            <Image width={70} height={70}
+                                                src={'/images/sandwich_menu/ingredients/' + item + '.jpg'}
                                                 alt={item}
                                                 className='w-12 aspect-square inline object-cover'
                                             />
@@ -252,8 +253,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
                                                 <React.Fragment key={subItem + subIndex}>
                                                     {subIndex !== 0 && '+'}
-                                                    <img
-                                                        src={'images/sandwich_menu/ingredients/' + subItem + '.jpg'}
+                                                    <Image width={50} height={50}
+                                                        src={'/images/sandwich_menu/ingredients/' + subItem + '.jpg'}
                                                         alt={subItem}
                                                         className='w-12 aspect-square inline object-cover'
                                                     />
@@ -320,10 +321,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row my-2'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <span className='w-10 aspect-square overflow-hidden rounded-md'>
-                                                <img src={`/images/sandwich_menu/${item.sandwich_name}.png`}
+                                                <Image width={100} height={100} src={`/images/sandwich_menu/${item.sandwich_name}.png`}
                                                     className='relative object-cover scale-[2.7] origin-[85%_40%]'
                                                     alt='item.sandwich_name'>
-                                                </img>
+                                                </Image>
                                             </span>
                                             <span className='text-black ml-1 font-bold'>{item.sandwich_name}</span>
                                         </span>

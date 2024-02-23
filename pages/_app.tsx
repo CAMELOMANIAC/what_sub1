@@ -7,6 +7,7 @@ import { AppProps } from 'next/app';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Image from 'next/image';
 
 // 전역적으로 사용되는 부분
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -87,7 +88,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <div className="w-screen h-screen flex flex-col justify-center items-center top-0 left-0 fixed bg-white" >
               <p className='text-green-600 font-bold text-2xl'>이번열차: <span className='text-yellow-600'>{destination}</span><br /> 열차가 잠시후 도착합니다</p>
               <div className='overflow-hidden animate-pulse w-full'>
-                <img src={'/images/front_banner.png'} width={100} ref={sandwichRef} className='absolute' alt='front_banner'></img>
+                <Image width={100} height={100} src={'/images/front_banner.png'} ref={sandwichRef} className='absolute' alt='front_banner'></Image>
               </div>
             </div>}
         </Provider>

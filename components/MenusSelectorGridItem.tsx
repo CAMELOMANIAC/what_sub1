@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styled from "styled-components";
 
 const Marquee = styled.div`
@@ -31,7 +32,7 @@ const MenusSelectorGridItem: React.FC<MenusSelectorGridItemProps> = ({ menuName,
         <button className="col-span-1" onClick={clickHandler}>
             <Marquee>
                 <div className={`overflow-hidden relative rounded-md aspect-square bg-gray-100 ${className}`}>
-                    <img src={src} className='relative object-cover scale-[2.7] origin-[85%_40%]' alt={src}></img>
+                    <Image width={200} height={200} src={src} className='relative object-cover scale-[2.7] origin-[85%_40%]' alt={src}></Image>
                 </div>
                 <div className='text-left text-xs text-gray-600 align-top leading-3 text-ellipsis overflow-hidden whitespace-nowrap mt-1'>
                     <span>{menuName}</span>

@@ -3,6 +3,7 @@ import IngredientsSection from './sub/IngredientsSection';
 import { menuNutrientArray } from '../../utils/menuArray';
 import { FaDotCircle } from 'react-icons/fa';
 import EmptyRadioBox from './sub/EmptyRadioBox';
+import Image from 'next/image';
 
 export type propsType = {
     prop: {
@@ -31,7 +32,7 @@ const AddMeatSection = ({ prop, param }: propsType) => {
                                     <FaDotCircle className='relative w-6 h-6 mr-2 text-white border rounded-full group-hover:border-1 group-hover:border-gray-500'></FaDotCircle>
                                 }
                                 <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1 mr-2'>
-                                    <img src={'/images/sandwich_menu/' + item.name + '.png'} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                                    <Image width={100} height={100} src={'/images/sandwich_menu/' + item.name + '.png'} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></Image>
                                 </div>
                                 <span className='font-[noto-sans]'>{item.name} 추가</span>
                                 <input className='peer invisible absolute' type='checkBox' onChange={prop.onChange} value={item.name}></input>

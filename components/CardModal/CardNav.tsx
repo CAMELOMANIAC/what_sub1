@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import { BiSolidBaguette, BiSolidCheese } from 'react-icons/bi';
 import { GiTomato, GiKetchup, GiMeat } from 'react-icons/gi';
@@ -48,10 +49,10 @@ const Nav = ({ className, setPage, page }: props) => {
             resizeObserver.observe(buttonRefArray.current[0]);
         }
 
+        const currentButtonRefArray = buttonRefArray.current[0];
         return () => {
-            if (buttonRefArray.current[0]) {
-                // eslint-disable-next-line react-hooks/exhaustive-deps
-                resizeObserver.unobserve(buttonRefArray.current[0]);
+            if (currentButtonRefArray) {
+                resizeObserver.unobserve(currentButtonRefArray);
             }
         };
     }, []);
@@ -70,7 +71,12 @@ const Nav = ({ className, setPage, page }: props) => {
 
     return (
         <nav className={className}>
-            <img src='/images/front_banner.png' className='absolute left-10 transition-all duration-200' ref={sandwichRef} alt='front_banner'></img>
+            <Image src='/images/front_banner.png'
+                className='absolute left-10 transition-all duration-200'
+                ref={sandwichRef}
+                alt='front_banner'
+                width={60}
+                height={100}/>
             <ul className='h-full font-bold flex flex-col items-end '>
                 {buttonArray.map((items, index) => buttons(index, items.name, items.icon))}
             </ul>

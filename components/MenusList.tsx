@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { menuArray, menuArrayType } from '../utils/menuArray';
+import Image from 'next/image';
 
 type propsType = {
     setSelected: React.Dispatch<React.SetStateAction<menuArrayType>>
@@ -97,7 +98,7 @@ const MenusList = ({ setSelected }: propsType) => {
                 <button key={index} className='flex items-stretch w-full' onClick={() => setSelected(item)}>
                     <span className="flex justify-center items-center  w-[10%] text-center text-gray-400">{index + 1}</span>
                     <div className='inline-block w-10 overflow-hidden relative rounded-md aspect-square m-auto my-1'>
-                        <img src={`/images/sandwich_menu/${item.name}.png`} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></img>
+                        <Image width={100} height={100} src={`/images/sandwich_menu/${item.name}.png`} alt={item.name} className='relative object-cover scale-[2.7] origin-[85%_40%]'></Image>
                     </div>
                     <span className="flex justify-start items-center  w-[30%] font-bold pl-2">{item.name}</span>
                     <span className={`flex justify-center items-center w-[15%] text-center ` + `${((order === 'favorit') || (order === 'reverseFavorit')) && 'bg-gray-100 '}`}>{item.favorit}</span>

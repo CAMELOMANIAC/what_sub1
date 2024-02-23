@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import ProgressBar from './ProgressBar';
 import { progressBarButtonsType } from '../../pages/AddRecipe';
+import Image from 'next/image';
 
 const NavBackground = styled.div`
     position: fixed;
@@ -32,10 +33,9 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
 
     //observerApi로 관찰
     const [activeSection, setActiveSection] = useState<number>(0);
-    let observer: IntersectionObserver;
+    
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        observer = new IntersectionObserver((entries) => {
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {//isIntersecting속성은 감지 영역에 들어온 요소만 가지는 속성
                     switch (entry.target.id) {
@@ -60,12 +60,12 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [progressBarButtons]);
 
     return (
         <NavBackground className='p-6 grid grid-cols-7 grid-rows-1 font-[seoul-metro]'>
             <NavSandwich $activesection={activeSection}>
-                <img src='/images/front_banner.png' className='w-10' alt='샌드위치 이미지'/>
+                <Image width={60} height={100} src='/images/front_banner.png' className='w-10' alt='샌드위치 이미지'/>
             </NavSandwich>
             {progressBarButtons.map((button) => (
                 <ProgressBar

@@ -36,7 +36,6 @@ module.exports = {
         "react/react-in-jsx-scope": "off",
         'no-unused-vars': "off",
         '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-        "@next/next/no-img-element": "off",
     },
     "settings": {
         "react": {

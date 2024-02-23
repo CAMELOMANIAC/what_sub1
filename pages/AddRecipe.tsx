@@ -15,6 +15,7 @@ import RecipeNameSection from '../components/ingredientSection/RecipeNameSection
 import { recipeContextType } from '../interfaces/AddRecipe';
 import RecipeNav from '../components/RecipeNav/RecipeNav';
 import { useMutation } from 'react-query';
+import Image from 'next/image';
 
 export type progressBarButtonsType = {
     id: string,
@@ -145,7 +146,7 @@ const AddRecipe = ({ param }: { param: string }) => {
                     <div className="col-span-3 h-[300px] mt-[10%] sticky top-[10%]">
                         <h2 className='text-2xl ml-8 '>{param}</h2>
                         <div className='whitespace-pre-line ml-8 text-sm'>{menuArray[index].summary}</div>
-                        <img src={`/images/sandwich_menu/${param}.png`} alt={String(param)} className='object-contain object-right h-[350px] drop-shadow-lg'></img>
+                        <Image width={500} height={350} src={`/images/sandwich_menu/${param}.png`} alt={String(param)} className='object-contain object-right h-[350px] drop-shadow-lg'></Image>
 
                         <h3 className='ml-8 text-gray-500 group'>
                             영양성분표시

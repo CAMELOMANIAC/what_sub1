@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { MemoizedChart } from '../IngredientRadarChart';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import Image from 'next/image';
 
 type props = {
     recipe: recipeType,
@@ -35,7 +36,7 @@ const SummaryPage = ({ recipe, className }: props) => {
     const scrollRef = useRef<HTMLUListElement>(null);
 
     const getReply = async ({ queryKey }) => {
-        const [_key, recipeId] = queryKey;//eslint-disable-line
+        const [, recipeId] = queryKey;
         try {
             const response = await fetch(`/api/recipes/reply?recipeId=${recipeId}`);
             if (response.status === 200) {
@@ -133,9 +134,9 @@ const SummaryPage = ({ recipe, className }: props) => {
                 <section className='col-span-1'>
                     <div className='flex flex-row items-center'>
                         <div className='inline-block w-[60px] overflow-hidden relative rounded-md aspect-square mr-2'>
-                            <img src={`/images/sandwich_menu/${recipe.sandwich_table_sandwich_name}.png`}
+                            <Image src={`/images/sandwich_menu/${recipe.sandwich_table_sandwich_name}.png`}
                                 className='relative object-cover scale-[2.7] origin-[85%_40%]'
-                                alt={recipe.sandwich_table_sandwich_name}></img>
+                                alt={recipe.sandwich_table_sandwich_name} width={120} height={120}></Image>
                         </div>
                         <div className='flex flex-col'>
                             <Link href={`/Recipes?param=${encodeURIComponent(recipe.sandwich_table_sandwich_name)}`}
@@ -148,7 +149,7 @@ const SummaryPage = ({ recipe, className }: props) => {
                     </div>
                     <div>{recipe.tag}</div>
                     <div className='flex flex-row overflow-hidden flex-wrap'>{ingredientsArray.map((item) =>
-                        <img src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></img>
+                        <Image width={70} height={70} src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></Image>
                     )}</div>
                     <div className='flex flex-row justify-end mt-auto text-gray-400'>
                         <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_table_user_id}</div>
