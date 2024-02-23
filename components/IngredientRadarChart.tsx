@@ -56,7 +56,7 @@ const IngredientsRadarChart = ({ context }: { context: recipeContextType }) => {
             }
         })
     }, [context])
-    
+
     const data = [
         {
             "subject": "칼로리",
