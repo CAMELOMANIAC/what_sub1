@@ -128,6 +128,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
             console.log(param, selected);
             const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${param}`);
             if (response.ok) {
+                console.log(await response.json);
                 return await response.json();
             }
             else {
