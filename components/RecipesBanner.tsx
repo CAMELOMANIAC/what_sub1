@@ -133,7 +133,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     );
     useEffect(() => {
         if (ingredientSauce.data) {
-            let parsedResult = ingredientSauce.data.map(item => item?.combined_ingredients.split(', '));
+            let parsedResult = ingredientSauce.data.map(item => item?.combined_ingredients?.split(', '));
             setSauceTop(parsedResult ?? []);
             parsedResult = ingredientSauce.data.map(item => item.likes);
             setSauceTopLike(parsedResult);
