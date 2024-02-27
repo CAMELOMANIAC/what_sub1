@@ -157,7 +157,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
             else {
                 throw new Error('실패')
             }
-        }, { enabled: !!router.query.param });
+        }, { enabled: !router.query.param });
 
     const selected: MenuItem[] = useMemo(() => {
         if (router.isReady) {
