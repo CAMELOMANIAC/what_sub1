@@ -320,8 +320,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>메뉴 좋아요</span>
                                     <span className='col-span-2'>레시피 수</span>
                                 </div>
-                                {menuData && menuData.map((item, index) => (
-                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row my-2'>
+                                {Array.isArray(menuData) && menuData.map((item, index) => (
+                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row my-2 testMenu'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <span className='w-10 aspect-square overflow-hidden rounded-md'>
                                                 <Image width={100} height={100} src={`/images/sandwich_menu/${item.sandwich_name}.png`}
@@ -343,8 +343,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>좋아요 수</span>
                                     <span className='col-span-2'>태그</span>
                                 </div>
-                                {recipeData && recipeData.map((item, index) => (
-                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row h-10 my-2'>
+                                {Array.isArray(recipeData) && recipeData.map((item, index) => (
+                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row h-10 my-2 testRecipe'>
                                         <span className='col-span-5 flex items-center justify-start text-black font-bold'>
                                             {index + 1}
                                             {' ' + item.recipe_name}
