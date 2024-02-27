@@ -112,11 +112,11 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     useEffect(() => {
         if (ingredientBread.data) {
             let parsedResult = ingredientBread.data.map(item => item?.recipe_ingredients);
-            setBreadTop(parsedResult ?? []);
+            setBreadTop(parsedResult);
             parsedResult = ingredientBread.data.map(item => item?.likes);
-            setBreadTopLike(parsedResult ?? []);
+            setBreadTopLike(parsedResult);
             parsedResult = ingredientBread.data.map(item => item?.occurrence);
-            setBreadTopOccurrence(parsedResult ?? []);
+            setBreadTopOccurrence(parsedResult);
         }
     }, [ingredientBread.data]);
 
@@ -134,11 +134,11 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     useEffect(() => {
         if (ingredientSauce.data) {
             let parsedResult = ingredientSauce.data.map(item => item?.combined_ingredients?.split(', '));
-            setSauceTop(parsedResult ?? []);
+            setSauceTop(parsedResult);
             parsedResult = ingredientSauce.data.map(item => item?.likes);
-            setSauceTopLike(parsedResult ?? []);
+            setSauceTopLike(parsedResult);
             parsedResult = ingredientSauce.data.map(item => item?.occurrence);
-            setSauceTopOccurrence(parsedResult ?? []);
+            setSauceTopOccurrence(parsedResult);
         }
     }, [ingredientSauce.data]);
 
