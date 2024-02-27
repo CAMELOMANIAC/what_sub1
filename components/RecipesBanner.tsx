@@ -113,10 +113,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         if (ingredientBread.data) {
             let parsedResult = ingredientBread.data.map(item => item?.recipe_ingredients);
             setBreadTop(parsedResult ?? []);
-            parsedResult = ingredientBread.data.map(item => item.likes);
-            setBreadTopLike(parsedResult);
-            parsedResult = ingredientBread.data.map(item => item.occurrence);
-            setBreadTopOccurrence(parsedResult);
+            parsedResult = ingredientBread.data.map(item => item?.likes);
+            setBreadTopLike(parsedResult ?? []);
+            parsedResult = ingredientBread.data.map(item => item?.occurrence);
+            setBreadTopOccurrence(parsedResult ?? []);
         }
     }, [ingredientBread.data]);
 
@@ -135,10 +135,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         if (ingredientSauce.data) {
             let parsedResult = ingredientSauce.data.map(item => item?.combined_ingredients?.split(', '));
             setSauceTop(parsedResult ?? []);
-            parsedResult = ingredientSauce.data.map(item => item.likes);
-            setSauceTopLike(parsedResult);
-            parsedResult = ingredientSauce.data.map(item => item.occurrence);
-            setSauceTopOccurrence(parsedResult);
+            parsedResult = ingredientSauce.data.map(item => item?.likes);
+            setSauceTopLike(parsedResult ?? []);
+            parsedResult = ingredientSauce.data.map(item => item?.occurrence);
+            setSauceTopOccurrence(parsedResult ?? []);
         }
     }, [ingredientSauce.data]);
 
@@ -155,9 +155,12 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
 
     const selected: MenuItem[] = useMemo(() => {
         if (router.isReady) {
+            console.log(menuArray.filter((item) => (item.name == String(router.query.param).replaceAll('+', ' '))));
             return menuArray.filter((item) => (item.name == String(router.query.param).replaceAll('+', ' ')));
-        } else
+        } else {
+            console.log('빈배열')
             return [];
+        }
     }, [router.isReady, router.query.param]);
 
     useEffect(() => {
@@ -167,7 +170,6 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
             setRecipeLike(menuInfo.data[0].recipe_like_count);
         }
     }, [menuInfo.data]);
-
 
     //쿼리스트링 변경시
     useEffect(() => {
@@ -186,7 +188,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
 
     return (
         <>
-            {router.isReady && selected.length !== 0 ? (
+            {router.isReady && selected && selected.length !== 0 ? (
                 <div className={`relative flex justify-center w-screen right-0 bg-white border-gray-200 border-b min-w-[640px]`} ref={ref}>
                     <Link href={'/Recipes'} className='py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-lg h-1/2' /></Link>
                     <div className="flex flex-col justify-start pt-4 pb-10 w-full max-w-[1024px]">
@@ -227,7 +229,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>좋아요 수</span>
                                 </div>
                                 {breadTop && breadTop.map((item, index) => (
-                                    <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
+                                    <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row breadTest'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <Image width={70} height={70}
                                                 src={'/images/sandwich_menu/ingredients/' + item + '.jpg'}
@@ -249,7 +251,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>좋아요 수</span>
                                 </div>
                                 {sauceTop && sauceTop.map((item, index) => (
-                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row'>
+                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row Test'>
                                         <span className='col-span-5 flex items-center justify-start'>{
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
                                                 <React.Fragment key={subItem + subIndex}>
