@@ -97,7 +97,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     const [menuRecipe, setMenuRecipe] = useState<string>();
     const [recipeLike, setRecipeLike] = useState<string>();
     const loadIngredientsBread = async (query: string) => {
-        const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${query}`);
+        const response = await fetch(`/api/menus/ingredients/bread?sandwichMenu=${query}`);
         if (response.ok) {
             return await response.json();
         }
@@ -106,7 +106,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         }
     }
     const loadIngredientsSauce = async (query: string) => {
-        const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${query}`);
+        const response = await fetch(`/api/menus/ingredients/sauce?sandwichMenu=${query}`);
         if (response.ok) {
             return await response.json();
         }
