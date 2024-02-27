@@ -18,7 +18,6 @@ import { GiKetchup, GiMeat, GiTomato } from 'react-icons/gi';
 import { BiSolidBaguette, BiSolidCheese } from 'react-icons/bi';
 import { MdOutdoorGrill } from 'react-icons/md';
 import useMenuLike from '../utils/menuLikeHook';
-import { useQuery } from 'react-query';
 import Image from 'next/image';
 
 export const StyleTag = styled.button`
@@ -97,77 +96,33 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     const [menuLike, setMenuLike] = useState<string>();
     const [menuRecipe, setMenuRecipe] = useState<string>();
     const [recipeLike, setRecipeLike] = useState<string>();
-
-    const paramQuery = encodeURIComponent(String(router.query.param));
-
-    useQuery(['bread', paramQuery],
-        async ({ queryKey }) => {
-            const [, param] = queryKey;
-            const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${param}`);
-            if (response.ok) {
-                return await response.json();
-            } else {
-                throw new Error('실패');
-            }
-        }, {
-        enabled: !!router.query.param,
-        onError: (error) => console.log(error),
-        onSuccess: (data) => {
-            let parsedResult = data.map(item => item?.recipe_ingredients);
-            setBreadTop(parsedResult);
-            parsedResult = data.map(item => item?.likes);
-            setBreadTopLike(parsedResult);
-            parsedResult = data.map(item => item?.occurrence);
-            setBreadTopOccurrence(parsedResult);
+    const loadIngredientsBread = async (query: string) => {
+        const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${query}`);
+        if (response.status === 200) {
+            return await response.json();
         }
-    });
-
-    useQuery(['sauce', paramQuery],
-        async ({ queryKey }) => {
-            const [, param] = queryKey;
-            console.log(param);
-            const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${param}`);
-            if (response.ok) {
-                const result = await response.json();
-                console.log(result);
-                return result;
-            } else {
-                throw new Error('실패')
-            }
-        }, {
-        enabled: !!router.query.param,
-        onError: (error) => console.log(error),
-        onSuccess: (data) => {
-            console.log('sauce', data);
-            let parsedResult = data.map(item => item?.combined_ingredients?.split(', '));
-            setSauceTop(parsedResult);
-            parsedResult = data.map(item => item?.likes);
-            setSauceTopLike(parsedResult);
-            parsedResult = data.map(item => item?.occurrence);
-            setSauceTopOccurrence(parsedResult);
+        else {
+            return new Error('실패')
         }
-    });
-
-    useQuery(['menuInfo', paramQuery],
-        async ({ queryKey }) => {
-            const [, param] = queryKey;
-            console.log(param);
-            const response = await fetch(`/api/menus/${param}`);
-            if (response.ok) {
-                return await response.json();
-            }
-            else {
-                throw new Error('실패')
-            }
-        }, {
-        enabled: !!router.query.param,
-        onSuccess: (data) => {
-            console.log('menuInfo', data);
-            setMenuLike(data[0].like_count);
-            setMenuRecipe(data[0].recipe_count);
-            setRecipeLike(data[0].recipe_like_count);
+    }
+    const loadIngredientsSauce = async (query: string) => {
+        const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${query}`);
+        if (response.status === 200) {
+            return await response.json();
         }
-    });
+        else {
+            return new Error('실패')
+        }
+    }
+    const loadMenuInfo = async (query: string) => {
+        const response = await fetch(`/api/menus/${query}`);
+        if (response.status === 200) {
+            return await response.json();
+        }
+        else {
+            return new Error('실패')
+        }
+    }
 
     const selected: MenuItem[] = useMemo(() => {
         if (router.isReady) {
@@ -176,15 +131,47 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
             return [];
         }
     }, [router.isReady, router.query.param]);
-
+    
     //쿼리스트링 변경시
     useEffect(() => {
         if (router.isReady) {
+            const { param } = router.query;
             if (router.isReady && selected.length !== 0) {
+                loadIngredientsBread(encodeURIComponent(String(param))).then(result => {
+                    if (result instanceof Error) {
+                        return
+                    }
+                    let parsedResult = result.map(item => item.recipe_ingredients);
+                    setBreadTop(parsedResult);
+                    parsedResult = result.map(item => item.likes);
+                    setBreadTopLike(parsedResult);
+                    parsedResult = result.map(item => item.occurrence);
+                    setBreadTopOccurrence(parsedResult);
+                });
+                loadIngredientsSauce(encodeURIComponent(String(param))).then(result => {
+                    if (result instanceof Error) {
+                        return
+                    }
+                    let parsedResult = result.map(item => item.combined_ingredients.split(', '));
+                    setSauceTop(parsedResult);
+                    parsedResult = result.map(item => item.likes);
+                    setSauceTopLike(parsedResult);
+                    parsedResult = result.map(item => item.occurrence);
+                    setSauceTopOccurrence(parsedResult);
+                });
+                loadMenuInfo(encodeURIComponent(String(param))).then(result => {
+                    if (result instanceof Error) {
+                        return
+                    }
+                    setMenuLike(result[0].like_count);
+                    setMenuRecipe(result[0].recipe_count);
+                    setRecipeLike(result[0].recipe_like_count);
+                });
                 setSelectedName(selected[0]?.name);
             }
         }
     }, [router.isReady, router.query, selected])
+
 
     const [selectedName, setSelectedName] = useState('');
     const { isLike, menuLikeHandler } = useMenuLike(selectedName);
