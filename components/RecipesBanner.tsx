@@ -137,6 +137,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         enabled: !!router.query.param,
         onError: (error) => console.log(error),
         onSuccess: (data) => {
+            console.log(data.map(item => item?.combined_ingredients?.split(', ')));
             let parsedResult = data.map(item => item?.combined_ingredients?.split(', '));
             setSauceTop(parsedResult);
             parsedResult = data.map(item => item?.likes);
