@@ -101,14 +101,17 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     const paramQuery = encodeURIComponent(String(router.query.param));
     const ingredientBread = useQuery(['bread', paramQuery],
         async ({ queryKey }) => {
-            const [, paramQuery] = queryKey;
-            const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${paramQuery}`);
+            const [, param] = queryKey;
+            const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${param}`);
             if (response.ok) {
                 return await response.json();
             } else {
                 throw new Error('실패');
             }
-        }, { enabled: !!router.query.param }//쿼리스트링이 있을때만 실행
+        }, {
+        enabled: !!router.query.param,
+        onError: (error) => console.log(error)
+    }//쿼리스트링이 있을때만 실행
     );
     useEffect(() => {
         if (ingredientBread.data) {
@@ -123,8 +126,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
 
     const ingredientSauce = useQuery(['sauce', paramQuery],
         async ({ queryKey }) => {
-            const [, paramQuery] = queryKey;
-            const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${paramQuery}`);
+            const [, param] = queryKey;
+            console.log(param,selected);
+            const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${param}`);
             if (response.ok) {
                 return await response.json();
             }
@@ -195,7 +199,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
 
     return (
         <>
-            {router.isReady && selected && selected.length !== 0 ? (
+            {router.isReady && router.query.param && (router.query.param).length !== 0 ? (
                 <div className={`relative flex justify-center w-screen right-0 bg-white border-gray-200 border-b min-w-[640px]`} ref={ref}>
                     <Link href={'/Recipes'} className='py-10 my-auto h-full bg-gray-100 hover:text-green-600'><IoIosArrowBack className='inline text-lg h-1/2' /></Link>
                     <div className="flex flex-col justify-start pt-4 pb-10 w-full max-w-[1024px]">
