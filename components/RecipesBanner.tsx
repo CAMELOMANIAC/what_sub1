@@ -92,8 +92,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     const [breadTopLike, setBreadTopLike] = useState<string[]>();
     const [breadTopOccurrence, setBreadTopOccurrence] = useState<string[]>();
     const [sauceTop, setSauceTop] = useState<string[][]>();
-    const [sauceTopLike, setSauceTopLike] = useState<string[]>();
-    const [sauceTopOccurrence, setSauceTopOccurrence] = useState<string[]>();
+    // const [sauceTopLike, setSauceTopLike] = useState<string[]>();
+    // const [sauceTopOccurrence, setSauceTopOccurrence] = useState<string[]>();
     const [menuLike, setMenuLike] = useState<string>();
     const [menuRecipe, setMenuRecipe] = useState<string>();
     const [recipeLike, setRecipeLike] = useState<string>();
@@ -136,9 +136,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
             let parsedResult = ingredientSauce.data.map(item => item?.combined_ingredients?.split(', '));
             setSauceTop(parsedResult);
             parsedResult = ingredientSauce.data.map(item => item?.likes);
-            setSauceTopLike(parsedResult);
-            parsedResult = ingredientSauce.data.map(item => item?.occurrence);
-            setSauceTopOccurrence(parsedResult);
+            // setSauceTopLike(parsedResult);
+            // parsedResult = ingredientSauce.data.map(item => item?.occurrence);
+            // setSauceTopOccurrence(parsedResult);
         }
     }, [ingredientSauce.data]);
 
@@ -252,7 +252,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>좋아요 수</span>
                                 </div>
-                                {Array.isArray(sauceTop) && sauceTop.map((item, index) => (
+                                {/* {Array.isArray(sauceTop) && sauceTop.map((item, index) => (
                                     <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row sauceTest'>
                                         <span className='col-span-5 flex items-center justify-start'>{
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
@@ -270,7 +270,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopOccurrence && Math.round((parseInt(sauceTopOccurrence[index]) / parseInt(menuRecipe!)) * 100)}%</span>
                                         <span className='col-span-2 flex items-center justify-center text-sm text-black font-bold'>{sauceTopLike && sauceTopLike[index]}</span>
                                     </div>
-                                ))}
+                                ))} */}
                             </div>
                         </div>
                     </div>
