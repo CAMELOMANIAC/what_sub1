@@ -128,7 +128,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
             console.log(param);
             const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${param}`);
             if (response.ok) {
-                return response.json();
+                const result = await response.json();
+                console.log(result);
+                return result;
             } else {
                 throw new Error('실패')
             }
