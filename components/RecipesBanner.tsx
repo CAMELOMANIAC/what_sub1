@@ -155,13 +155,15 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
 
     const selected: MenuItem[] = useMemo(() => {
         if (router.isReady) {
-            console.log(menuArray.filter((item) => (item.name == String(router.query.param).replaceAll('+', ' '))));
             return menuArray.filter((item) => (item.name == String(router.query.param).replaceAll('+', ' ')));
         } else {
-            console.log('빈배열')
             return [];
         }
     }, [router.isReady, router.query.param]);
+
+    useEffect(() => {
+        console.log(sauceTop);
+    }, [sauceTop]);
 
     useEffect(() => {
         if (menuInfo.data) {
