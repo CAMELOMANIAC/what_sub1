@@ -228,7 +228,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>좋아요 수</span>
                                 </div>
-                                {breadTop && breadTop.map((item, index) => (
+                                {Array.isArray(breadTop) && breadTop.map((item, index) => (
                                     <div key={item} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row breadTest'>
                                         <span className='col-span-5 flex items-center justify-start'>
                                             <Image width={70} height={70}
@@ -250,8 +250,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                                     <span className='col-span-2'>조합 선택율</span>
                                     <span className='col-span-2'>좋아요 수</span>
                                 </div>
-                                {sauceTop && sauceTop.map((item, index) => (
-                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row Test'>
+                                {Array.isArray(sauceTop) && sauceTop.map((item, index) => (
+                                    <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row sauceTest'>
                                         <span className='col-span-5 flex items-center justify-start'>{
                                             item.map((subItem, subIndex) => (//<React.Fragment>태그를 이용하면 실제 렌더링하지 않고 태그를 묶어서 사용할 수 있고 속성도 사용할수있다 (<></>은 똑같지만 속성 못 씀)
                                                 <React.Fragment key={subItem + subIndex}>
