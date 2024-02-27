@@ -99,8 +99,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     const [recipeLike, setRecipeLike] = useState<string>();
 
     const paramQuery = encodeURIComponent(String(router.query.param));
-    const ingredientBread = useQuery(['bread'],
-        async () => {
+    const ingredientBread = useQuery(['bread', paramQuery],
+        async ({ queryKey }) => {
+            const [, paramQuery] = queryKey;
             const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${paramQuery}`);
             if (response.ok) {
                 return await response.json();
@@ -120,8 +121,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         }
     }, [ingredientBread.data]);
 
-    const ingredientSauce = useQuery(['sauce'],
-        async () => {
+    const ingredientSauce = useQuery(['sauce', paramQuery],
+        async ({ queryKey }) => {
+            const [, paramQuery] = queryKey;
             const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${paramQuery}`);
             if (response.ok) {
                 return await response.json();
@@ -129,7 +131,10 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
             else {
                 throw new Error('실패')
             }
-        }, { enabled: !!router.query.param }
+        }, {
+        enabled: !!router.query.param,
+        onError: (error) => console.log(error)
+    }
     );
     useEffect(() => {
         if (ingredientSauce.data) {
