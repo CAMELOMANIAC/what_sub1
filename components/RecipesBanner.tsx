@@ -133,8 +133,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     );
     useEffect(() => {
         if (ingredientSauce.data) {
-            let parsedResult = ingredientSauce.data.map(item => item.combined_ingredients.split(', '));
-            setSauceTop(parsedResult);
+            let parsedResult = ingredientSauce.data.map(item => item?.combined_ingredients.split(', '));
+            setSauceTop(parsedResult ?? []);
             parsedResult = ingredientSauce.data.map(item => item.likes);
             setSauceTopLike(parsedResult);
             parsedResult = ingredientSauce.data.map(item => item.occurrence);
@@ -152,6 +152,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                 throw new Error('실패')
             }
         }, { enabled: !!router.query.param });
+        
     const selected: MenuItem[] = useMemo(() => {
         if (router.isReady) {
             return menuArray.filter((item) => (item.name == String(router.query.param).replaceAll('+', ' ')));
