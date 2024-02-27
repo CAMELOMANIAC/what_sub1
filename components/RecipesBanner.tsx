@@ -146,7 +146,9 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                     setBreadTopOccurrence(parsedResult);
                 });
                 loadIngredientsSauce(encodeURIComponent(String(param))).then(result => {
-                    let parsedResult = result.map(item => item.combined_ingredients.split(', '));
+                    let parsedResult = result.map(item =>typeof item.combined_ingredients === 'string' ? item.combined_ingredients.split(', ') : []);
+                    console.log(result);
+                    console.log(parsedResult);
                     setSauceTop(parsedResult);
                     parsedResult = result.map(item => item.likes);
                     setSauceTopLike(parsedResult);
