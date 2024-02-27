@@ -86,13 +86,13 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 					<input className='border-2 w-[300px] p-2 rounded' onChange={handleChangePwd} type="password" id="userPwd" placeholder="비밀번호"></input>
 				</section>
 				<button onClick={handleLogin} className="flex items-center rounded w-[300px] h-[45px] bg-green-600 text-white ">
-					<Image src="/images/샌드위치-아이콘.svg" className="m-[7.5px] mr-0 h-[30px] invert" alt="샌드위치_아이콘"></Image>
+					<Image src="/images/샌드위치-아이콘.svg" className="m-[7.5px] mr-0 h-[30px] invert" alt="샌드위치_아이콘" width={150} height={100}></Image>
 					<div className="flex justify-center items-center w-full text-sm mr-[7.5px] my-auto">일반 로그인</div>
 				</button>
 				<div className="h-5">
 				</div>
 				<button onClick={handleKakaoLogin}>
-					<Image src="/images/kakao_login_medium_wide.png" alt="카카오 로그인" />
+					<Image src="/images/kakao_login_medium_wide.png" alt="카카오 로그인" width={100} height={100}/>
 				</button>
 				<section className="text-sm">
 					아직 회원이 아니신가요?
