@@ -111,8 +111,8 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     );
     useEffect(() => {
         if (ingredientBread.data) {
-            let parsedResult = ingredientBread.data.map(item => item.recipe_ingredients);
-            setBreadTop(parsedResult);
+            let parsedResult = ingredientBread.data.map(item => item?.recipe_ingredients);
+            setBreadTop(parsedResult ?? []);
             parsedResult = ingredientBread.data.map(item => item.likes);
             setBreadTopLike(parsedResult);
             parsedResult = ingredientBread.data.map(item => item.occurrence);
@@ -152,7 +152,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
                 throw new Error('실패')
             }
         }, { enabled: !!router.query.param });
-        
+
     const selected: MenuItem[] = useMemo(() => {
         if (router.isReady) {
             return menuArray.filter((item) => (item.name == String(router.query.param).replaceAll('+', ' ')));
