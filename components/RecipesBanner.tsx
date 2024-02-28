@@ -103,7 +103,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     useQuery(['bread', paramQuery],
         async ({ queryKey }) => {
             const [, param] = queryKey;
-            const response = await fetch(`/api/menus/ingredientsBread?sandwichMenu=${param}`);
+            const response = await fetch(`/api/menus/ingredients/bread?sandwichMenu=${param}`);
             if (response.ok) {
                 return await response.json();
             } else {
@@ -126,7 +126,7 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         async ({ queryKey }) => {
             const [, param] = queryKey;
             console.log(param);
-            const response = await fetch(`/api/menus/ingredientsSauce?sandwichMenu=${param}`);
+            const response = await fetch(`/api/menus/ingredients/sauce?sandwichMenu=${param}`);
             if (response.ok) {
                 return response.json();
             } else {
