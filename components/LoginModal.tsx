@@ -92,7 +92,7 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 				<div className="h-5">
 				</div>
 				<button onClick={handleKakaoLogin}>
-					<Image src="/images/kakao_login_medium_wide.png" alt="카카오 로그인" width={100} height={100}/>
+					<Image src="/images/kakao_login_medium_wide.png" alt="카카오 로그인" width={300} height={45}/>
 				</button>
 				<section className="text-sm">
 					아직 회원이 아니신가요?

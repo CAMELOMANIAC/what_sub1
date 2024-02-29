@@ -148,9 +148,11 @@ const SummaryPage = ({ recipe, className }: props) => {
                         </div>
                     </div>
                     <div>{recipe.tag}</div>
-                    <div className='flex flex-row overflow-hidden flex-wrap'>{ingredientsArray.map((item) =>
-                        <Image width={70} height={70} src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></Image>
-                    )}</div>
+                    <div className='flex flex-row overflow-hidden flex-wrap'>
+                        {ingredientsArray.map((item) => (item !== 'true' ? item !== 'false' : false) &&
+                            <Image width={70} height={70} src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></Image>
+                        )}
+                    </div>
                     <div className='flex flex-row justify-end mt-auto text-gray-400'>
                         <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_table_user_id}</div>
                         <button className='flex items-center mr-2 hover:text-green-600 active:scale-150 transition-transform'

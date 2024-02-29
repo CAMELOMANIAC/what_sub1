@@ -1,5 +1,6 @@
 import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
-import { HiEllipsisHorizontal, HiOutlineChatBubbleLeft } from 'react-icons/hi2';
+import { HiOutlineChatBubbleLeft } from 'react-icons/hi2';
+import { TbGrill, TbGrillOff } from "react-icons/tb";
 import Link from 'next/link';
 import { forwardRef, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -68,6 +69,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
         if (visibleItem.includes('토스팅')) {
             if (ingredient.includes('true'))
                 ingredients.push('true');
+            else
+                ingredients.push('false');
         }
     }
 
@@ -95,14 +98,16 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ recipe, className }, ref) 
                     {recipeTag.map((item, index) => <span key={index} className={index !== 0 ? 'ml-1' : ''}>{'#' + item}</span>)}
                 </div>
                 <section className='flex flex-row overflow-hidden flex-wrap h-[140px]'>
-                    {ingredients.map((item, index) =>
-                        index < 7 && <Image src={'/images/sandwich_menu/ingredients/' + item + '.jpg'}
-                            key={item} className='object-cover w-[70px] h-[70px] rounded-md' 
-                            alt={item}
-                            width={120}
-                            height={120}></Image>)
+                    {ingredients.map((item) =>
+                        item === 'true' ? <TbGrill key={item} className='object-cover w-[70px] h-[70px] rounded-md text-gray-300' /> :
+                            item === 'false' ? <TbGrillOff key={item} className='object-cover w-[70px] h-[70px] rounded-md text-gray-300' /> :
+                                <Image src={'/images/sandwich_menu/ingredients/' + item + '.jpg'}
+                                    key={item} className='object-cover w-[70px] h-[70px] rounded-md'
+                                    alt={item}
+                                    width={120}
+                                    height={120}>
+                                </Image>)
                     }
-                    {ingredients.length > 7 && <HiEllipsisHorizontal className='text-gray-500 w-[70px] h-fit' />}
                 </section>
                 <div className='flex flex-row justify-end mt-auto text-gray-400'>
                     <div className='mr-auto text-sm text-ellipsis overflow-hidden whitespace-nowrap w-28'>{recipe.user_table_user_id}</div>

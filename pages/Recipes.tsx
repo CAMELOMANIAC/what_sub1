@@ -9,6 +9,8 @@ import { recipeType } from '../interfaces/api/recipes';
 import { totalMenuInfoType } from '../interfaces/api/menus';
 import Head from 'next/head';
 import { useInfiniteQuery } from 'react-query';
+import { MdKeyboardDoubleArrowDown } from 'react-icons/md';
+import { LuLoader2 } from "react-icons/lu";
 
 export async function getServerSideProps() {
     //보여줄 레시피 가져오기
@@ -106,15 +108,15 @@ const Recipes = ({ recipeData, menuData }: propsType) => {
                     {recipes.map((recipe, index) => (
                         <Card key={index} recipe={recipe}></Card>
                     ))}
-                    <div className='col-span-2 md:col-span-4 lg:col-span-6 h-[290px] flex justify-center items-center' ref={scrollAnchor}>
+                    <div className='col-span-2 md:col-span-4 lg:col-span-6 h-[200px] flex justify-center items-center' ref={scrollAnchor}>
                         {endRecipe ?
                             <>
                                 레시피를 모두 읽었어요
                             </>
                             : <>
-                                {hasNextPage && '스크롤을 내려서 더 읽어 볼까요?'}
-                                {isLoading || isFetching && '레시피를 불러오고 있어요'}
-                                {isError && '레시피 불러오는 중에 문제가 발생했어요'}
+                                {hasNextPage && <><p>스크롤을 내려서 더 읽어 볼까요?</p><MdKeyboardDoubleArrowDown className='animate-bounce'/></>}
+                                {isLoading || isFetching && <LuLoader2 className='animate-spin w-10 h-10'/>}
+                                {isError && <><p>레시피 불러오는 중에 문제가 발생했어요</p><p>새로고침 후 다시 시도해주세요</p></>}
                             </>
                         }
                     </div>
