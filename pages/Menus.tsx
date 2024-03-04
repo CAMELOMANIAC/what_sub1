@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { menuArray, menuArrayType } from '../utils/menuArray';
-import { checkSession } from '../utils/checkSession';
 import { totalMenuInfoType } from '../interfaces/api/menus';
 import MenusBanner from '../components/MenusBanner';
 import MenusList from '../components/MenusList';
 import MenusGrid from '../components/MenusGrid';
 import Head from 'next/head';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
-export async function getServerSideProps({ req }) {
-    const cookie = req.headers.cookie;
-    const sessionCheck = await checkSession(cookie);
-
+export async function getServerSideProps() {
     const loadTotalMenuInfo = async () => {
         const result = await fetch(process.env.URL + '/api/menus')
         return result.json();
@@ -18,18 +16,16 @@ export async function getServerSideProps({ req }) {
     const totalMenuInfo = await loadTotalMenuInfo();
     return {
         props: {
-            sessionCheck,
             totalMenuInfo
         },
     };
 }
 
 type props = {
-    sessionCheck: boolean,
     totalMenuInfo: totalMenuInfoType[]
 }
 
-const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
+const Menus = ({ totalMenuInfo }: props) => {
     const fixedMenuArray: menuArrayType[] = menuArray;
     fixedMenuArray.map(menuArray => {
         totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)
@@ -38,7 +34,10 @@ const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
                 menuArray.likeRecipe = parseInt(totalMenuInfo.find(infoArray => infoArray.sandwich_name === menuArray.name)?.recipe_like_count ?? '0'))
             : null
     })
+    
     const [selected, setSelected] = useState<menuArrayType>(menuArray[0]);
+
+    const sessionCheck = useSelector((state: RootState) => state.user.userName)? true : false;
 
     return (
         <>
@@ -48,7 +47,7 @@ const Menus = ({ totalMenuInfo, sessionCheck }: props) => {
             </Head>
             <MenusBanner selected={selected} sessionCheck={sessionCheck}></MenusBanner>
             <main className='w-full max-w-screen-xl mx-auto pt-2 mt-[calc(300px+3rem)]'>
-                <div className="grid grid-cols-4 lg:grid-cols-6 gap-2 w-screen lg:w-[1024px]">
+                <div className="grid grid-cols-4 lg:grid-cols-6 gap-2 w-screen lg:w-[1024px] min-w-[640px]">
                     {/*메뉴 선택기 */}
                     <MenusGrid setSelected={setSelected}></MenusGrid>
                     {/*메뉴 순위 */}
