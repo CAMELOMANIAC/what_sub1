@@ -43,7 +43,6 @@ const SandwichBanner = () => {
                     for (let i = 0; i < rows; i++) {
                         const row: boolean[] = [];
                         for (let j = 0; j < cols; j++) {
-                            // 각 그리드의 좌표를 계산합니다.
                             const x = j * gridWidth;
                             const y = i * gridHeight;
 
@@ -51,7 +50,6 @@ const SandwichBanner = () => {
                             const imageData = context.getImageData(x, y, gridWidth, gridHeight);
 
                             // 이미지 데이터에 어떤 처리를 하거나 체크합니다.
-                            // 이 예제에서는 이미지 데이터가 비어있는지를 체크합니다.
                             let isEmpty = true;
                             for (let k = 0; k < imageData.data.length; k += 4) {
                                 if (imageData.data[k + 3] !== 0) {
@@ -179,7 +177,7 @@ const SandwichBanner = () => {
     }, []);
 
     return (
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <div className='relative w-full h-full'>
             <canvas ref={sandwichRef} className='mx-auto w-80 h-80'></canvas>
             {forkPosition && (
                 <img
@@ -188,7 +186,7 @@ const SandwichBanner = () => {
                     style={{
                         position: 'absolute',
                         top: forkPosition.y,
-                        left: forkPosition.x + 100,
+                        left: forkPosition.x,
                         pointerEvents: 'none',
                         transform: `rotate(${forkPosition.angle + 180}rad)`,
                         transformOrigin: 'top center', // 회전 중심점을 이미지 중앙으로 설정

@@ -63,7 +63,7 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
     }, [progressBarButtons]);
 
     return (
-        <NavBackground className='p-6 grid grid-cols-7 grid-rows-1 font-[seoul-metro]'>
+        <NavBackground className='p-6 hidden md:grid grid-cols-7 grid-rows-1 font-[seoul-metro] '>
             <NavSandwich $activesection={activeSection}>
                 <Image width={60} height={100} src='/images/front_banner.png' className='w-10' alt='샌드위치 이미지'/>
             </NavSandwich>

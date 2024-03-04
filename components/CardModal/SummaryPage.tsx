@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { recipeType, replyType } from '../../interfaces/api/recipes';
-import Link from 'next/link';
 import { PiHeartStraight, PiHeartStraightFill } from 'react-icons/pi';
 import { TbAlertCircle } from 'react-icons/tb';
 import { breadNutrientArray, cheeseNutrientArray, menuNutrientArray, sauceNutrientArray } from '../../utils/menuArray';
@@ -17,7 +16,6 @@ type props = {
 }
 
 const SummaryPage = ({ recipe, className }: props) => {
-
     //재료에 맞게 재분류
     const ingredientsArray = recipe.recipe_ingredients.split(',');
     const param = menuNutrientArray.find((item) => item.name === recipe.sandwich_table_sandwich_name)?.name
@@ -132,22 +130,6 @@ const SummaryPage = ({ recipe, className }: props) => {
         <div className={className}>
             <div className='grid grid-cols-2'>
                 <section className='col-span-1'>
-                    <div className='flex flex-row items-center'>
-                        <div className='inline-block w-[60px] overflow-hidden relative rounded-md aspect-square mr-2'>
-                            <Image src={`/images/sandwich_menu/${recipe.sandwich_table_sandwich_name}.png`}
-                                className='relative object-cover scale-[2.7] origin-[85%_40%]'
-                                alt={recipe.sandwich_table_sandwich_name} width={120} height={120}></Image>
-                        </div>
-                        <div className='flex flex-col'>
-                            <Link href={`/Recipes?param=${encodeURIComponent(recipe.sandwich_table_sandwich_name)}`}
-                                className='text-sm text-gray-400 hover:text-green-600'
-                                onClick={(e) => { e.stopPropagation(); }}>
-                                {recipe.sandwich_table_sandwich_name}
-                            </Link>
-                            <h2 className='text-xl font-bold text-ellipsis overflow-hidden whitespace-nowrap w-[220px]'>{recipe.recipe_name}</h2>
-                        </div>
-                    </div>
-                    <div>{recipe.tag}</div>
                     <div className='flex flex-row overflow-hidden flex-wrap'>
                         {ingredientsArray.map((item) => (item !== 'true' ? item !== 'false' : false) &&
                             <Image width={70} height={70} src={'/images/sandwich_menu/ingredients/' + item + '.jpg'} key={item} className='object-cover w-12 aspect-square rounded-md' alt={item}></Image>
@@ -161,15 +143,7 @@ const SummaryPage = ({ recipe, className }: props) => {
                         </button>
                     </div>
                 </section>
-                <section className='flex justify-center col-span-1'>
-                    <h3 className='text-gray-500 group'>
-                        <TbAlertCircle />
-                        <div className="absolute bg-gray-200 p-1 rounded text-xs invisible group-hover:visible whitespace-pre-line z-10">
-                            {'일일섭취권장량은 2000kcal를 기준으로 작성되었습니다\n샌드위치 재료의 영양성분은 23.10.5 기준 서브웨이 홈페이지 제공 내용입니다.' +
-                                '\n신선채소의 영양성분은 주메뉴에 포함되어 있습니다\n절임채소, 추가재료는 정보가 제공되지 않아 포함되지 않습니다\n후추,소금 정보가 제공되지 않아 포함되지 않습니다' +
-                                '\n메뉴 이름에 치즈가 포함된 재료는 이미 치즈의 영양성분이 포함되어 있으나\n 관련 정보가 제공되지 않아 치즈 영양정보가 중복해서 포함될 수 있습니다'}
-                        </div>
-                    </h3>
+                <section className='flex flex-col justify-center col-span-1'>
                     <MemoizedChart context={{
                         recipeName: '',
                         tagArray: [],
@@ -184,6 +158,14 @@ const SummaryPage = ({ recipe, className }: props) => {
                         sauce: sauce,
                         addIngredient: []
                     }} />
+                    <h3 className='text-gray-500 group z-10 left-0 relative'>
+                        <TbAlertCircle />
+                        <div className="absolute w-80 bg-gray-200 p-1 rounded text-xs invisible group-hover:visible whitespace-pre-line z-10">
+                            {'일일섭취권장량은 2000kcal를 기준으로 작성되었습니다\n샌드위치 재료의 영양성분은 23.10.5 기준 서브웨이 홈페이지 제공 내용입니다.' +
+                                '\n신선채소의 영양성분은 주메뉴에 포함되어 있습니다\n절임채소, 추가재료는 정보가 제공되지 않아 포함되지 않습니다\n후추,소금 정보가 제공되지 않아 포함되지 않습니다' +
+                                '\n메뉴 이름에 치즈가 포함된 재료는 이미 치즈의 영양성분이 포함되어 있으나\n 관련 정보가 제공되지 않아 치즈 영양정보가 중복해서 포함될 수 있습니다'}
+                        </div>
+                    </h3>
                 </section>
                 <section className='col-span-2'>
                     댓글

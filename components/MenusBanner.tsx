@@ -20,7 +20,7 @@ const MenusBanner = ({ selected, sessionCheck }: propsType) => {
     const { isLike, menuLike, menuLikeHandler } = useMenuLike(selected.name);
 
     return (
-        <StyledDiv className="absolute w-screen min-w-[1024px] right-0 mx-auto h-[300px] grid grid-cols-6 bg-white overflow-hidden">
+        <StyledDiv className="absolute w-screen min-w-[1024px] left-0 mx-auto h-[300px] grid grid-cols-6 bg-white overflow-hidden">
             {/*메뉴 간단정보*/}
             <div className="col-span-3 h-[300px]">
                 <Image width={600} height={600} src={`/images/sandwich_menu/${selected.name}.png`} alt={selected.name} className='absolute right-[50%] object-contain object-right h-[350px] drop-shadow-lg'></Image>

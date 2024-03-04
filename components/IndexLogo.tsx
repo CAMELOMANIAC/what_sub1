@@ -61,7 +61,7 @@ const IndexLogo = ({ prevHandler, nextHandler }: PropsType) => {
             decoLineRef.current.style.top = `${divRef.current.offsetTop+(divRef.current.offsetHeight/2)-40}px`;
             decoLineRef.current.style.zIndex = `-1`;
         }
-    }, [])
+    }, [divRef])
 
     return (
         <div className='flex flex-col items-center justify-center mx-auto mb-4 rounded-full w-[100%]'>

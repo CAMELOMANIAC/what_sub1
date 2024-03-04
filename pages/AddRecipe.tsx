@@ -142,8 +142,8 @@ const AddRecipe = ({ param }: { param: string }) => {
                 <meta name="description" content="서브웨이 레시피 작성 및 수정해보세요" />
             </Head>
             <main className={'w-full max-w-screen-lg mx-auto mb-[80px] pt-2'}>
-                <div className='w-[1024px] grid grid-cols-6'>
-                    <div className="col-span-3 h-[300px] mt-[10%] sticky top-[10%]">
+                <div className='w-screen md:w-[1024px] grid grid-cols-2 md:grid-cols-6'>
+                    <div className="hidden md:block md:col-span-3 h-[300px] mt-[10%] sticky top-[10%]">
                         <h2 className='text-2xl ml-8 '>{param}</h2>
                         <div className='whitespace-pre-line ml-8 text-sm'>{menuArray[index].summary}</div>
                         <Image width={500} height={350} src={`/images/sandwich_menu/${param}.png`} alt={String(param)} className='object-contain object-right h-[350px] drop-shadow-lg'></Image>
@@ -162,7 +162,7 @@ const AddRecipe = ({ param }: { param: string }) => {
                         </div>
                     </div>
 
-                    <div className={`col-span-3 pt-[10%] overflow-y-auto`} ref={rootRef}>
+                    <div className={`col-span-3 pt-[10%] p-10 md:p-0 overflow-y-auto min-w-[640px] md:min-w-0`} ref={rootRef}>
                         <RecipeNameSection prop={RecipeNameProp} ref={recipeNameRef} />
                         <AddMeatSection prop={addMeat} param={param} />
                         <BreadSection prop={bread} ref={breadRef} />

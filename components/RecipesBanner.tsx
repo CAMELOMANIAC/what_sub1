@@ -125,7 +125,6 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     useQuery(['sauce', paramQuery],
         async ({ queryKey }) => {
             const [, param] = queryKey;
-            console.log(param);
             const response = await fetch(`/api/menus/ingredients/sauce?sandwichMenu=${param}`);
             if (response.ok) {
                 return response.json();
@@ -136,7 +135,6 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         enabled: !!router.query.param,
         onError: (error) => console.log(error),
         onSuccess: (data) => {
-            console.log('sauce', data);
             let parsedResult = data.map(item => item?.combined_ingredients?.split(', '));
             setSauceTop(parsedResult);
             parsedResult = data.map(item => item?.likes);
@@ -149,7 +147,6 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
     useQuery(['menuInfo', paramQuery],
         async ({ queryKey }) => {
             const [, param] = queryKey;
-            console.log(param);
             const response = await fetch(`/api/menus/${param}`);
             if (response.ok) {
                 return await response.json();
@@ -160,7 +157,6 @@ const RecipesBanner = forwardRef<HTMLDivElement, Props>(({ recipeData, menuData,
         }, {
         enabled: !!router.query.param,
         onSuccess: (data) => {
-            console.log('menuInfo', data);
             setMenuLike(data[0].like_count);
             setMenuRecipe(data[0].recipe_count);
             setRecipeLike(data[0].recipe_like_count);
