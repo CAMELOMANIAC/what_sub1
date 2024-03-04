@@ -10,9 +10,9 @@ type props = {
     page: number
 }
 
-const CardNav = ({ className, setPage, page }: props) => {
+const CardHorizontalNav = ({ className, setPage, page }: props) => {
     const buttonRefArray = useRef<HTMLLIElement[] | null[]>([]);
-    const [sandwichY, setSandwichY] = useState<number>(0);
+    const [sandwichX, setSandwichX] = useState<number>(0);
     const sandwichRef = useRef<HTMLImageElement>(null);
 
     const buttonArray = [
@@ -25,12 +25,12 @@ const CardNav = ({ className, setPage, page }: props) => {
         { name: '소스', icon: <GiKetchup className='inline ml-3' /> },
     ]
 
-    const buttons = (index: number, name: string, icon: React.JSX.Element) => {
+    const buttons = (index: number, name: string) => {
         return (
-            <li className='relative grow border-r-8 border-green-600 flex items-center' key={name} ref={(element) => buttonRefArray.current[index] = element}>
-                <div className='absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600'></div>
-                <button className='mr-5 transition-all duration-200' onClick={() => setPage(index)}>
-                    {name}{icon}
+            <li className='relative col-span-1 grow border-b-8 border-green-600 flex items-center justify-center' key={name} ref={(element) => buttonRefArray.current[index] = element}>
+                <div className='absolute bg-white w-[18px] h-[18px] right-1/2 bottom-0 translate-x-1/2 translate-y-[13px] rounded-full border-[3px] border-green-600'></div>
+                <button className='mb-4' onClick={() => setPage(index)}>
+                    {name}
                 </button>
             </li>
         )
@@ -41,7 +41,7 @@ const CardNav = ({ className, setPage, page }: props) => {
     useEffect(() => {
         const resizeObserver = new ResizeObserver(() => {
             if (sandwichRef.current) {
-                sandwichRef.current.style.height = `${buttonRefArray.current[0]?.offsetHeight}px`;
+                sandwichRef.current.style.width = `${buttonRefArray.current[0]?.offsetHeight}px`;
             }
         });
 
@@ -59,29 +59,29 @@ const CardNav = ({ className, setPage, page }: props) => {
 
     useEffect(() => {
         if (sandwichRef.current) {
-            sandwichRef.current.style.top = `${sandwichY}px`;
+            sandwichRef.current.style.left = `${sandwichX}px`;
         }
-    }, [sandwichY])
+    }, [sandwichX])
 
     useEffect(() => {
-        const parentTop = buttonRefArray.current[page]?.offsetParent?.getBoundingClientRect().top
-        const childTop = buttonRefArray.current[page]?.getBoundingClientRect().top;
-        setSandwichY(childTop! - parentTop!);
+        const parentTop = buttonRefArray.current[page]?.offsetParent?.getBoundingClientRect().left
+        const childTop = buttonRefArray.current[page]?.getBoundingClientRect().left;
+        setSandwichX(childTop! - parentTop!);
     }, [page])
 
     return (
         <nav className={className}>
+            <ul className='h-full font-bold items-end grid grid-cols-7'>
+                {buttonArray.map((items, index) => buttons(index, items.name))}
+            </ul>
             <Image src='/images/front_banner.png'
-                className='absolute left-10 transition-all duration-200'
+                className='absolute right-1/2 translate-x-1/2 transition-all duration-200'
                 ref={sandwichRef}
                 alt='front_banner'
                 width={60}
                 height={100}/>
-            <ul className='h-full font-bold flex flex-col items-end '>
-                {buttonArray.map((items, index) => buttons(index, items.name, items.icon))}
-            </ul>
         </nav>
     );
 };
 
-export default CardNav;
+export default CardHorizontalNav;
