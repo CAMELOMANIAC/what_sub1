@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from "../redux/reducer/userReducer";
-import { loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
+import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike } from "../../redux/reducer/userReducer";
+import { loadMenuLike, loadRecipeLike } from "../../utils/publicFunction";
 import Link from "next/link";
 import { useMutation, useQuery } from "react-query";
-import Logo from "./Logo";
+import Logo from "../Logo";
 import { GrClose } from "react-icons/gr";
 import Image from "next/image";
 

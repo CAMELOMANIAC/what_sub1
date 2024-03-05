@@ -1,20 +1,23 @@
 import Logo from "./Logo";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaRegUserCircle } from 'react-icons/fa';
 import { FaUserCircle } from 'react-icons/fa';
-import LoginModal from "./LoginModal";
+import LoginModal from "./LoginModal/LoginModal";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../redux/store";
 import { actionLoginChangeId} from '../redux/reducer/userReducer';
 import { getCookieValue } from "../utils/publicFunction";
+import LoginTureModal from "./LoginModal/LoginTureModal";
 
 const GlobalNav = () => {
     const router = useRouter()
-    const [currentPath, setCurrentPath] = useState(router.pathname)//pathname속성은 현재 경로만 저장되는 속성
-    const [isLoginModal, setLoginModal] = useState(false)
+    const [currentPath, setCurrentPath] = useState(router.pathname);//pathname속성은 현재 경로만 저장되는 속성
+    const [isLoginModal, setLoginModal] = useState(false);
+    const [isLoginTureModal, setLoginTureModal] = useState(false);
     const userName = useSelector((state: RootState) => state.user.userName);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     //router.events는 라우터 이벤트로 이벤트객체가 변경될때(=주소창 경로가 바뀔때) 상태값을 변경하는 이벤트핸들러 추가
     useEffect(() => {
@@ -41,11 +44,14 @@ const GlobalNav = () => {
                 <Link href="/" className={`font-[seoul-metro] text-xl py-2 px-6 my-auto text-black hover:text-green-600 ${currentPath == '/' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>홈</Link>
                 <Link href="/Menus" className={`font-[seoul-metro] text-xl py-2 px-6 my-auto text-black hover:text-green-600 ${currentPath.includes('/Menus') && 'border-green-600 border-b-4 text-green-600'}`}>메뉴</Link>
                 <Link href="/Recipes" className={`font-[seoul-metro] text-xl py-2 px-6 my-auto text-black hover:text-green-600 ${currentPath.includes('/Recipes') && 'border-green-600 border-b-4 text-green-600'}`}>레시피</Link>
-                <button className={"absolute flex items-center right-2 top-2 px-1 h-4/6 rounded-full border-green-600 text-sm " + `${userName !== '' ? 'bg-green-600 text-white' : 'text-green-600 bg-white'}`} onClick={() => setLoginModal(true)}>
+                <button className={"absolute flex items-center right-2 top-2 px-1 h-4/6 rounded-full border-green-600 text-sm z-30 " + `${userName !== '' ? 'bg-green-600 text-white' : 'text-green-600 bg-white'}`} 
+                    onClick={() => userName ? setLoginTureModal(true) : setLoginModal(true)}
+                    ref={buttonRef}>
                     {userName === '' && <><span className="m-1">로그인</span><FaUserCircle className="inline text-2xl" /></>}
                     {userName !== '' && <><FaRegUserCircle className="inline text-2xl" /><span className="m-1">{userName}</span></>}
                 </button>
                 {isLoginModal && <LoginModal handleClose={() => setLoginModal(false)} />}
+                {isLoginTureModal && buttonRef.current && <LoginTureModal handleClose={() => setLoginTureModal(false)} buttonRef={buttonRef.current} />}
             </div>
         </div>
     );
