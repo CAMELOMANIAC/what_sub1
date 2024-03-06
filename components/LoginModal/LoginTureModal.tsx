@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { deleteCookie } from "../../utils/publicFunction";
+import { useQuery } from "react-query";
+import { useDispatch } from "react-redux";
+import { actionSetLogoutData } from "../../redux/reducer/userReducer";
 
 type BubbleTailProps = {
     $tailRight?: string;
@@ -34,6 +38,7 @@ const BubbleTail = styled.div<BubbleTailProps>`
 const LoginTureModal = ({handleClose, buttonRef}:{handleClose:()=>void, buttonRef:HTMLButtonElement}) => {
     const ref = useRef<HTMLDivElement>(null);
     const [tailRight, setTailRight] = useState<string>('auto');//tailLeft값을 상태값으로 설정
+    const dispatch = useDispatch();
 
     //모달창 외부 클릭시 모달창 닫기
     useEffect(() => {
@@ -48,7 +53,7 @@ const LoginTureModal = ({handleClose, buttonRef}:{handleClose:()=>void, buttonRe
         };
     }, [handleClose]);
 
-    
+    //모달 위치 설정
     useEffect(() => {
         const rect = buttonRef.getBoundingClientRect();
 
@@ -59,12 +64,28 @@ const LoginTureModal = ({handleClose, buttonRef}:{handleClose:()=>void, buttonRe
         
     }, [buttonRef]);
 
+    //로그아웃 요청
+    const {refetch} = useQuery('user', () => {
+        fetch('/api/users/deleteCookie',{method:'POST'})
+    },{
+        enabled: false,
+        onSuccess:()=>{
+            deleteCookie('user');
+            handleClose();
+            dispatch(actionSetLogoutData());
+        }
+    })
+
+    const logoutHandler = () => {
+        refetch();
+    }
+
     return (
         <BubbleTail ref={ref} className="absolute w-max right-2 bg-white border p-5 text-end" $tailRight={tailRight}>
             <ul>
                 <li>내가 쓴 글</li>
                 <li>내가 좋아요 한 글</li>
-                <li>로그아웃</li>
+                <li><button onClick={()=>logoutHandler()}>로그아웃</button></li>
             </ul>
         </BubbleTail>
     );

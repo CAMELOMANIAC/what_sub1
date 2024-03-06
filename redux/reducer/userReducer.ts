@@ -8,6 +8,8 @@ const ACTION_SET_MENU_LIKE = 'ACTION_SET_MENU_LIKE';
 const ACTION_ADD_MENU_LIKE = 'ACTION_ADD_MENU_LIKE';
 const ACTION_REMOVE_MENU_LIKE = 'ACTION_REMOVE_MENU_LIKE';
 
+const ACTION_SET_LOGOUT_DATA = 'ACTION_SET_LOGOUT_DATA';
+
 type userStateType = {
   userName: string,
   recipeLikeArray: string[],
@@ -65,6 +67,10 @@ const userReducer = (state = initialState, action) => {
         ...state,
         menuLikeArray: state.menuLikeArray.filter(item=>item!==action.payload)
       };
+
+    case ACTION_SET_LOGOUT_DATA:
+      return initialState;
+
     default:
       return state;
   }
@@ -97,6 +103,9 @@ export const actionRemoveMenuLike = (menuId: string) => ({
 export const actionSetMenuLike = (menuId: string[]) => ({
   type: ACTION_SET_MENU_LIKE,
   payload: menuId
+})
+export const actionSetLogoutData = () => ({
+  type: ACTION_SET_LOGOUT_DATA
 })
 
 export default userReducer;
