@@ -86,7 +86,7 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 					<input className='border-2 w-[300px] p-2 rounded' onChange={handleChangePwd} type="password" id="userPwd" placeholder="비밀번호"></input>
 				</section>
 				<button onClick={handleLogin} className="flex items-center rounded w-[300px] h-[45px] bg-green-600 text-white ">
-					<Image src="/images/샌드위치-아이콘.svg" className="m-[7.5px] mr-0 h-[30px] invert" alt="샌드위치_아이콘" width={150} height={100}></Image>
+					<Image src="/images/샌드위치-아이콘.svg" className="m-[7.5px] mr-0 h-[30px] invert" alt="샌드위치_아이콘" width={30} height={30}></Image>
 					<div className="flex justify-center items-center w-full text-sm mr-[7.5px] my-auto">일반 로그인</div>
 				</button>
 				<div className="h-5">

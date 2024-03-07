@@ -4,6 +4,10 @@ import { deleteCookie } from "../../utils/publicFunction";
 import { useQuery } from "react-query";
 import { useDispatch } from "react-redux";
 import { actionSetLogoutData } from "../../redux/reducer/userReducer";
+import { PiHeartStraightFill } from "react-icons/pi";
+import { RiPencilFill } from "react-icons/ri";
+import { IoLogOut } from "react-icons/io5";
+import Link from "next/link";
 
 type BubbleTailProps = {
     $tailRight?: string;
@@ -83,9 +87,9 @@ const LoginTureModal = ({handleClose, buttonRef}:{handleClose:()=>void, buttonRe
     return (
         <BubbleTail ref={ref} className="absolute w-max right-2 bg-white border p-5 text-end" $tailRight={tailRight}>
             <ul>
-                <li>내가 쓴 글</li>
-                <li>내가 좋아요 한 글</li>
-                <li><button onClick={()=>logoutHandler()}>로그아웃</button></li>
+                <li><Link href={'/Recipes?write'}>내가 쓴 글<RiPencilFill className="inline-block text-gray-400"/></Link></li>
+                <li><Link href={'/Recipes?favorite'}>내가 좋아요 한 글<PiHeartStraightFill className="inline-block text-gray-400"/></Link></li>
+                <li><button onClick={()=>logoutHandler()}>로그아웃<IoLogOut className="inline-block text-gray-400"/></button></li>
             </ul>
         </BubbleTail>
     );

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Card from '../components/Card';
 import EmptyCard from '../components/EmptyCard';
-import RecipesBanner from '../components/RecipesBanner';
+import RecipesBanner from '../components/RecipesBanner/RecipesBanner';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';

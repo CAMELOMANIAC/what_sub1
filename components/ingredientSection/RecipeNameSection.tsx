@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, forwardRef, useEffect, useRef, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
-import { StyleTag } from '../RecipesBanner';
+import { StyleTag } from '../RecipesBanner/RecipesBanner';
 import IngredientsSection from './sub/IngredientsSection';
 import { useSearchParams } from 'next/navigation';
 import { throttle } from '../../utils/publicFunction';
