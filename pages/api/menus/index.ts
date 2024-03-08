@@ -23,7 +23,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         }
 
-
     } else {
         // 그 외의 HTTP 메서드 처리
         res.status(405).send({ message: 'Method Not Allowed' });

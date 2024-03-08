@@ -150,7 +150,16 @@ export const getRecipeIngredients = async (sandwichMenu: string, ingredientsType
     }
 }
 
-//좋아요 메뉴 불러오기
+/**
+ * 좋아요 메뉴 불러오기
+ * @param userId - DB에 저장된 사용자 ID. 이 ID는 사용자가 좋아요를 누른 메뉴를 찾는 데 사용됩니다.
+ * @returns {Promise<Array<{ sandwich_table_sandwich_name: string }> | Error>} 좋아요한 메뉴의 이름을 담은 배열을 프로미스객체로 반환합니다. 
+ *          만약 사용자가 좋아요를 누른 메뉴가 없거나, 쿼리 실행 중 에러가 발생하면 Error 객체를 반환합니다.
+ * @throws {Error} - 쿼리 결과가 없거나, 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
+ * @example
+ * getMenuLike('user123'); // returns [{ sandwich_table_sandwich_name: 'B.L.T' }, { sandwich_table_sandwich_name: '에그마요' }]
+ * getMenuLike('user456'); // returns Error('적합한 결과가 없음')
+ */
 export const getMenuLike = async (userId: string): Promise<Array<{ sandwich_table_sandwich_name: string }> | Error> => {
     const query = `SELECT sandwich_table_sandwich_name FROM sandwich_like_table WHERE user_table_user_id = ?;`
     const userIdValue = userId;
@@ -171,7 +180,17 @@ export const getMenuLike = async (userId: string): Promise<Array<{ sandwich_tabl
     }
 }
 
-//메뉴 좋아요 추가
+/**
+ * 메뉴 좋아요 추가
+ * @param menuName - 좋아요를 추가할 메뉴의 이름입니다.
+ * @param userId - 좋아요를 추가할 사용자의 ID입니다.
+ * @returns {Promise<updateReturnType | Error>} 쿼리 실행 결과를 프로미스 객체로 반환합니다. 
+ *          만약 쿼리 실행 중 에러가 발생하면 Error 객체를 반환합니다.
+ * @throws {Error} - 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
+ * @example
+ * insertMenuLike('에그마요', 'user123'); // returns { fieldCount: 0, affectedRows: 1, ... }
+ * insertMenuLike('에그마요', 'user456'); // returns Error('적합한 결과가 없음')
+ */
 export const insertMenuLike = async (menuName: string, userId: string): Promise<updateReturnType | Error> => {
     const query = `INSERT INTO sandwich_like_table(sandwich_table_sandwich_name,user_table_user_id) values (?,?);`
     const menuNameValue = menuName;
@@ -192,7 +211,17 @@ export const insertMenuLike = async (menuName: string, userId: string): Promise<
     }
 }
 
-//메뉴 좋아요 제거
+/**
+ * 메뉴 좋아요 제거
+ * @param menuName - 좋아요를 삭제할 메뉴의 이름입니다.
+ * @param userId - 좋아요를 삭제할 사용자의 ID입니다.
+ * @returns {Promise<updateReturnType | Error>} 쿼리 실행 결과를 프로미스 객체로 반환합니다. 
+ *          만약 쿼리 실행 중 에러가 발생하면 Error 객체를 반환합니다.
+ * @throws {Error} - 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
+ * @example
+ * deleteMenuLike('에그마요', 'user123'); // returns { fieldCount: 0, affectedRows: 1, ... }
+ * deleteMenuLike('에그마요', 'user456'); // returns Error('적합한 결과가 없음')
+ */
 export const deleteMenuLike = async (menuName: string, userId: string): Promise<updateReturnType | Error> => {
     const query = `DELETE FROM sandwich_like_table WHERE sandwich_table_sandwich_name = ? AND user_table_user_id = ?;`
     const menuNameValue = menuName;

@@ -104,8 +104,7 @@ export const updateSession = async (userId: string): Promise<string | Error> => 
 
 //쿠키를 통해 로그인 세션여부를 체크하는 함수
 export const checkSession = async (cookie): Promise<string | Error> => {
-    //받은 쿠키를 공백을 제거하고 배열로 만든후 다시 객체로 변환한다.
-    const cookies = cookie.replaceAll(' ', '').split(';').map((item) => {
+    const cookies = cookie.replaceAll(' ', '').split(';').map((item) => {//받은 쿠키를 공백을 제거하고 배열로 만든후 다시 객체로 변환한다.
         const key = item.split('=')[0]
         const value = item.split('=')[1]
         return { key, value }
@@ -115,7 +114,7 @@ export const checkSession = async (cookie): Promise<string | Error> => {
 
     const query = 'SELECT user_id FROM user_table WHERE BINARY user_id = ? AND BINARY user_session = ?'
 
-    type userIdType = Pick<userDataType, 'user_id'>
+    type userIdType = Pick<userDataType, 'user_id'>//useDatatype에서 user_id만 가져와서 사용하는 Pick 유틸리티 타입
 
     try {
         const results: userIdType | Error = await executeQuery(
