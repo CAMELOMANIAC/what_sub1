@@ -77,6 +77,67 @@ export const getRecipes = async ({ searchQuery, offset, limit, filter, sort }: g
     }
 }
 
+type recipeIdArgType = Omit<getRecipesArg, 'searchQuery' | 'filter'> & { recipeIdArray: number[] };
+/**
+ * 레시피 아이디를 통한 레시피 반환
+ * @param recipeId DB에서 찾을때 기준으로 사용될 레시피 아이디 입니다.
+ * @param offset SQL OFFSET 키워드에 사용될 값 입니다.(위에서부터 몇번째부터 가져올지)
+ * @param limit SQL LIMIT 키워드에 사용될 값 입니다.(몇 개 가져올지)
+ * @param sort SQL DESC SORT 키워드에 사용될 값 입니다.(정렬순서 기준 내림차순으로)
+ * @returns {Promise<recipeType[] | Error>} - 레시피 정보를 프로미스 객체로 반환합니다. 쿼리 실행 중 에러가 발생한 경우 Error 객체를 반환합니다.
+ * @throws {Error} - 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
+ * @example
+ * getRecipesFromRecipeId({1,2,3},0,9,'like_count') // returns [{recipe_id:1,...,like_count:'13'},{recipe_id:2,...,like_count:'7'},{recipe_id:3,...,like_count:'0'}]
+ * getRecipesFromRecipeId({4,5,6},0,9,'like_count') // returns Error('적합한 결과가 없음')
+ */
+export const getRecipesFromRecipeId = async ({ recipeIdArray, offset, limit, sort }: recipeIdArgType): Promise<recipeType[] | Error> => {
+    try{
+        const query = `SELECT 
+        recipe_table.recipe_id, 
+        recipe_table.recipe_name, 
+        GROUP_CONCAT(DISTINCT recipe_ingredients_table.recipe_ingredients) AS recipe_ingredients, 
+        recipe_table.user_table_user_id, 
+        recipe_table.sandwich_table_sandwich_name, 
+        GROUP_CONCAT(DISTINCT recipe_tag_table.tag_table_tag_name) AS tag, 
+        COUNT(DISTINCT reply_table.reply_id) AS reply_count, 
+        COALESCE(like_counts.like_count, 0) AS like_count 
+        FROM recipe_table 
+        LEFT JOIN recipe_ingredients_table ON recipe_table.recipe_id = recipe_ingredients_table.recipe_table_recipe_id 
+        LEFT JOIN recipe_tag_table ON recipe_table.recipe_id = recipe_tag_table.recipe_table_recipe_id 
+        LEFT JOIN reply_table ON recipe_table.recipe_id = reply_table.recipe_table_recipe_id 
+        LEFT JOIN ( 
+        SELECT recipe_table_recipe_id, COUNT(*) AS like_count 
+        FROM recipe_like_table 
+        GROUP BY recipe_table_recipe_id 
+        ) AS like_counts ON recipe_table.recipe_id = like_counts.recipe_table_recipe_id 
+        WHERE recipe_table.recipe_id IN ( ? )
+        GROUP BY recipe_table.recipe_id, 
+        recipe_table.recipe_name, 
+        recipe_table.user_table_user_id, 
+        recipe_table.sandwich_table_sandwich_name 
+        ORDER BY ${sort} DESC 
+        LIMIT ? OFFSET ?;`
+        
+        const sanitizedRecipeId = recipeIdArray;
+        const sortQuery = sort;
+        const offsetQuery = Number(offset);
+        const limitQuery = Number(limit);
+        const results: recipeType[] | Error = await executeQuery({
+            query: query,
+            values: [sanitizedRecipeId, sortQuery, limitQuery, offsetQuery]
+        });
+
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results;
+        }
+
+    }catch(err){
+        return err
+    }
+}
+
 //좋아요 레시피 반환
 export const getRecipeLike = async (userId: string): Promise<{ recipe_table_recipe_id: string } | Error> => {
     const query = `SELECT recipe_table_recipe_id FROM recipe_like_table WHERE user_table_user_id = ?;`
