@@ -119,12 +119,11 @@ export const getRecipesFromRecipeId = async ({ recipeIdArray, offset, limit, sor
         LIMIT ? OFFSET ?;`
         
         const sanitizedRecipeId = recipeIdArray;
-        const sortQuery = sort;
         const offsetQuery = Number(offset);
         const limitQuery = Number(limit);
         const results: recipeType[] | Error = await executeQuery({
             query: query,
-            values: [sanitizedRecipeId, sortQuery, limitQuery, offsetQuery]
+            values: [sanitizedRecipeId, limitQuery, offsetQuery]
         });
 
         if (Array.isArray(results) && results.length < 1) {
