@@ -8,7 +8,6 @@ const rootReducer = combineReducers({
   // 다른 리듀서 추가
 });
 
-
 export type RootState = ReturnType<typeof rootReducer>;
 const store = createStore(rootReducer);
 
