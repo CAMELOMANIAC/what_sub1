@@ -7,9 +7,10 @@ import { FaUserCircle } from 'react-icons/fa';
 import LoginModal from "./LoginModal/LoginModal";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../redux/store";
-import { actionLoginChangeId} from '../redux/reducer/userReducer';
-import { getCookieValue } from "../utils/publicFunction";
+import { actionLoginChangeId, actionSetMenuLike, actionSetRecipeLike} from '../redux/reducer/userReducer';
+import { getCookieValue, loadMenuLike, loadRecipeLike } from "../utils/publicFunction";
 import LoginTureModal from "./LoginModal/LoginTureModal";
+import { useQuery } from "react-query";
 
 const GlobalNav = () => {
     const router = useRouter()
@@ -18,6 +19,17 @@ const GlobalNav = () => {
     const [isLoginTureModal, setLoginTureModal] = useState(false);
     const userName = useSelector((state: RootState) => state.user.userName);
     const buttonRef = useRef<HTMLButtonElement>(null);
+    //새로고침시 좋아요 목록을 불러와서 전역 상태값으로 저장
+    useQuery('recipeLike', loadRecipeLike, 
+        {onSuccess: (data) => {
+            dispatch(actionSetRecipeLike(data.map(item => item.recipe_table_recipe_id)));
+        }}
+    );
+    useQuery('menuLike', loadMenuLike, 
+        {onSuccess: (data) => {
+            dispatch(actionSetMenuLike(data.map(item => item.sandwich_table_sandwich_name)));
+        }}
+    );
 
     //router.events는 라우터 이벤트로 이벤트객체가 변경될때(=주소창 경로가 바뀔때) 상태값을 변경하는 이벤트핸들러 추가
     useEffect(() => {
