@@ -91,7 +91,7 @@ const QueryRecipesBanner = ({ref,menuData,recipeData}:Props) => {
                             <span className='col-span-2'>레시피 수</span>
                         </div>
                         {Array.isArray(menuData) && menuData.map((item, index) => (
-                            <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row my-2 testMenu'>
+                            <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row my-2'>
                                 <span className='col-span-5 flex items-center justify-start'>
                                     <span className='w-10 aspect-square overflow-hidden rounded-md'>
                                         <Image width={100} height={100} src={`/images/sandwich_menu/${item.sandwich_name}.png`}
@@ -114,7 +114,7 @@ const QueryRecipesBanner = ({ref,menuData,recipeData}:Props) => {
                             <span className='col-span-2'>태그</span>
                         </div>
                         {Array.isArray(recipeData) && recipeData.map((item, index) => (
-                            <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row h-10 my-2 testRecipe'>
+                            <div key={index} className='font-normal text-gray-500 grid grid-cols-10 grid-flow-row h-10 my-2'>
                                 <span className='col-span-5 flex items-center justify-start text-black font-bold'>
                                     {index + 1}
                                     {' ' + item.recipe_name}

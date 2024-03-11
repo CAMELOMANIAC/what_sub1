@@ -15,3 +15,17 @@ export type replyType = {
     recipe_table_recipe_id: number;
     user_table_user_id: string;
 }
+
+export type userRecipeLikeTopDataType = {
+    sandwich_table_sandwich_name: string,
+    recipe_name: string,
+    like_count:number
+}
+
+export type getRecipesArg = {
+    searchQuery: string,
+    offset: number,
+    limit: number,
+    filter: string[],
+    sort: string,
+}

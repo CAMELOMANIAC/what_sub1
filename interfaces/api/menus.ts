@@ -5,3 +5,8 @@ export type totalMenuInfoType = {
     recipe_like_count: string,
     recipe_id: string
 }
+
+export type userMenuWriteTopData = {
+    sandwich_table_sandwich_name: string,
+    count:number
+}

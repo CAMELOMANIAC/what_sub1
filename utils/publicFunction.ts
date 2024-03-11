@@ -5,6 +5,9 @@ export const loadRecipeLike = async () => {
             method: 'GET',
             credentials: 'include',
         });
+        if (!response.ok) {
+            return [];
+        }
         return await response.json();
     } catch (error) {
         return [];
@@ -17,6 +20,9 @@ export const loadMenuLike = async () => {
             method: 'GET',
             credentials: 'include',
         });
+        if (!response.ok) {
+            return [];
+        }
         return await response.json();
     } catch (error) {
         return [];
