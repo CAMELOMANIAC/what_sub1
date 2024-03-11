@@ -8,6 +8,7 @@ import { PiHeartStraightFill } from "react-icons/pi";
 import { RiPencilFill } from "react-icons/ri";
 import { IoLogOut } from "react-icons/io5";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 type BubbleTailProps = {
     $tailRight?: string;
@@ -43,6 +44,7 @@ const LoginTureModal = ({handleClose, buttonRef}:{handleClose:()=>void, buttonRe
     const ref = useRef<HTMLDivElement>(null);
     const [tailRight, setTailRight] = useState<string>('auto');//tailLeft값을 상태값으로 설정
     const dispatch = useDispatch();
+    const router = useRouter();
 
     //모달창 외부 클릭시 모달창 닫기
     useEffect(() => {
@@ -77,6 +79,7 @@ const LoginTureModal = ({handleClose, buttonRef}:{handleClose:()=>void, buttonRe
             deleteCookie('user');
             handleClose();
             dispatch(actionSetLogoutData());
+            router.push('/');
         }
     })
 
