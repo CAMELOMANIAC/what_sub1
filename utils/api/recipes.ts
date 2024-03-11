@@ -1,15 +1,7 @@
 import { recipeContextType } from "../../interfaces/AddRecipe";
 import { updateReturnType } from "../../interfaces/api/db";
-import { recipeType, replyType } from "../../interfaces/api/recipes";
+import { getRecipesArg, recipeType, replyType, userRecipeLikeTopDataType } from "../../interfaces/api/recipes";
 import executeQuery from "../../lib/db";
-
-type getRecipesArg = {
-    searchQuery: string,
-    offset: number,
-    limit: number,
-    filter: string[],
-    sort: string,
-}
 
 //검색어를 통한 레시피 반환
 export const getRecipes = async ({ searchQuery, offset, limit, filter, sort }: getRecipesArg): Promise<recipeType[] | Error> => {
@@ -333,5 +325,37 @@ export const insertReply = async (replyContext: string, recipeId: number, userId
 
     } catch (err) {
         return err;
+    }
+}
+
+/**
+ * 작성한 레시피와 좋아요 갯수 불러오기
+ * @param userId - DB에 저장된 사용자 ID. 이 ID는 사용자가 작성한 레시피를 찾는 데 사용됩니다.
+ * @returns {Promise<Array<userRecipeLikeTopDataType> | Error>} 작성한 레시피 정보를 담은 배열을 프로미스객체로 반환합니다. 
+ *          만약 사용자가 작성한 레시피가 없거나, 쿼리 실행 중 에러가 발생하면 Error 객체를 반환합니다.
+ * @throws {Error} - 쿼리 결과가 없거나, 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
+ * @example
+ * getRecipeLikeTop('user123'); // returns [{ sandwich_table_sandwich_name: 'B.L.T', recipe_name:'J.M.T', like_count:4 }, { sandwich_table_sandwich_name: '에그마요', recipe_name:'테스트' like_count:2 }]
+ * getRecipeLikeTop('user456'); // returns Error('적합한 결과가 없음')
+ */
+export const getRecipeLikeTop = async (userId: string): Promise<Array<userRecipeLikeTopDataType> | Error> => {
+    const query = `SELECT r.sandwich_table_sandwich_name ,r.recipe_name, COUNT(l.recipe_table_recipe_id) as like_count
+    FROM recipe_table r
+    LEFT JOIN recipe_like_table l ON r.recipe_id = l.recipe_table_recipe_id
+    WHERE r.user_table_user_id = ?
+    GROUP BY r.recipe_id ORDER BY like_count desc LIMIT 3;`
+    const userIdValue = userId;
+    try {
+        const results: Array<userRecipeLikeTopDataType> | Error = await executeQuery({
+            query: query,
+            values: [userIdValue]
+        });
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results;
+        }
+    } catch (err) {
+        return err
     }
 }

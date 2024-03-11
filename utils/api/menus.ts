@@ -1,5 +1,5 @@
 import { updateReturnType } from "../../interfaces/api/db";
-import { totalMenuInfoType } from "../../interfaces/api/menus";
+import { totalMenuInfoType, userMenuWriteTopData } from "../../interfaces/api/menus";
 import executeQuery from "../../lib/db";
 import { breadNutrientArray, sauceNutrientArray } from "../menuArray";
 
@@ -309,6 +309,37 @@ export const getRecommendedMenus = async (): Promise<totalMenuInfoType[] | Error
         } else {
             return results;
         }
+    } catch (err) {
+        return err;
+    }
+}
+
+
+/**
+ * 작성한 메뉴와 작성한 갯수 불러오기
+ * @param userId - DB에 저장된 사용자 ID. 이 ID는 사용자가 작성한 레시피를 찾는 데 사용됩니다.
+ * @returns {Promise<Array<userMenuWriteTopData> | Error>} 작성한 레시피 메뉴의 이름을 담은 배열을 프로미스객체로 반환합니다. 
+ *          만약 사용자가 작성한 레시피가 없거나, 쿼리 실행 중 에러가 발생하면 Error 객체를 반환합니다.
+ * @throws {Error} - 쿼리 결과가 없거나, 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
+ * @example
+ * getMenuWriteTop('user123'); // returns [{ sandwich_table_sandwich_name: 'B.L.T', count:4 }, { sandwich_table_sandwich_name: '에그마요', count:2 }]
+ * getMenuWriteTop('user456'); // returns Error('적합한 결과가 없음')
+ */
+export const getMenuWriteTop = async (userId: string): Promise<Array<userMenuWriteTopData> | Error> => {
+    const query = `SELECT sandwich_table_sandwich_name, COUNT(*) as count FROM recipe_table where user_table_user_id = ? group by sandwich_table_sandwich_name ORDER BY count desc LIMIT 3;`
+    const userIdValue = userId;
+    try {
+        const results: Array<userMenuWriteTopData> | Error = await executeQuery({
+            query: query,
+            values: [userIdValue]
+        });
+
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results;
+        }
+
     } catch (err) {
         return err;
     }
