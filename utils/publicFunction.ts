@@ -1,7 +1,7 @@
 //레시피 좋아요 목록을 통신해서 반환하는 함수
 export const loadRecipeLike = async () => {
     try {
-        const response = await fetch('/api/users/likeRecipes', {
+        const response = await fetch('/api/users/recipes/like', {
             method: 'GET',
             credentials: 'include',
         });
@@ -16,7 +16,7 @@ export const loadRecipeLike = async () => {
 //메뉴 좋아요 목록을 통신해서 반환하는 함수
 export const loadMenuLike = async () => {
     try {
-        const response = await fetch('/api/users/likeMenus', {
+        const response = await fetch('/api/users/menus/like', {
             method: 'GET',
             credentials: 'include',
         });

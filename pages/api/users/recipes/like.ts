@@ -1,17 +1,16 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { checkSession } from '../../../utils/api/users';
-import { getRecipeLikeTop } from '../../../utils/api/recipes';
-
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getRecipeLike } from '../../../../utils/api/recipes';
+import { checkSession } from '../../../../utils/api/users';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
-    //이 엔드포인트는 유저가 좋아요를 한 메뉴 정보를 반환함
     if (req.method === 'GET') {
+        //사용자가한 레시피 좋아요 정보 읽어오기
         try {
             if (req.headers.cookie) {
                 const userId = await checkSession(req.headers.cookie);
 
                 if (typeof userId === 'string') {
-                    const results = await getRecipeLikeTop(userId)
+                    const results = await getRecipeLike(userId);
 
                     if (results instanceof Error) {
                         throw results;
@@ -47,5 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
 }
+
+
 
 export default handler

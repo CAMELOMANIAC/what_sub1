@@ -8,10 +8,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             let fetchURI;
             if (register !== undefined && register === '1') {
-                fetchURI = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=http://localhost:3000/api/users/socialKakao?register=1&code=${code}&client_secret=${process.env.KAKAO_CLIENT_SECRET}`;
-            }
-            else{
-                fetchURI = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=http://localhost:3000/api/users/socialKakao&code=${code}&client_secret=${process.env.KAKAO_CLIENT_SECRET}`;
+                fetchURI = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=http://localhost:3000/api/users/kakao?register=1&code=${code}&client_secret=${process.env.KAKAO_CLIENT_SECRET}`;
+            } else {
+                fetchURI = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=http://localhost:3000/api/users/kakao&code=${code}&client_secret=${process.env.KAKAO_CLIENT_SECRET}`;
             }
             const response = await fetch(fetchURI, {
                 method: 'POST',

@@ -12,7 +12,7 @@ const WriteRecipesBanner = ({ref}) => {
     const [menuWriteTop, setMenuWriteTop] = React.useState<userMenuWriteTopData[]>([]);
     const [recipeLikeTop, setRecipeLikeTop] = React.useState<userRecipeLikeTopDataType[]>([]);
     useQuery('userMenuWriteTop', async () => {
-        const response = await fetch('/api/users/writeMenus');
+        const response = await fetch('/api/users/menus');
         if (response.ok) {
             return response.json();
         } else {
@@ -22,7 +22,7 @@ const WriteRecipesBanner = ({ref}) => {
         onSuccess: (data) => {setMenuWriteTop(data);}
     });
     useQuery('userRecipeLikeTop', async () => {
-        const response = await fetch('/api/users/popularRecipes');
+        const response = await fetch('/api/users/recipes/popular');
         if (response.ok) {
             return response.json();
         } else {
@@ -40,7 +40,7 @@ const WriteRecipesBanner = ({ref}) => {
             </button>
             <section className="flex flex-col justify-start pt-4 pb-10 w-full max-w-[1024px]">
                 <article className='flex flex-col pb-5 pl-4 border-l'>
-                    <h1 className='font-bold text-3xl inline text-black pb-4'>{user.userName}님의 레시피</h1>
+                    <h1 className='font-bold text-3xl inline text-black pb-4'>{user.userName}님의 작성 레시피</h1>
                     <div className='whitespace-pre-line'>
                         <div className='flex flex-row text-sm m-2'>
                             <div className='w-40 px-3'>

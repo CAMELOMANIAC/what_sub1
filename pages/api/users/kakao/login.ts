@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { checkKakaoId, updateSession } from '../../../utils/api/users';
+import { checkKakaoId, updateSession } from '../../../../utils/api/users';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 

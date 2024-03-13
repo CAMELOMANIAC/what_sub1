@@ -21,7 +21,7 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 		setPwd(e.target.value)
 	}
 	const handleKakaoLogin = () => {
-		router.push(`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=${process.env.URL}/api/users/socialKakao&client_secret=${process.env.KAKAO_CLIENT_SECRET}`)
+		router.push(`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=${process.env.URL}/api/users/kakao&client_secret=${process.env.KAKAO_CLIENT_SECRET}`)
 	}
 
 	//일반 로그인 (카카오 로그인은 인덱스 페이지에서 처리-리다이렉트됨)

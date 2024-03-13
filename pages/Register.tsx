@@ -58,7 +58,7 @@ const Register = () => {
     }
 
     const kakaoRegisterMutation = useMutation(async () => {
-        const response = await fetch('api/users/socialKakaoRegister', {
+        const response = await fetch('api/users/kakao/register', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const Register = () => {
     }
 
     const handleKakaoAccount = () => {
-        router.push(`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=${process.env.URL}/api/users/socialKakao?register=1&client_secret=${process.env.KAKAO_CLIENT_SECRET}`)
+        router.push(`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=${process.env.URL}/api/users/kakao?register=1&client_secret=${process.env.KAKAO_CLIENT_SECRET}`)
     }
 
     useEffect(() => {

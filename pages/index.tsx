@@ -46,7 +46,7 @@ const IndexPage = ({ recipeData }: { recipeData: recipeType[] }) => {
 
 	const kakaoLoginQuery = useQuery('kakaoLogin', async () => {
 		const kakaoCode = getCookieValue('kakaoCode');
-		const response = await fetch(`/api/users/socialKakaoLogin?kakaoCode=${kakaoCode}`);
+		const response = await fetch(`/api/users/kakao/login?kakaoCode=${kakaoCode}`);
 		switch (response.status) {
 			case 204: throw new Error('회원이 존재하지 않습니다. 회원가입 페이지로 이동합니다.');
 			case 400: throw new Error('잘못된 요청입니다.');

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getMenuWriteTop } from '../../../utils/api/menus';
-import { checkSession } from '../../../utils/api/users';
+import { getMenuWriteTop } from '../../../../utils/api/menus';
+import { checkSession } from '../../../../utils/api/users';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
