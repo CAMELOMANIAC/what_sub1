@@ -11,6 +11,29 @@ const WriteRecipesBanner = ({ref}) => {
     const user = useSelector((state: RootState) => state.user);
     const [menuWriteTop, setMenuWriteTop] = React.useState<userMenuWriteTopData[]>([]);
     const [recipeLikeTop, setRecipeLikeTop] = React.useState<userRecipeLikeTopDataType[]>([]);
+    const [recipeCount, setRecipeCount] = React.useState<number>(0);
+    const [recipeLikeCount, setRecipeLikeCount] = React.useState<number>(0);
+    
+    useQuery('userRecipeCount', async () => {
+        const response = await fetch('/api/users/recipes/count');
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('실패')
+        }
+    },{
+        onSuccess: (data) => {setRecipeCount(data[0].count);}
+    });
+    useQuery('userRecipeLikeCount', async () => {
+        const response = await fetch('/api/users/recipes/like/count');
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('실패')
+        }
+    },{
+        onSuccess: (data) => {setRecipeLikeCount(data[0].like_count);}
+    });
     useQuery('userMenuWriteTop', async () => {
         const response = await fetch('/api/users/menus');
         if (response.ok) {
@@ -45,11 +68,11 @@ const WriteRecipesBanner = ({ref}) => {
                         <div className='flex flex-row text-sm m-2'>
                             <div className='w-40 px-3'>
                                 <div className='text-gray-500'>레시피 작성 갯수</div>
-                                <div className='font-bold'>{0}</div>
+                                <div className='font-bold'>{recipeCount}</div>
                             </div>
                             <div className='border-l w-40 px-3'>
                                 <div className='text-gray-500'>받은 좋아요 갯수</div>
-                                <div className='font-bold'>{0}</div>
+                                <div className='font-bold'>{recipeLikeCount}</div>
                             </div>
                         </div>
                     </div>

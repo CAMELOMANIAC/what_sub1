@@ -1,12 +1,30 @@
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { useQuery } from 'react-query';
 
 const WriteRecipesBanner = ({ref}) => {
     const router = useRouter();
     const user = useSelector((state: RootState) => state.user);
+    const [menuLikeArrayL, setMenuLikeArrayL] = useState<Array<{sandwich_table_sandwich_name:string}>>([]);
+    const [menuLikeArrayR, setMenuLikeArrayR] = useState<Array<{sandwich_table_sandwich_name:string}>>([]);
+    useQuery('userMenuLike', async () => {
+        const response = await fetch('/api/users/menus/like');
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('실패')
+        }
+    },{
+        onSuccess: (data) => {
+            const left = data.slice(0, data.length / 2);
+            const right = data.slice(data.length / 2, data.length);
+            setMenuLikeArrayL(left);
+            setMenuLikeArrayR(right);
+        }
+    });
     
     return (
         <section className={`relative flex justify-center w-screen right-0 bg-white border-gray-200 border-b min-w-[640px]`} ref={ref}>
@@ -35,8 +53,24 @@ const WriteRecipesBanner = ({ref}) => {
                             <span className='col-span-2'>조합 선택율</span>
                             <span className='col-span-2'>좋아요 수</span>
                         </div>
+                        {Array.isArray(menuLikeArrayL) && menuLikeArrayL.map((item, index) => (
+                            <div key={index} className='font-normal text-gray-500 grid grid-cols-7 grid-flow-row h-10 my-2'>
+                                <span className='col-span-5 flex items-center justify-start text-black font-bold'>
+                                    {' ' + item.sandwich_table_sandwich_name}
+                                </span>
+                                <span className='col-span-2 flex items-center justify-center text-sm text-black'>{}</span>
+                            </div>
+                        ))}
                     </article>
                     <article className='md:border-l md:border-b-0 md:mb-0 px-4 col-span-1 border-b border-l-0 mb-3'>
+                        {Array.isArray(menuLikeArrayR) && menuLikeArrayR.map((item, index) => (
+                            <div key={index} className='font-normal text-gray-500 grid grid-cols-7 grid-flow-row h-10 my-2'>
+                                <span className='col-span-5 flex items-center justify-start text-black font-bold'>
+                                    {' ' + item.sandwich_table_sandwich_name}
+                                </span>
+                                <span className='col-span-2 flex items-center justify-center text-sm text-black'>{}</span>
+                            </div>
+                        ))}
                     </article>
                 </section>
             </section>
