@@ -359,3 +359,61 @@ export const getRecipeLikeTop = async (userId: string): Promise<Array<userRecipe
         return err
     }
 }
+
+/**
+ * 총 작성한 레시피 갯수 불러오기
+ * @param userId - DB에 저장된 사용자 ID. 이 ID는 사용자가 작성한 레시피를 찾는 데 사용됩니다.
+ * @returns {Promise<{count:number} | Error>} 작성한 레시피 갯수를 프로미스객체로 반환합니다. 
+ *          만약 사용자가 작성한 레시피가 없거나, 쿼리 실행 중 에러가 발생하면 Error 객체를 반환합니다.
+ * @throws {Error} - 쿼리 결과가 없거나, 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
+ * @example
+ * getRecipeCount('user123'); // returns { count:4 }
+ * getRecipeCount('user456'); // returns Error('적합한 결과가 없음')
+ */
+export const getRecipeCount = async (userId: string): Promise<{count:number} | Error> => {
+    const query = `SELECT count(*) as count FROM recipe_table WHERE user_table_user_id = ?;`
+    const userIdValue = userId;
+    try {
+        const results: {count:number} | Error = await executeQuery({
+            query: query,
+            values: [userIdValue]
+        });
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results;
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+/**
+ * 작성한 모든 레시피의 좋아요 갯수 합을 불러오기
+ * @param userId - DB에 저장된 사용자 ID. 이 ID는 사용자가 작성한 레시피를 찾는 데 사용됩니다.
+ * @returns {Promise<{like_count:number} | Error>} 작성한 레시피의 좋아요 갯수 합을 프로미스객체로 반환합니다. 
+ *          만약 사용자가 작성한 레시피가 없거나, 쿼리 실행 중 에러가 발생하면 Error 객체를 반환합니다.
+ * @throws {Error} - 쿼리 결과가 없거나, 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
+ * @example
+ * getRecipeCount('user123'); // returns { like_count:4 }
+ * getRecipeCount('user456'); // returns Error('적합한 결과가 없음')
+ */
+export const getRecipeLikeCount = async (userId: string): Promise<{ like_count: number } | Error> => {
+    const query = `SELECT count(*) as like_count FROM recipe_like_table 
+        LEFT JOIN recipe_table on recipe_table.recipe_id = recipe_like_table.recipe_table_recipe_id 
+        WHERE recipe_table.user_table_user_id = ?;`
+    const userIdValue = userId;
+    try {
+        const results: { like_count: number } | Error = await executeQuery({
+            query: query,
+            values: [userIdValue]
+        });
+        if (Array.isArray(results) && results.length < 1) {
+            throw new Error('적합한 결과가 없음')
+        } else {
+            return results;
+        }
+    } catch (err) {
+        return err
+    }
+}
