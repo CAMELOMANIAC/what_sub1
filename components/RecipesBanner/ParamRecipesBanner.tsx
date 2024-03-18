@@ -114,7 +114,7 @@ const ParamRecipesBanner = ({ref}) => {
                 onClick={router.back}>
                 <IoIosArrowBack className='inline text-lg h-1/2' />
             </button>
-            <div className="flex flex-col justify-start pt-4 pb-10 w-full max-w-[1024px]">
+            <div className="flex flex-col justify-start pt-4 md:pb-10 w-full max-w-[1024px]">
                 <article className='flex flex-row pb-5 pl-4 border-l'>
                     <div className='inline-block w-[100px] overflow-hidden relative rounded-md aspect-square'>
                         <Image width={350} height={350} src={`/images/sandwich_menu/${selected[0].name}.png`} alt={`${selected[0].name}.png`} className='relative object-cover scale-[2.7] origin-[85%_40%]'></Image>
@@ -166,7 +166,7 @@ const ParamRecipesBanner = ({ref}) => {
                             </div>
                         ))}
                     </article>
-                    <article className='md:border-l md:border-b-0 md:mb-0 px-4 col-span-1 border-b border-l-0 mb-3'>
+                    <article className='md:border-l md:border-b-0 md:mb-0 px-4 col-span-1 border-b border-l-0'>
                         <span className=' font-bold'>추천 소스 top3</span>
                         <div className='text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center'>
                             <span className='col-span-5 text-left'>조합법</span>

@@ -91,7 +91,7 @@ const LoginTureModal = ({handleClose, buttonRef}:{handleClose:()=>void, buttonRe
         <BubbleTail ref={ref} className="absolute w-max right-2 bg-white border p-5 text-end" $tailRight={tailRight}>
             <ul>
                 <li><Link href={'/Recipes?write'}>내가 쓴 글<RiPencilFill className="inline-block text-gray-400"/></Link></li>
-                <li><Link href={'/Recipes?favorite'}>내가 좋아요 한 글<PiHeartStraightFill className="inline-block text-gray-400"/></Link></li>
+                <li><Link href={'/Recipes?favorite'}>내가 남긴 좋아요<PiHeartStraightFill className="inline-block text-gray-400"/></Link></li>
                 <li><button onClick={()=>logoutHandler()}>로그아웃<IoLogOut className="inline-block text-gray-400"/></button></li>
             </ul>
         </BubbleTail>

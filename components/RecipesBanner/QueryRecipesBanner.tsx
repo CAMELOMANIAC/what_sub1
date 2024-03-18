@@ -46,7 +46,7 @@ const QueryRecipesBanner = ({ref,menuData,recipeData}:Props) => {
 
     return (
         <section className={`relative w-screen bg-white border-gray-200 min-w-[640px]`} ref={ref}>
-            <div className='mx-auto pt-4 pb-8 max-w-[1024px]'>
+            <div className='mx-auto pt-4 md:pb-8 max-w-[1024px]'>
                 <article className='mb-8'>
                     <div className='flex flex-row justify-start items-center my-2 sticky'>
                         <SearchBar className='ml-0 mr-2' />
