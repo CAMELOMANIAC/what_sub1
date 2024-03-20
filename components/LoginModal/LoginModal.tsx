@@ -8,6 +8,7 @@ import { useMutation, useQuery } from "react-query";
 import Logo from "../Logo";
 import { GrClose } from "react-icons/gr";
 import Image from "next/image";
+import { LuLoader2 } from "react-icons/lu";
 
 const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 	const dispatch = useDispatch();
@@ -85,9 +86,17 @@ const LoginModal = ({ handleClose }: { handleClose: () => void }) => {
 					<label htmlFor="userPwd" className="block text-sm">비밀번호</label>
 					<input className='border-2 w-[300px] p-2 rounded' onChange={handleChangePwd} type="password" id="userPwd" placeholder="비밀번호"></input>
 				</section>
-				<button onClick={handleLogin} className="flex items-center rounded w-[300px] h-[45px] bg-green-600 text-white ">
-					<Image src="/images/샌드위치-아이콘.svg" className="m-[7.5px] mr-0 h-[30px] invert" alt="샌드위치_아이콘" width={30} height={30}></Image>
-					<div className="flex justify-center items-center w-full text-sm mr-[7.5px] my-auto">일반 로그인</div>
+				<button onClick={handleLogin} className="flex items-center rounded w-[300px] h-[45px] bg-green-600 text-white ">{
+					loginMutation.isLoading ?
+					<>
+						<div className="flex justify-center items-center w-full text-sm mr-[7.5px] my-auto">
+							<LuLoader2 className='animate-spin m-[7.5px] mr-0 w-[30px] h-[30px]'/>
+						</div>
+					</>:
+					<>
+						<Image src="/images/샌드위치-아이콘.svg" className="m-[7.5px] mr-0 h-[30px] invert" alt="샌드위치_아이콘" width={30} height={30}></Image>
+						<div className="flex justify-center items-center w-full text-sm mr-[7.5px] my-auto">일반 로그인</div>
+					</>}
 				</button>
 				<div className="h-5">
 				</div>
