@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { MutableRefObject, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import ProgressBar from './ProgressBar';
 import { progressBarButtonsType } from '../../pages/AddRecipe';
@@ -26,10 +26,12 @@ const NavSandwich = styled.div<NavSandwichProps>`
 type propsType = {
     progressBarButtons:progressBarButtonsType[],
     isComplete:boolean,
-    createContext:()=>void
+    createContext:()=>void,
+    completeHandler:(ref: MutableRefObject<HTMLButtonElement | null>)=>void,
+    completeRef: MutableRefObject<HTMLButtonElement | null>
 }
 
-const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType) => {
+const RecipeNav = ({ progressBarButtons, isComplete, createContext, completeHandler,completeRef }: propsType) => {
 
     //observerApi로 관찰
     const [activeSection, setActiveSection] = useState<number>(0);
@@ -79,7 +81,7 @@ const RecipeNav = ({ progressBarButtons, isComplete, createContext }: propsType)
             <button className='col-span-1 flex justify-center align-middle border-t-[8px] border-green-600 mb-[30%]' disabled={!isComplete} onClick={createContext}>
                 <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-green-600'></div>
                 <div className='bg-white w-[18px] h-[18px] translate-y-[-13px] rounded-full border-[3px] border-yellow-400'></div>
-                <div className={`col-span-1 text-center absolute mt-1 ` + (!isComplete && 'text-gray-300')}>작성완료</div>
+                <div className={`col-span-1 text-center absolute mt-1 ` + (!isComplete && 'text-gray-300')} onClick={()=>completeHandler(completeRef)}>작성완료</div>
             </button>
         </NavBackground>
     );

@@ -34,7 +34,7 @@ const AddRecipe = ({ param }: { param: string }) => {
         tagArray: tagArray,
         setTagArray: setTagArray
     }
-    //커스텀 함수로 각 섹션에 맞는 값 정의
+    //커스텀 후크로 각 섹션에 맞는 값 정의
     const useCheckInput = () => {
         const [array, setArray] = useState<string[]>([]);
         const onChange = (e) => { e.target.value === '' ? setArray([]) : (array.includes(e.target.value) ? setArray(prev => prev.filter(item => item !== e.target.value)) : setArray(prev => [...prev, e.target.value])) };
@@ -73,6 +73,7 @@ const AddRecipe = ({ param }: { param: string }) => {
     const toastingRef = useRef<HTMLDivElement | null>(null);
     const vegetableRef = useRef<HTMLDivElement | null>(null);
     const sauceRef = useRef<HTMLDivElement | null>(null);
+    const completeRef = useRef<HTMLButtonElement | null>(null);
     const rootRef = useRef<HTMLDivElement | null>(null);
     const handleClickHander = useCallback((ref) => {//이벤트를 자식에게 전달해주니까 useCallback으로 함수 메모라이즈
         if (ref.current) {
@@ -126,12 +127,22 @@ const AddRecipe = ({ param }: { param: string }) => {
             credentials: 'include',
             body: JSON.stringify(context)
         })
-        return response.json();
-    }, { onSuccess: () => router.push('/Recipes') });
+        if (response.ok)
+            return response.json();
+        else {
+            throw new Error('레시피 작성에 실패했습니다');
+        }
+    }, {
+        onSuccess: () => router.push('/Recipes') ,
+        onError: (error:Error) => alert(error.message)
+    });
 
     const router = useRouter();
     const recipeAddHandler = () => {
-        RecipeMutation.mutate();
+        if (isComplete)
+            RecipeMutation.mutate();
+        else
+            alert('필수항목을 작성해주세요');
     }
 
     return (
@@ -172,14 +183,14 @@ const AddRecipe = ({ param }: { param: string }) => {
                         <VegetableSection prop1={vegetable} prop2={pickledVegetable} ref={vegetableRef} />
                         <SauceSection prop={sauce} ref={sauceRef} />
 
-                        <button className="bg-white rounded-md shadow-sm p-6" onClick={recipeAddHandler}>
+                        <button className={`rounded-md shadow-sm p-6 w-full ${isComplete ? 'bg-green-600 text-white' : 'bg-white text-gray-300' } `} onClick={recipeAddHandler} ref={completeRef}>
                             <h3 className='text-xl font-[seoul-metro]'>작성완료</h3>
                         </button>
 
                     </div>
                 </div>
 
-                <RecipeNav progressBarButtons={progressBarButtons} isComplete={isComplete} createContext={createContext} />
+                <RecipeNav progressBarButtons={progressBarButtons} isComplete={isComplete} createContext={createContext} completeHandler={handleClickHander} completeRef={completeRef}/>
             </main>
         </>
     );
