@@ -9,7 +9,8 @@ const db = mysql.createConnection({
   password: process.env.MYSQL_PASSWORD,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  multipleStatements: true  // 다중 SQL 쿼리 활성화
 });
 
 //이곳에서 에러처리 하지 않고 에러처리는 비즈니스 로직에서 처리합니다
