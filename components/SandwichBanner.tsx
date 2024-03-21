@@ -133,7 +133,6 @@ const SandwichBanner = () => {
 
                             // 결과를 배열에 업데이트
                             gridValues[gridY][gridX] = isEmpty;
-                            console.log(gridValues);
                         }
                     };
                     canvas.addEventListener('mouseup', clickListener);
@@ -186,7 +185,7 @@ const SandwichBanner = () => {
                     style={{
                         position: 'absolute',
                         top: forkPosition.y,
-                        left: forkPosition.x,
+                        left: forkPosition.x+300,
                         pointerEvents: 'none',
                         transform: `rotate(${forkPosition.angle + 180}rad)`,
                         transformOrigin: 'top center', // 회전 중심점을 이미지 중앙으로 설정

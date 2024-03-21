@@ -39,7 +39,7 @@ const SearchBar = (props: { className?: string, filterState?: string[] }) => {
         className="bg-white w-full placeholder:italic border-2 border-green-600 rounded-full text-sm py-[10px] pl-9 focus:outline-none focus:border-yellow-500 focus:ring-yellow-500 focus:ring-1 text-black input-no-clear" 
         onKeyDown={searchEnterHandler}
       />
-      <button onClick={handleSubmit} type="submit" className="absolute right-0 pr-1">
+      <button onClick={handleSubmit} type="submit" className="absolute right-0 pr-1" aria-label="search button">
         <IoSearchCircleSharp className='text-4xl ' />
       </button>
     </div>
