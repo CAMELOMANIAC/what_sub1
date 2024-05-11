@@ -20,7 +20,7 @@
 		"aws-amplify": "^6.0.17",
 		"babel-plugin-styled-components": "^2.1.4",
 		"body-parser": "^1.20.2",
-		"next": "latest",
+		"next": "14.1.1",
 		"nodemailer": "^6.9.8",
 		"postcss": "^8.4.31",
 		"prop-types": "15.6.0",
