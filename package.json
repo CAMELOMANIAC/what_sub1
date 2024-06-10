@@ -11,12 +11,12 @@
 	},
 	"dependencies": {
 		"@babel/core": "^7.23.7",
+		"@next/bundle-analyzer": "^14.2.3",
 		"@reduxjs/toolkit": "^1.9.7",
 		"@types/recharts": "^1.8.26",
 		"@types/styled-components": "^5.1.28",
 		"add": "^2.0.6",
 		"autoprefixer": "^10.4.16",
-		"babel-plugin-styled-components": "^2.1.4",
 		"body-parser": "^1.20.2",
 		"mysql2": "^3.9.1",
 		"next": "latest",
