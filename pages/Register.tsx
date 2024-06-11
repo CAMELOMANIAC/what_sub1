@@ -11,6 +11,8 @@ import Head from 'next/head';
 import Logo from '../components/Logo';
 import useAnimation from '../utils/animationHook';
 import {useMutation} from 'react-query';
+import {LuLoader2} from 'react-icons/lu';
+import Image from 'next/image';
 
 const Register = () => {
 	const router = useRouter();
@@ -49,6 +51,7 @@ const Register = () => {
 		switch (response.status) {
 			case 200:
 				alert('계정 확인 메일을 전송했습니다 30분이내에 확인해주세요');
+				router.push('/');
 				break;
 			case 400:
 				alert('입력 정보를 다시 확인해주세요');
@@ -230,8 +233,28 @@ const Register = () => {
 									</p>
 								)}
 							</section>
-							<button onClick={() => handleRegister()}>
-								회원가입
+							<button
+								onClick={() => handleRegister()}
+								className="flex items-center rounded w-[300px] h-[45px] bg-green-600 text-white ">
+								{registerMutation.isLoading ? (
+									<>
+										<div className="flex justify-center items-center w-full text-sm mr-[7.5px] my-auto">
+											<LuLoader2 className="animate-spin m-[7.5px] mr-0 w-[30px] h-[30px]" />
+										</div>
+									</>
+								) : (
+									<>
+										<Image
+											src="/images/샌드위치-아이콘.svg"
+											className="m-[7.5px] mr-0 h-[30px] invert"
+											alt="샌드위치_아이콘"
+											width={30}
+											height={30}></Image>
+										<div className="flex justify-center items-center w-full text-sm mr-[7.5px] my-auto">
+											회원가입
+										</div>
+									</>
+								)}
 							</button>
 							<button onClick={() => handleKakaoAccount()}>
 								카카오 계정으로 회원가입
