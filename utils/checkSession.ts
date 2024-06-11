@@ -17,27 +17,30 @@ const Pages = ({sessionCheck}) => {
 
 }
 */
-export async function checkSession(cookie:string) {
-    try {
-        if (cookie) {
-            const options = {
-                method: "GET",
-                headers: {
-                    Cookie: cookie,
-                },
-                credentials: "include" as const,
-            };
-            const res = await fetch(process.env.URL + '/api/users/session', options);
+export async function checkSession(cookie: string) {
+	try {
+		if (cookie) {
+			const options = {
+				method: 'GET',
+				headers: {
+					Cookie: cookie,
+				},
+				credentials: 'include' as const,
+			};
+			const res = await fetch(
+				process.env.URL + '/api/users/session',
+				options,
+			);
 
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
+			if (!res.ok) {
+				throw new Error(`HTTP error! status: ${res.status}`);
+			}
 
-            const sessionCheck = await res.json();
-            return sessionCheck;
-        }
-        return null;
-    } catch (error) {
-        return null;
-    }
+			const sessionCheck = await res.json();
+			return sessionCheck;
+		}
+		return null;
+	} catch (error) {
+		return null;
+	}
 }

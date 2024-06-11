@@ -49,13 +49,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				html: `<a href='${process.env.URL + '/AuthRedirect?authNumber=' + authNumber}'>인증 완료하기.</a>`,
 			};
 
-			//0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한을 기준으로)
+			//0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한 30분을 기준으로)
 			const expiredArray = await getExpiredAuth();
 			if (!(expiredArray instanceof Error)) {
-				console.log(expiredArray);
-				const deleteUserInfoResult = await deleteUserInfo(expiredArray);
-				const deleteUserResult = await deleteUser(expiredArray);
-				console.log(deleteUserInfoResult, deleteUserResult);
+				await deleteUserInfo(expiredArray);
+				await deleteUser(expiredArray);
 			}
 
 			//1.아이디, 이메일 중복체크

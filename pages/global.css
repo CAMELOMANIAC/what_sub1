@@ -3,63 +3,63 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    box-sizing: border-box;
-  }
+	html {
+		box-sizing: border-box;
+	}
 
-  *,
-  *:before,
-  *:after {
-    box-sizing: inherit;
-  }
+	*,
+	*:before,
+	*:after {
+		box-sizing: inherit;
+	}
 
-  body {
-    display: flex;
-    justify-content: center;
-    @apply bg-gray-50;
-  }
+	body {
+		display: flex;
+		justify-content: center;
+		@apply bg-gray-50;
+	}
 
-  body::after {
-    content: "";
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.03;
-    background-image: url("/images/타일.svg");
-    background-repeat: repeat;
-    background-size: auto;
-    z-index: -2;
-  }
+	body::after {
+		content: '';
+		display: block;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0.03;
+		background-image: url('/images/타일.svg');
+		background-repeat: repeat;
+		background-size: auto;
+		z-index: -2;
+	}
 
-  /*인풋버튼 기본 내용제거버튼 숨기기*/
-  .input-no-clear::-webkit-search-cancel-button {
-    @apply hidden;
-  }
+	/*인풋버튼 기본 내용제거버튼 숨기기*/
+	.input-no-clear::-webkit-search-cancel-button {
+		@apply hidden;
+	}
 
-  @keyframes move {
-    0% {
-      left: 0vw;
-    }
+	@keyframes move {
+		0% {
+			left: 0vw;
+		}
 
-    100% {
-      left: 100vw;
-    }
-  }
+		100% {
+			left: 100vw;
+		}
+	}
 
-  @keyframes vibration {
-    from {
-      transform: translateX(-1px);
-    }
-    to {
-      transform: translateX(1px);
-    }
-  }
+	@keyframes vibration {
+		from {
+			transform: translateX(-1px);
+		}
+		to {
+			transform: translateX(1px);
+		}
+	}
 
-  @font-face {
-    font-family: "seoul-metro";
-    src: url("/font/신지하철체.ttf") format("truetype");
-  }
+	@font-face {
+		font-family: 'seoul-metro';
+		src: url('/font/신지하철체.ttf') format('truetype');
+	}
 }
