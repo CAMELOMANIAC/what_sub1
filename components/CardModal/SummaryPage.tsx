@@ -162,9 +162,9 @@ const SummaryPage = ({recipe, className}: props) => {
 
 	return (
 		<div className={className}>
-			<div className="grid grid-cols-2">
-				<section className="col-span-1">
-					<div className="flex flex-row overflow-hidden flex-wrap">
+			<div className="grid grid-cols-2 sm:grid-rows-3 grid-rows-5">
+				<section className="sm:col-span-1 col-span-2 sm:row-span-2 row-span-2 h-full">
+					<div className="flex flex-row overflow-hidden flex-wrap h-full items-center">
 						{ingredientsArray.map(
 							item =>
 								(item !== 'true'
@@ -205,7 +205,7 @@ const SummaryPage = ({recipe, className}: props) => {
 						</button>
 					</div>
 				</section>
-				<section className="flex flex-col justify-center col-span-1">
+				<section className="flex flex-col justify-center sm:col-span-1 col-span-2 sm:row-span-2 row-span-2 items-center">
 					<IngredientsRadarChart
 						context={{
 							recipeName: '',
@@ -231,7 +231,7 @@ const SummaryPage = ({recipe, className}: props) => {
 						</div>
 					</h3>
 				</section>
-				<section className="col-span-2">
+				<section className="col-span-2 row-span-1">
 					댓글
 					<ul className="max-h-48 overflow-y-auto" ref={scrollRef}>
 						{reply &&

@@ -67,8 +67,8 @@ const Menus = ({totalMenuInfo}: props) => {
 			<MenusBanner
 				selected={selected}
 				sessionCheck={sessionCheck}></MenusBanner>
-			<main className="w-full max-w-screen-xl mx-auto pt-2 mt-[calc(300px+3rem)]">
-				<div className="grid grid-cols-4 lg:grid-cols-6 gap-2 w-screen lg:w-[1024px] min-w-[640px]">
+			<main className="w-full mx-auto pt-2 mt-[calc(300px+3rem)]">
+				<div className="grid grid-cols-6 gap-2 max-w-5xl w-screen">
 					{/*메뉴 선택기 */}
 					<MenusGrid setSelected={setSelected}></MenusGrid>
 					{/*메뉴 순위 */}

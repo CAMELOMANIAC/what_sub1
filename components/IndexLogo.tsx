@@ -62,11 +62,11 @@ const IndexLogo = ({prevHandler, nextHandler}: PropsType) => {
 	}, [divRef]);
 
 	return (
-		<div className="flex flex-col items-center justify-center mx-auto mb-4 rounded-full w-[100%]">
+		<div className="flex flex-col items-center justify-center mx-auto mb-4 rounded-full w-full">
 			<SandwichBanner />
 			<div className="flex flex-row">
 				<button
-					className="flex justify-center items-center font-[seoul-metro] text-xl text-white mr-4"
+					className="sm:flex justify-center items-center font-[seoul-metro] text-xl text-white mr-4 hidden"
 					onClick={prevHandler}>
 					<MdOutlineArrowBack className="text-2xl"></MdOutlineArrowBack>
 					이전
@@ -101,7 +101,7 @@ const IndexLogo = ({prevHandler, nextHandler}: PropsType) => {
 					</div>
 				</div>
 				<button
-					className="flex justify-center items-center font-[seoul-metro] text-xl text-white ml-4"
+					className="sm:flex justify-center items-center font-[seoul-metro] text-xl text-white ml-4 hidden"
 					onClick={nextHandler}>
 					다음
 					<MdOutlineArrowForward className="text-2xl"></MdOutlineArrowForward>

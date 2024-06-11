@@ -266,7 +266,7 @@ const AddRecipe = ({param}: {param: string}) => {
 					</div>
 
 					<div
-						className={`col-span-3 pt-[10%] p-10 md:p-0 overflow-y-auto min-w-[640px] md:min-w-0`}
+						className={`col-span-3 pt-[10%] p-10 md:p-0 overflow-y-auto md:min-w-0`}
 						ref={rootRef}>
 						<RecipeNameSection
 							prop={RecipeNameProp}

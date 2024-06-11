@@ -23,7 +23,7 @@ const CardModal = ({recipe, setIsActive}: props) => {
 			onClick={e => {
 				if (e.target === e.currentTarget) setIsActive(false);
 			}}>
-			<article className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[640px] md:w-[768px] lg:w-[1024px] bg-white text-black shadow-lg rounded-lg">
+			<article className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full scale-90 sm:scale-1 sm:w-[640px] md:w-[768px] lg:w-[1024px] bg-white text-black shadow-lg rounded-lg">
 				<button
 					className={'fixed right-5 top-5 z-10'}
 					onClick={() => setIsActive(false)}>

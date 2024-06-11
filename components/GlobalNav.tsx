@@ -79,7 +79,7 @@ const GlobalNav = () => {
 	}, [dispatch]);
 
 	return (
-		<div className="w-full fixed left-0 bg-white z-20 border-gray-200 border-b mb-auto flex align-middle min-w-[500px]">
+		<div className="w-full fixed left-0 bg-white z-20 border-gray-200 border-b mb-auto flex align-middle">
 			<Link href="/" className="mx-2">
 				<Logo size="2rem" />
 			</Link>

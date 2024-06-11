@@ -234,6 +234,7 @@ const SandwichBanner = () => {
 				<img
 					src="/images/fork.png"
 					alt="fork"
+					className="sm:block hidden"
 					style={{
 						position: 'absolute',
 						top: forkPosition.y,

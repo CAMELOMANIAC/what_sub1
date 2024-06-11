@@ -18,7 +18,7 @@ const MenusGrid = ({setSelected}: propsType) => {
 	);
 
 	return (
-		<div className="lg:col-span-2 lg:block hidden border bg-white h-fit p-2 ">
+		<div className="col-span-2 md:block hidden border bg-white h-fit p-2 ">
 			<div className="flex flex-row items-center border placeholder:text-gray-400 focus-within:ring-2 ring-green-600 p-1">
 				<FiSearch className="text-lg mx-1 text-gray-400" />
 				<input

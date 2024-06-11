@@ -170,14 +170,14 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 	};
 
 	return (
-		<main className=" w-full max-w-screen-xl min-w-[640px] mx-auto">
+		<main className=" w-full max-w-screen-xl mx-auto">
 			<IndexLogo prevHandler={prevItem} nextHandler={nextItem} />
 			<Carousel
 				cardRefs={cardRefs}
 				recipeArray={recipeArray}
 				crouselRef={crouselRef}>
 				<CarouselContainer
-					className="w-screen max-w-screen-xl min-w-[640px] pt-12 p-5 flex flex-row gap-2 overflow-x-auto"
+					className="w-screen max-w-screen-xl pt-12 my-auto flex flex-row gap-2 overflow-x-auto transition-all duration-500 ease-in-out max-h-0 sm:max-h-[400px]"
 					ref={crouselRef}>
 					{recipeArray.map((recipe, index) => (
 						<Card
@@ -188,6 +188,11 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 					))}
 				</CarouselContainer>
 			</Carousel>
+			<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 grid-flow-row gap-2 max-w-[1024px] p-4 w-full sm:hidden">
+				{recipeArray.map((recipe, index) => (
+					<Card key={index} recipe={recipe}></Card>
+				))}
+			</div>
 		</main>
 	);
 };

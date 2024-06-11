@@ -101,7 +101,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
 		return (
 			<>
 				<article
-					className={`col-span-2 aspect-[8/7] bg-white border hover:border rounded-xl p-6 shadow-md hover:shadow-xl cursor-pointer flex flex-col hover:scale-105 transition-transform ${className}`}
+					className={`col-span-2 sm:aspect-[8/3] md:aspect-[8/7] bg-white border hover:border rounded-xl p-6 shadow-md hover:shadow-xl cursor-pointer flex flex-col hover:scale-105 transition-transform ${className}`}
 					ref={ref}
 					onClick={() => {
 						setIsActive(true);

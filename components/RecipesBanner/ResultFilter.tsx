@@ -59,9 +59,9 @@ const ResultFilter = ({sorting, setSorting}: Props) => {
 
 	return (
 		<StyledContainerNav className="w-full h-fit">
-			<StyledBackGroundDiv className="max-w-[1024px] min-w-[640px] h-fit relative mx-auto py-2 px-4 flex flex-row items-center">
+			<StyledBackGroundDiv className="max-w-[1024px] h-fit relative mx-auto py-2 px-4 flex flex-row items-center">
 				<p className="w-1/4 flex flex-row items-center">
-					<HiAdjustments /> 검색결과
+					<HiAdjustments className="sm:block hidden" /> 검색결과
 				</p>
 				<div className="flex flex-row w-full justify-end items-center text-white text-lg">
 					{visibleItemArray.map(item => (
@@ -77,7 +77,7 @@ const ResultFilter = ({sorting, setSorting}: Props) => {
 						</button>
 					))}
 					<button
-						className={`border rounded-full px-3 mx-1 text-sm ${
+						className={`border rounded-full px-3 mx-1 hidden sm:block text-sm ${
 							sorting === '최신순'
 								? 'text-yellow-300 border-yellow-300 transition-all duration-500 ease-in-out transform hover:scale-100'
 								: 'transition-all duration-500 ease-in-out transform hover:scale-110'
@@ -86,7 +86,7 @@ const ResultFilter = ({sorting, setSorting}: Props) => {
 						최신순
 					</button>
 					<button
-						className={`border rounded-full px-3 text-sm ${
+						className={`border rounded-full px-3 hidden sm:block text-sm ${
 							sorting === '인기순'
 								? 'text-yellow-300 border-yellow-300 transition-all duration-500 ease-in-out transform hover:scale-100'
 								: 'transition-all duration-500 ease-in-out transform hover:scale-110'

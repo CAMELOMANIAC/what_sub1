@@ -128,7 +128,7 @@ const ParamRecipesBanner = ({ref}) => {
 
 	return (
 		<section
-			className={`relative flex justify-center w-screen right-0 bg-white border-gray-200 border-b min-w-[640px]`}
+			className={`relative flex justify-center w-screen right-0 bg-white border-gray-200 border-b`}
 			ref={ref}>
 			<button
 				className="py-10 my-auto h-full bg-gray-100 hover:text-green-600"
@@ -179,7 +179,7 @@ const ParamRecipesBanner = ({ref}) => {
 					</div>
 				</article>
 
-				<section className="grid grid-cols-1 md:grid-cols-2 grid-flow-row">
+				<section className="grid grid-cols-1 md:grid-cols-2 grid-flow-row max-h-0 sm:max-h-[1000px] transition-all duration-500 ease-in-out overflow-hidden">
 					<article className="md:border-l md:border-b-0 md:mb-0 px-4 col-span-1 border-b border-l-0 mb-3">
 						<span className=" font-bold">추천 브레드 top3</span>
 						<div className="text-sm text-gray-500 grid grid-cols-10 grid-flow-row text-center">

@@ -26,7 +26,7 @@ const MenusBanner = ({selected, sessionCheck}: propsType) => {
 	const {isLike, menuLike, menuLikeHandler} = useMenuLike(selected.name);
 
 	return (
-		<StyledDiv className="absolute w-screen min-w-[1024px] left-0 top-[48px] mx-auto grid grid-cols-6 bg-white overflow-hidden">
+		<StyledDiv className="absolute w-screen left-0 top-[48px] mx-auto grid grid-cols-6 bg-white overflow-hidden">
 			{/*메뉴 간단정보*/}
 			<div className="col-span-3 h-[300px]">
 				<Image
@@ -50,8 +50,10 @@ const MenusBanner = ({selected, sessionCheck}: propsType) => {
 						{menuLike}
 					</button>
 				</div>
-				<div className="text-white/70 mb-2">{selected.summary}</div>
-				<div className="flex flex-row">
+				<div className="text-white/70 mb-2 hidden sm:block">
+					{selected.summary}
+				</div>
+				<div className="sm:flex flex-row hidden">
 					{selected.ingredients.map(item => (
 						<Image
 							width={100}
@@ -62,7 +64,7 @@ const MenusBanner = ({selected, sessionCheck}: propsType) => {
 							alt="item"></Image>
 					))}
 				</div>
-				<div className="flex flex-row">
+				<div className="flex sm:flex-row flex-col">
 					<Link
 						href={{
 							pathname: '/Recipes',
