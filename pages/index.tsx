@@ -177,7 +177,7 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 				recipeArray={recipeArray}
 				crouselRef={crouselRef}>
 				<CarouselContainer
-					className="w-screen max-w-screen-xl pt-12 my-auto flex flex-row gap-2 overflow-x-auto transition-all duration-500 ease-in-out max-h-0 sm:max-h-[400px]"
+					className="w-screen max-w-screen-xl p-0 sm:p-12 my-auto flex flex-row gap-2 overflow-x-auto overflow-y-hidden transition-all duration-500 ease-in-out max-h-0 sm:max-h-[400px]"
 					ref={crouselRef}>
 					{recipeArray.map((recipe, index) => (
 						<Card
