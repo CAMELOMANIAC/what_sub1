@@ -508,3 +508,150 @@ export const getRecipeLikeCount = async (
 		return err;
 	}
 };
+
+//레시피 제거
+export const deleteRecipe = async (
+	recipe_id: Array<number>,
+): Promise<boolean | Error> => {
+	const recipeIdValue = recipe_id;
+	const placeHolder = recipeIdValue.map(() => '?');
+	const query = `DELETE FROM recipe_table WHERE recipe_id IN (${placeHolder});`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: recipeIdValue,
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			console.log(results);
+			return false;
+		} else if (results instanceof Error) {
+			console.log(results);
+			throw new Error('적합한 결과가 없음');
+		} else {
+			console.log(results);
+			return true;
+		}
+	} catch (err) {
+		return err;
+	}
+};
+
+//레시피 태그 제거
+export const deleteAllRecipeTag = async (
+	recipe_id: Array<number>,
+): Promise<boolean | Error> => {
+	const recipeIdValue = recipe_id;
+	const placeHolder = recipeIdValue.map(() => '?');
+	const query = `DELETE FROM recipe_tag_table WHERE recipe_table_recipe_id IN (${placeHolder});`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: recipeIdValue,
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else if (results instanceof Error) {
+			throw new Error('적합한 결과가 없음');
+		} else {
+			return true;
+		}
+	} catch (err) {
+		return err;
+	}
+};
+
+//레시피 좋아요 제거
+export const deleteAllRecipeLike = async (
+	recipe_id: Array<number>,
+): Promise<boolean | Error> => {
+	const recipeIdValue = recipe_id;
+	const placeHolder = recipeIdValue.map(() => '?');
+	const query = `DELETE FROM recipe_like_table WHERE recipe_table_recipe_id IN (${placeHolder});`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: recipeIdValue,
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else if (results instanceof Error) {
+			throw new Error('적합한 결과가 없음');
+		} else {
+			return true;
+		}
+	} catch (err) {
+		return err;
+	}
+};
+
+//특정 댓글 제거
+export const deleteReply = async (
+	reply_id: Array<number>,
+): Promise<boolean | Error> => {
+	const replyIdValue = reply_id;
+	const placeHolder = replyIdValue.map(() => '?');
+	const query = `DELETE FROM reply_table WHERE reply_id IN (${placeHolder});`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: replyIdValue,
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else if (results instanceof Error) {
+			throw new Error('적합한 결과가 없음');
+		} else {
+			return true;
+		}
+	} catch (err) {
+		return err;
+	}
+};
+
+//레시피 댓글 제거
+export const deleteAllRecipeReply = async (
+	recipe_id: Array<number>,
+): Promise<boolean | Error> => {
+	const recipeIdValue = recipe_id;
+	const placeHolder = recipeIdValue.map(() => '?');
+	const query = `DELETE FROM reply_table WHERE recipe_table_recipe_id IN (${placeHolder});`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: recipeIdValue,
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else if (results instanceof Error) {
+			throw new Error('적합한 결과가 없음');
+		} else {
+			return true;
+		}
+	} catch (err) {
+		return err;
+	}
+};
+
+//레시피 재료 제거
+export const deleteAllRecipeIngredients = async (
+	recipe_id: Array<number>,
+): Promise<boolean | Error> => {
+	const recipeIdValue = recipe_id;
+	const placeHolder = recipeIdValue.map(() => '?');
+	const query = `DELETE FROM recipe_ingredients_table WHERE recipe_table_recipe_id IN (${placeHolder});`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: recipeIdValue,
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else if (results instanceof Error) {
+			throw new Error('적합한 결과가 없음');
+		} else {
+			return true;
+		}
+	} catch (err) {
+		return err;
+	}
+};

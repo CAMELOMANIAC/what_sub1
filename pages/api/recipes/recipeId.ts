@@ -8,9 +8,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	let {sort} = req.query;
 	const {recipeId} = req.query;
 
-	//이 엔드포인트는 모든 레시피 정보를 반환합니다
+	//이 엔드포인트는 특정 레시피 정보를 반환합니다
 	if (req.method === 'GET') {
-		//모든 레시피 정보 가져오기
 		try {
 			let recipeIdArray: number[] = [];
 			if (!(recipeId instanceof Array || typeof recipeId === 'string')) {
