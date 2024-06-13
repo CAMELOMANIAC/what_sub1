@@ -7,6 +7,7 @@ import IngredientsPage from './IngredientsPage';
 import {GrClose} from 'react-icons/gr';
 import Link from 'next/link';
 import Image from 'next/image';
+import useModalAnimationHook from '../../utils/modalAnimationHook';
 
 type props = {
 	recipe: recipeType;
@@ -16,17 +17,19 @@ type props = {
 
 const CardModal = ({recipe, setIsActive}: props) => {
 	const [page, setPage] = useState<number>(0);
+	const {isLoaded, setIsLoaded} = useModalAnimationHook(setIsActive);
 
 	return (
 		<div
 			className="fixed bg-gray-600/10 top-0 left-0 w-full h-full backdrop-blur-sm z-10"
 			onClick={e => {
-				if (e.target === e.currentTarget) setIsActive(false);
+				if (e.target === e.currentTarget) setIsLoaded(false);
 			}}>
-			<article className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-fit scale-90 sm:scale-1 sm:w-[640px] md:w-[768px] lg:w-[1024px] bg-white text-black shadow-lg rounded-lg">
+			<article
+				className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-fit sm:w-[640px] md:w-[768px] lg:w-[1024px] bg-white text-black shadow-lg rounded-lg overflow-hidden transition-all duration-500 ease-in-out ${isLoaded ? 'max-h-[800px]' : 'max-h-0'}`}>
 				<button
 					className={'fixed right-5 top-5 z-10'}
-					onClick={() => setIsActive(false)}>
+					onClick={() => setIsLoaded(false)}>
 					<GrClose />
 				</button>
 				<div className="grid grid-cols-6 gap-4 md:grid-cols-7">
