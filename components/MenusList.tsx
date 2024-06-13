@@ -103,6 +103,7 @@ const MenusList = ({setSelected}: propsType) => {
 				</span>
 				<span className="inline-block w-10"></span>
 				<button
+					name="orderFavorit"
 					className={
 						`inline-block w-[15%] text-center py-1 ` +
 						`${order === 'favorit' && ' border-b-4 border-green-600 text-green-600 '}` +
@@ -113,6 +114,7 @@ const MenusList = ({setSelected}: propsType) => {
 					{arrayTemplate.favorit}
 				</button>
 				<button
+					name="orderLikeRecipe"
 					className={
 						`inline-block w-[15%] text-center py-1 ` +
 						`${order === 'likeRecipe' && ' border-b-4 border-green-600 text-green-600 '}` +
@@ -123,6 +125,7 @@ const MenusList = ({setSelected}: propsType) => {
 					{arrayTemplate.likeRecipe}
 				</button>
 				<button
+					name='orderRecipesCount'
 					className={
 						`inline-block w-[15%] text-center py-1 ` +
 						`${order === 'recipes' && ' border-b-4 border-green-600 text-green-600 '}` +

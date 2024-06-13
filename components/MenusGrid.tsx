@@ -29,26 +29,31 @@ const MenusGrid = ({setSelected}: propsType) => {
 			</div>
 			<div className="flex w-full pt-2">
 				<button
+					name="all"
 					className={`border rounded-l py-2 w-full text-xs ${menuType === 0 ? 'bg-green-600 text-white' : ''}`}
 					onClick={() => setMenuType(0)}>
 					all
 				</button>
 				<button
+					name="classic"
 					className={`border-y py-2 w-full text-xs ${menuType === 1 ? 'bg-green-600 text-white' : ''}`}
 					onClick={() => setMenuType(1)}>
 					클래식
 				</button>
 				<button
+					name="fresh"
 					className={`border-y border-x py-2 w-full text-xs ${menuType === 2 ? 'bg-green-600 text-white' : ''}`}
 					onClick={() => setMenuType(2)}>
 					프레쉬
 				</button>
 				<button
+					name="premium"
 					className={`border-y py-2 w-full text-xs ${menuType === 3 ? 'bg-green-600 text-white' : ''}`}
 					onClick={() => setMenuType(3)}>
 					프리미엄
 				</button>
 				<button
+					name="new"
 					className={`border rounded-r py-2 w-full text-xs ${menuType === 4 ? 'bg-green-600 text-white' : ''}`}
 					onClick={() => setMenuType(4)}>
 					신제품
