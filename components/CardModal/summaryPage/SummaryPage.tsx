@@ -60,7 +60,7 @@ const SummaryPage = ({recipe, className}: props) => {
 
 	return (
 		<div className={className}>
-			<div className="grid grid-cols-2 sm:grid-rows-3 grid-rows-5 overflow-y-auto max-h-96 overflow-x-hidden">
+			<div className="grid grid-cols-2 sm:grid-rows-3 grid-rows-5 overflow-y-auto max-h-[32rem] overflow-x-hidden">
 				<section className="sm:col-span-1 col-span-2 sm:row-span-2 row-span-2 h-fit">
 					<div className="flex flex-row overflow-hidden flex-wrap items-center h-fit">
 						{ingredientsArray.map(
@@ -110,7 +110,7 @@ const SummaryPage = ({recipe, className}: props) => {
 				</section>
 				<ChartSection
 					recipe={recipe}
-					className="flex flex-col justify-center sm:col-span-1 col-span-2 sm:row-span-2 row-span-2 items-center"
+					className="flex flex-row justify-center sm:col-span-1 col-span-2 sm:row-span-2 row-span-2 items-center"
 				/>
 				<ReplySection
 					recipe={recipe}
