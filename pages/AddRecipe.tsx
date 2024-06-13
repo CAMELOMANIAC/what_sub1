@@ -289,6 +289,7 @@ const AddRecipe = ({param}: {param: string}) => {
 						<SauceSection prop={sauce} ref={sauceRef} />
 
 						<button
+							name="completeButton"
 							className={`rounded-md shadow-sm p-6 w-full ${
 								isComplete
 									? 'bg-green-600 text-white'

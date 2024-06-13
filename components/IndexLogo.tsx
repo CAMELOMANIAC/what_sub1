@@ -67,7 +67,8 @@ const IndexLogo = ({prevHandler, nextHandler}: PropsType) => {
 			<div className="flex flex-row">
 				<button
 					className="sm:flex justify-center items-center font-[seoul-metro] text-xl text-white mr-4 hidden"
-					onClick={prevHandler}>
+					onClick={prevHandler}
+					name="carouselPrev">
 					<MdOutlineArrowBack className="text-2xl"></MdOutlineArrowBack>
 					이전
 				</button>
@@ -75,7 +76,7 @@ const IndexLogo = ({prevHandler, nextHandler}: PropsType) => {
 					className="w-auto bg-white border-[12px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center"
 					ref={divRef}>
 					<span className="flex justify-center items-center w-[70px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square mr-6">
-						<button onClick={queryPushHandler}>
+						<button onClick={queryPushHandler} name="searchButton">
 							<FaSearch />
 						</button>
 					</span>
@@ -102,7 +103,8 @@ const IndexLogo = ({prevHandler, nextHandler}: PropsType) => {
 				</div>
 				<button
 					className="sm:flex justify-center items-center font-[seoul-metro] text-xl text-white ml-4 hidden"
-					onClick={nextHandler}>
+					onClick={nextHandler}
+					name="carouselNext">
 					다음
 					<MdOutlineArrowForward className="text-2xl"></MdOutlineArrowForward>
 				</button>

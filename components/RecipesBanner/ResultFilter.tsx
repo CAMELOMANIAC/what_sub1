@@ -66,6 +66,7 @@ const ResultFilter = ({sorting, setSorting}: Props) => {
 				<div className="flex flex-row w-full justify-end items-center text-white text-lg">
 					{visibleItemArray.map(item => (
 						<button
+							name="ingredientFilter"
 							key={item.name}
 							className={
 								visibleItem.includes(item.name)
@@ -77,6 +78,7 @@ const ResultFilter = ({sorting, setSorting}: Props) => {
 						</button>
 					))}
 					<button
+						name="sortingLatest"
 						className={`border rounded-full px-3 mx-1 hidden sm:block text-sm ${
 							sorting === '최신순'
 								? 'text-yellow-300 border-yellow-300 transition-all duration-500 ease-in-out transform hover:scale-100'
@@ -86,6 +88,7 @@ const ResultFilter = ({sorting, setSorting}: Props) => {
 						최신순
 					</button>
 					<button
+						name="sortingPopular"
 						className={`border rounded-full px-3 hidden sm:block text-sm ${
 							sorting === '인기순'
 								? 'text-yellow-300 border-yellow-300 transition-all duration-500 ease-in-out transform hover:scale-100'

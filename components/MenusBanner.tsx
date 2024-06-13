@@ -40,6 +40,7 @@ const MenusBanner = ({selected, sessionCheck}: propsType) => {
 				<div className="flex flex-row items-center text-white pb-4">
 					<h1 className="font-bold text-3xl mr-4">{selected.name}</h1>
 					<button
+						name="menuLikeButton"
 						className="flex items-center text-xl"
 						onClick={() => menuLikeHandler()}>
 						{isLike ? (
@@ -86,6 +87,7 @@ const MenusBanner = ({selected, sessionCheck}: propsType) => {
 						</Link>
 					) : (
 						<button
+							name="recipeWriteButton"
 							className="font-bold rounded-full px-3 py-2 mr-2 text-white underline decoration-1 underline-offset-3 flex justify-center items-center"
 							onClick={() => alert('로그인이 필요한 기능입니다')}>
 							레시피 작성

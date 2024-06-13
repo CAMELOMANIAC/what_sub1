@@ -234,6 +234,7 @@ const Register = () => {
 								)}
 							</section>
 							<button
+								name="registerCompleteButton"
 								onClick={() => handleRegister()}
 								className="flex items-center rounded w-[300px] h-[45px] bg-green-600 text-white ">
 								{registerMutation.isLoading ? (
@@ -256,7 +257,9 @@ const Register = () => {
 									</>
 								)}
 							</button>
-							<button onClick={() => handleKakaoAccount()}>
+							<button
+								name="kakaoRegisterButton"
+								onClick={() => handleKakaoAccount()}>
 								카카오 계정으로 회원가입
 							</button>
 						</>
@@ -335,10 +338,14 @@ const Register = () => {
 									</p>
 								)}
 							</section>
-							<button onClick={() => handleKakaoRegister()}>
+							<button
+								name="kakaoRegisterCompleteButton"
+								onClick={() => handleKakaoRegister()}>
 								회원가입
 							</button>
-							<button onClick={() => setKakaoCode('')}>
+							<button
+								name="changeToNormalRegisterButton"
+								onClick={() => setKakaoCode('')}>
 								일반 회원가입으로 전환
 							</button>
 						</>

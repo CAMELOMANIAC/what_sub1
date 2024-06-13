@@ -100,6 +100,7 @@ const GlobalNav = () => {
 					레시피
 				</Link>
 				<button
+					name="loginButton"
 					className={
 						'absolute flex items-center right-2 top-2 px-1 h-4/6 rounded-full border-green-600 text-sm z-30 ' +
 						`${userName !== '' ? 'bg-green-600 text-white' : 'text-green-600 bg-white'}`
