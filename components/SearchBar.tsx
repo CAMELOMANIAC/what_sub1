@@ -1,19 +1,24 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {IoSearchCircleSharp} from 'react-icons/io5';
 import {useRouter} from 'next/router';
+import {LuLoader2} from 'react-icons/lu';
 
 const SearchBar = (props: {className?: string; filterState?: string[]}) => {
 	const [search, setSearch] = useState('');
 	const router = useRouter();
 	const inputRef = useRef<HTMLInputElement>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleSearch: React.ChangeEventHandler<HTMLInputElement> = e => {
 		setSearch(e.currentTarget.value);
 	};
 
 	const handleSubmit = () => {
+		setIsLoading(true);
 		//받은 필터를 쿼리스트링으로 변경해서 전달해야함
-		router.push(`/Recipes?query=${search}`);
+		router.push(`/Recipes?query=${search}`).then(() => {
+			setIsLoading(false); //push함수가 프로미스객체를 반환하므로 현재 로딩상태를 알 수 있음
+		});
 	};
 
 	useEffect(() => {
@@ -48,8 +53,13 @@ const SearchBar = (props: {className?: string; filterState?: string[]}) => {
 				onClick={handleSubmit}
 				type="submit"
 				className="absolute right-0 pr-1"
-				aria-label="search button">
-				<IoSearchCircleSharp className="text-4xl " />
+				name="searchButton">
+				<IoSearchCircleSharp
+					className={`text-4xl ${isLoading && 'hidden'}`}
+				/>
+				<LuLoader2
+					className={`text-4xl ${!isLoading && 'hidden'} animate-spin text-4xl`}
+				/>
 			</button>
 		</div>
 	);
