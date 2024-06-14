@@ -459,3 +459,42 @@ export const checkKakaoId = async (
 		return err;
 	}
 };
+
+//비밀번호 변경
+export const changePassword = async (id: string, passWord: string) => {
+	const query = `UPDATE user_table SET user_pwd = ? WHERE user_id = ?`;
+	const valuesPwd = passWord;
+	const valuesId = id;
+
+	const results: updateReturnType | Error = await executeQuery({
+		query: query,
+		values: [valuesPwd, valuesId],
+	});
+
+	if ('affectedRows' in results && results.affectedRows === 0) {
+		throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
+	} else if (results instanceof Error) {
+		throw new Error('DB와 통신 할 수 없거나 쿼리문이 잘못됨');
+	} else {
+		return results;
+	}
+};
+
+//비밀번호를 가져오는 함수
+export const getPassword = async (id: string) => {
+	const query = `SELECT user_pwd FROM user_table WHERE user_id = ?`;
+	const valuesId = id;
+
+	const results: Array<{user_pwd: string}> | Error = await executeQuery({
+		query: query,
+		values: [valuesId],
+	});
+
+	if (Array.isArray(results) && results.length < 0) {
+		throw new Error('적합한 결과가 없음');
+	} else if (results instanceof Error) {
+		throw new Error('DB와 통신 할 수 없거나 쿼리문이 잘못됨');
+	} else {
+		return results;
+	}
+};
