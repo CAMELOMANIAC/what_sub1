@@ -15,7 +15,7 @@ const EmptyCard = () => {
 	return (
 		<article
 			onClick={clickHandler}
-			className="col-span-2 sm:aspect-[8/3] md:aspect-[8/7] bg-white border rounded-xl shadow-md hover:shadow-xl flex justify-center items-center hover:scale-105 transition-transform group">
+			className="col-span-2 sm:aspect-[8/3] min-h-[100px] md:aspect-[8/7] bg-white border rounded-xl shadow-md hover:shadow-xl flex justify-center items-center hover:scale-105 transition-transform group">
 			<div className="text-gray-200 text-8xl text-center group-hover:text-green-600">
 				<HiPlus></HiPlus>
 			</div>

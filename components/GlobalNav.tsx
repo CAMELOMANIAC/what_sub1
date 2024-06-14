@@ -122,12 +122,10 @@ const GlobalNav = () => {
 						</>
 					)}
 				</button>
-				{isLoginModal && (
-					<LoginModal handleClose={() => setLoginModal(false)} />
-				)}
+				{isLoginModal && <LoginModal handleClose={setLoginModal} />}
 				{isLoginTureModal && buttonRef.current && (
 					<LoginTureModal
-						handleClose={() => setLoginTureModal(false)}
+						handleClose={setLoginTureModal}
 						buttonRef={buttonRef.current}
 					/>
 				)}
