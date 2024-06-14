@@ -59,6 +59,9 @@ export default function MyApp({Component, pageProps}: AppProps) {
 				case '/Register':
 					setDestination('회원가입');
 					break;
+				case '/Account':
+					setDestination('계정 설정');
+					break;
 				default:
 					setDestination('새로운 페이지');
 					break;
