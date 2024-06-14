@@ -1,4 +1,3 @@
-import React, {forwardRef} from 'react';
 import {useRouter} from 'next/router';
 import {recipeType} from '../../interfaces/api/recipes';
 import {totalMenuInfoType} from '../../interfaces/api/menus';
@@ -17,39 +16,30 @@ type Props = {
 	setSorting: React.Dispatch<React.SetStateAction<string>>;
 };
 
-//타입스크립트에서 useRef를 컴포넌트 속성에 할당할 수 있도록 forwardRef를 사용해야함 일반 타입으로 사용시 일반적인 속성이 되버림
-const RecipesBanner = forwardRef<HTMLDivElement, Props>(
-	({recipeData, menuData, sorting, setSorting}, ref) => {
-		const router = useRouter();
-		const searchParams = useSearchParams();
+const RecipesBanner = ({recipeData, menuData, sorting, setSorting}: Props) => {
+	const router = useRouter();
+	const searchParams = useSearchParams();
 
-		return (
-			<>
-				{router.isReady &&
-				router.query.param &&
-				router.query.param.length !== 0 ? (
-					<ParamRecipesBanner ref={ref} />
-				) : (
-					(searchParams?.has('write') && (
-						<WriteRecipesBanner ref={ref} />
-					)) ||
-					(searchParams?.has('favorite') && (
-						<FavoriteRecipesBanner ref={ref} />
-					)) || (
-						<QueryRecipesBanner
-							ref={ref}
-							menuData={menuData}
-							recipeData={recipeData}
-						/>
-					)
-				)}
-				<ResultFilter sorting={sorting} setSorting={setSorting} />
-			</>
-		);
-	},
-);
-
-//eslint가 규칙상 displayname이없으면 오류를 뿜어냄
-RecipesBanner.displayName = 'RecipesBanner';
+	return (
+		<>
+			{router.isReady &&
+			router.query.param &&
+			router.query.param.length !== 0 ? (
+				<ParamRecipesBanner />
+			) : (
+				(searchParams?.has('write') && <WriteRecipesBanner />) ||
+				(searchParams?.has('favorite') && (
+					<FavoriteRecipesBanner />
+				)) || (
+					<QueryRecipesBanner
+						menuData={menuData}
+						recipeData={recipeData}
+					/>
+				)
+			)}
+			<ResultFilter sorting={sorting} setSorting={setSorting} />
+		</>
+	);
+};
 
 export default RecipesBanner;

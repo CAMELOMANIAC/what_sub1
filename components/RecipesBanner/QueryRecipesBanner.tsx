@@ -27,12 +27,11 @@ export const StyleTag = styled.button`
 	color: rgb(107 114 128);
 `;
 type Props = {
-	ref: React.ForwardedRef<HTMLDivElement>;
 	menuData: totalMenuInfoType[];
 	recipeData: recipeType[];
 };
 
-const QueryRecipesBanner = ({ref, menuData, recipeData}: Props) => {
+const QueryRecipesBanner = ({menuData, recipeData}: Props) => {
 	const dispatch = useDispatch();
 
 	//검색 필터 관련
@@ -56,9 +55,7 @@ const QueryRecipesBanner = ({ref, menuData, recipeData}: Props) => {
 	};
 
 	return (
-		<section
-			className={`relative w-screen bg-white border-gray-200`}
-			ref={ref}>
+		<section className={`relative w-screen bg-white border-gray-200`}>
 			<div className="mx-auto pt-4 md:pb-8 max-w-[1024px]">
 				<article className="sm:pb-8 pb-2">
 					<div className="flex flex-row justify-start items-center my-2 sticky">
