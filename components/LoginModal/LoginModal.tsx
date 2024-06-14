@@ -10,11 +10,12 @@ import {loadMenuLike, loadRecipeLike} from '../../utils/publicFunction';
 import Link from 'next/link';
 import {useMutation, useQuery} from 'react-query';
 import Logo from '../Logo';
-import {GrClose} from 'react-icons/gr';
 import Image from 'next/image';
 import {LuLoader2} from 'react-icons/lu';
+import useModalAnimationHook from '../../utils/modalAnimationHook';
+import MediumModal from '../interface/MediumModal';
 
-const LoginModal = ({handleClose}: {handleClose: () => void}) => {
+const LoginModal = ({handleClose}: {handleClose: (arg: boolean) => void}) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const [id, setId] = useState('');
@@ -83,7 +84,7 @@ const LoginModal = ({handleClose}: {handleClose: () => void}) => {
 						),
 					),
 				);
-				handleClose();
+				setIsLoaded(false);
 			},
 			onError: (error: Error) => {
 				alert(error.message);
@@ -91,13 +92,11 @@ const LoginModal = ({handleClose}: {handleClose: () => void}) => {
 		},
 	);
 
+	const {isLoaded, setIsLoaded} = useModalAnimationHook(handleClose);
+
 	return (
-		<div
-			className="fixed bg-gray-600/10 top-0 left-0 w-full h-full backdrop-blur-sm"
-			onClick={e => {
-				if (e.target === e.currentTarget) handleClose();
-			}}>
-			<article className="w-[500px] h-[550px] bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-lg rounded-lg flex flex-col justify-center items-center">
+		<MediumModal setIsLoaded={setIsLoaded} isLoaded={isLoaded}>
+			<div className="flex flex-col justify-center items-center m-auto">
 				<Logo />
 				<p className="text-lg font-bold">로그인</p>
 				<section className="p-2 pb-0">
@@ -158,19 +157,13 @@ const LoginModal = ({handleClose}: {handleClose: () => void}) => {
 					아직 회원이 아니신가요?
 					<Link
 						href="/Register"
-						onClick={handleClose}
+						onClick={() => setIsLoaded(false)}
 						className="italic underline decoration-1 underline-offset-3 text-green-600">
 						회원가입
 					</Link>
 				</section>
-
-				<button
-					className={'fixed right-5 top-5 z-10'}
-					onClick={handleClose}>
-					<GrClose />
-				</button>
-			</article>
-		</div>
+			</div>
+		</MediumModal>
 	);
 };
 

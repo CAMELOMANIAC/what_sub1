@@ -6,6 +6,7 @@ import {useDispatch} from 'react-redux';
 import {actionSetLogoutData} from '../../redux/reducer/userReducer';
 import {PiHeartStraightFill} from 'react-icons/pi';
 import {RiPencilFill} from 'react-icons/ri';
+import {FaGear} from 'react-icons/fa6';
 import {IoLogOut} from 'react-icons/io5';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
@@ -44,7 +45,7 @@ const LoginTureModal = ({
 	handleClose,
 	buttonRef,
 }: {
-	handleClose: () => void;
+	handleClose: (arg: boolean) => void;
 	buttonRef: HTMLButtonElement;
 }) => {
 	const ref = useRef<HTMLDivElement>(null);
@@ -57,7 +58,7 @@ const LoginTureModal = ({
 		const handleOutSideClick = e => {
 			if (ref.current && !ref.current.contains(e.target)) {
 				//contains 함수는 인자로 전달된 노드가 해당 노드의 자손인지 판단
-				handleClose();
+				handleClose(false);
 			}
 		};
 		document.addEventListener('mousedown', handleOutSideClick);
@@ -87,7 +88,7 @@ const LoginTureModal = ({
 			enabled: false,
 			onSuccess: () => {
 				deleteCookie('user');
-				handleClose();
+				handleClose(false);
 				dispatch(actionSetLogoutData());
 				router.push('/');
 			},
@@ -98,28 +99,39 @@ const LoginTureModal = ({
 		refetch();
 	};
 
+	const AccountHandler = () => {
+		router.push('/Account');
+		handleClose(false);
+	};
+
 	return (
 		<BubbleTail
 			ref={ref}
 			className="absolute w-max right-2 bg-white border p-5 text-end"
 			$tailRight={tailRight}>
-			<ul>
+			<ul className="text-sm">
 				<li>
 					<Link href={'/Recipes?write'}>
 						내가 쓴 글
-						<RiPencilFill className="inline-block text-gray-400" />
+						<RiPencilFill className="inline-block ml-2 text-gray-600" />
 					</Link>
 				</li>
 				<li>
 					<Link href={'/Recipes?favorite'}>
 						내가 남긴 좋아요
-						<PiHeartStraightFill className="inline-block text-gray-400" />
+						<PiHeartStraightFill className="inline-block ml-2 text-gray-600" />
 					</Link>
+				</li>
+				<li>
+					<button onClick={AccountHandler}>
+						계정 관리
+						<FaGear className="inline-block ml-2 text-gray-600" />
+					</button>
 				</li>
 				<li>
 					<button onClick={() => logoutHandler()}>
 						로그아웃
-						<IoLogOut className="inline-block text-gray-400" />
+						<IoLogOut className="inline-block ml-2 text-gray-600" />
 					</button>
 				</li>
 			</ul>
