@@ -85,23 +85,23 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 			const response =
 				(searchParams?.has('write') &&
 					(await fetch(
-						'/api/recipes/' +
+						'/api/recipes?query=' +
 							encodeURIComponent(String(user.userName)) +
-							`?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${['작성자']}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
+							`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${['작성자']}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
 					))) ||
 				(searchParams?.has('favorite') &&
 					(await fetch(
-						'/api/recipes/recipeId?&recipeId=' +
+						'/api/recipes?&recipeId=' +
 							user.recipeLikeArray.join('&recipeId=') +
-							`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
+							`?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
 					))) ||
 				(await fetch(
 					query || param
-						? '/api/recipes/' +
+						? '/api/recipes?query=' +
 								encodeURIComponent(
 									String(param ? param : query),
 								) +
-								`?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? (param ? Number(limit) - 1 : limit) : dynamicLimit}&filter=${param ? ['메뉴이름'] : filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`
+								`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? (param ? Number(limit) - 1 : limit) : dynamicLimit}&filter=${param ? ['메뉴이름'] : filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`
 						: `/api/recipes?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
 				));
 

@@ -29,9 +29,7 @@ const ReplySection = ({recipe, className, userName}: props) => {
 	const getReply = async ({queryKey}) => {
 		const [, recipeId] = queryKey;
 		try {
-			const response = await fetch(
-				`/api/recipes/reply?recipeId=${recipeId}`,
-			);
+			const response = await fetch(`/api/recipes/${recipeId}/reply`);
 			if (response.status === 200) {
 				const result: replyType[] = await response.json();
 				return result;
@@ -64,19 +62,15 @@ const ReplySection = ({recipe, className, userName}: props) => {
 	//댓글 등록을 위한 뮤테이션
 	const replyMutation = useMutation(
 		async ({recipe_id}: {recipe_id: string}) => {
-			const response = await fetch(
-				`/api/recipes/reply?recipeId=${recipe_id}`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						recipeId: recipe_id,
-						content: content,
-					}),
+			const response = await fetch(`/api/recipes/${recipe_id}/reply`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			);
+				body: JSON.stringify({
+					content: content,
+				}),
+			});
 			if (!response.ok) {
 				throw new Error('댓글 등록에 실패 했습니다.');
 			}
@@ -118,12 +112,15 @@ const ReplySection = ({recipe, className, userName}: props) => {
 	//댓글 삭제 요청 뮤테이션
 	const replyDeleteMutation = useMutation(
 		async ({replyId}: {replyId: number}) => {
-			const response = await fetch(`/api/recipes/reply`, {
-				method: 'DELETE',
-				credentials: 'include',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({replyId: replyId}),
-			});
+			const response = await fetch(
+				`/api/recipes/${recipe.recipe_id}/reply`,
+				{
+					method: 'DELETE',
+					credentials: 'include',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({replyId: replyId}),
+				},
+			);
 			if (!response.ok) {
 				console.log(response);
 				throw new Error('댓글 삭제에 실패 했습니다.');

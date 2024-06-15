@@ -28,14 +28,12 @@ const SummaryPage = ({recipe, className}: props) => {
 	//레시피 삭제 요청 뮤테이션
 	const recipeDeleteMutation = useMutation(
 		async ({recipeId}: {recipeId: string}) => {
-			const response = await fetch(`/api/recipes`, {
+			const response = await fetch(`/api/recipes/${recipeId}`, {
 				method: 'DELETE',
 				credentials: 'include',
 				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({recipeId: recipeId}),
 			});
 			if (!response.ok) {
-				console.log(response);
 				throw new Error('레시피 삭제에 실패 했습니다.');
 			}
 		},

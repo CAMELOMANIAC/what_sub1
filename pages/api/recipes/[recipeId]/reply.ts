@@ -1,7 +1,11 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {replyType} from '../../../interfaces/api/recipes';
-import {deleteReply, getReply, insertReply} from '../../../utils/api/recipes';
-import {checkSession} from '../../../utils/api/users';
+import {replyType} from '../../../../interfaces/api/recipes';
+import {
+	deleteReply,
+	getReply,
+	insertReply,
+} from '../../../../utils/api/recipes';
+import {checkSession} from '../../../../utils/api/users';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	//댓글 불러오기
@@ -40,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 	//댓글 작성
 	else if (req.method === 'POST') {
-		const recipeId = Number(req.body.recipeId);
+		const recipeId = Number(req.query.recipeId);
 		const content = req.body.content;
 
 		try {
