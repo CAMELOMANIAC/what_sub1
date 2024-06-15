@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import MediumModal from '../interface/MediumModal';
 import useModalAnimationHook from '../../utils/modalAnimationHook';
 import {useQuery} from 'react-query';
+import Image from 'next/image';
 
 type propsType = {
 	setDeleteAccount: (arg: boolean) => void;
@@ -51,40 +52,51 @@ const DelectAccountModal = ({setDeleteAccount}: propsType) => {
 	return (
 		<MediumModal setIsLoaded={setIsLoaded} isLoaded={isLoaded}>
 			<div className="flex flex-col justify-center items-center m-auto">
-				<h2 className="font-bold text-lg">회원 탈퇴</h2>
+				<h2 className="font-bold text-lg mr-auto">회원 탈퇴</h2>
+				<Image
+					src="/images/샌드위치_파쇄.png"
+					alt="accountDelete"
+					width={200}
+					height={200}
+					className="m-2 mt-4"
+				/>
 				<div className="flex flex-row justify-center items-center">
 					<section
 						className={`${isCheck ? 'max-w-0' : 'max-w-[500px]'} w-full h-full overflow-hidden transition-all duration-500 ease-in-out`}>
-						<div className="p-2 w-fit">
+						<div className="m-2 w-[300px] flex flex-col justify-center items-center">
 							<p className="mb-4 text-gray-600">
 								본인 확인을 위해 비밀번호를 입력해주세요
 							</p>
 							<label
 								htmlFor="prevUserPwd"
-								className="block text-sm">
+								className="block text-sm mr-auto">
 								비밀번호
 							</label>
 							<input
-								className="border-2 w-[300px] p-2 rounded"
+								className="border-2 w-[300px] h-10 m-2 rounded"
 								onChange={handleChangePrevPwd}
 								type="password"
 								id="prevUserPwd"
 								placeholder="비밀번호"></input>
+							<button
+								className="font-semibold ml-auto"
+								onClick={() => refetch()}>
+								다음
+							</button>
 						</div>
-						<button
-							className="font-semibold"
-							onClick={() => refetch()}>
-							다음
-						</button>
 					</section>
 					<section
 						className={`${isCheck ? 'max-w-[500px]' : 'max-w-0'} w-full h-full overflow-hidden transition-all duration-500 ease-in-out`}>
-						<div className="p-2 w-fit">
+						<div className="m-2 w-[300px] flex flex-col justify-center items-center">
 							<p className="mb-4 text-gray-600">
 								정말 탈퇴하시겠습니까?
+								<br />
+								탈퇴시 모든 정보가 삭제되며 되돌릴 수 없습니다.
 							</p>
+							<button className="text-red-600 ml-auto">
+								탈퇴하기
+							</button>
 						</div>
-						<button>탈퇴하기</button>
 					</section>
 				</div>
 			</div>
