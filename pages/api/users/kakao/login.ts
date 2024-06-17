@@ -1,15 +1,16 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {checkKakaoId, updateSession} from '../../../../utils/api/users';
+import {ErrorMessage} from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {kakaoCode} = req.query;
 	if (req.method === 'GET') {
 		try {
 			if (!kakaoCode) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 			if (typeof kakaoCode !== 'string') {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 			const userId = await checkKakaoId(kakaoCode);
 			if (userId instanceof Error) {
@@ -27,13 +28,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '쿠키 정보가 없습니다.':
+					case ErrorMessage.NoCookie:
 						res.status(400).json({message: err.message});
 						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: err.message});
 						break;
 					default:
@@ -43,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드입니다'});
+		res.status(405).end();
 	}
 };
 

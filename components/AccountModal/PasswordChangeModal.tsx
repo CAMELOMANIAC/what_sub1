@@ -66,8 +66,8 @@ const PasswordChangeModal = ({setIsPasswordChange}: propsType) => {
 	});
 
 	const changePassword = async () => {
-		const result = await fetch('/api/users/password', {
-			method: 'PUT',
+		const result = await fetch('/api/users/changePassword', {
+			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',
 				included: 'true',
@@ -106,8 +106,8 @@ const PasswordChangeModal = ({setIsPasswordChange}: propsType) => {
 				<Image
 					src="/images/샌드위치_소금.png"
 					alt="accountDelete"
-					width={200}
-					height={200}
+					width={150}
+					height={150}
 					className="m-2 mt-4"
 				/>
 				<div className="flex flex-row justify-center items-center">

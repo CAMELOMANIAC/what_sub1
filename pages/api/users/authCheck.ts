@@ -6,6 +6,7 @@ import {
 	deleteUser,
 	deleteUserInfo,
 } from '../../../utils/api/users';
+import {ErrorMessage} from '../../../utils/api/errorMessage';
 
 //회원가입 로직
 //0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한을 기준으로)
@@ -23,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 		try {
 			if (typeof authNumber !== 'string') {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 
 			//4. 인증번호와 만료기한 체크
@@ -35,9 +36,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			//5. 실패시 생성되었던 DB제거(인증번호를 기준으로)
 			const expiredAuth = await getExpiredAuth(authNumber);
 			if (!(expiredAuth instanceof Error)) {
-				const deleteUserInfoResult = await deleteUserInfo(expiredAuth);
-				const deleteUserResult = await deleteUser(expiredAuth);
-				console.log(deleteUserInfoResult, deleteUserResult);
+				await deleteUserInfo(expiredAuth);
+				await deleteUser(expiredAuth);
 			}
 
 			//6. 인증성공시 DB수정
@@ -50,14 +50,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
-					case '유효기간이 만료 되었습니다.':
-						res.status(408).json({message: err.message});
+					case ErrorMessage.ExpiredAuth:
+						res.status(408).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -66,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드입니다'});
+		res.status(405).end();
 	}
 };
 

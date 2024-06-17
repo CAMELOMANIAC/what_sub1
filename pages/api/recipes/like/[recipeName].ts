@@ -5,16 +5,17 @@ import {
 	insertRecipeLike,
 } from '../../../../utils/api/recipes';
 import {checkSession} from '../../../../utils/api/users';
+import {ErrorMessage} from '../../../../utils/api/errorMessage';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {recipeName} = req.query;
 
 	if (req.method === 'POST') {
 		try {
 			if (!req.headers.cookie || !recipeName) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 			if (typeof recipeName !== 'string') {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 
 			const userId = await checkSession(req.headers.cookie);
@@ -27,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				userId,
 			);
 			if (checkMenuLikeResult === true) {
-				throw new Error('이미 좋아요한 레시피 입니다.');
+				throw new Error(ErrorMessage.UpdateError);
 			}
 			if (checkMenuLikeResult instanceof Error) {
 				throw checkMenuLikeResult;
@@ -45,14 +46,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음':
+					case ErrorMessage.UpdateError:
 						res.status(204).end();
 						break;
-					case '이미 좋아요한 레시피 입니다.':
-						res.status(204).end();
-						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -63,10 +61,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	} else if (req.method === 'DELETE') {
 		try {
 			if (!req.headers.cookie || !recipeName) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 			if (typeof recipeName !== 'string') {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 
 			const userId = await checkSession(req.headers.cookie);
@@ -79,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				userId,
 			);
 			if (checkMenuLikeResult === false) {
-				throw new Error('이미 좋아요 제거한 레시피 입니다.');
+				throw new Error(ErrorMessage.UpdateError);
 			}
 			if (checkMenuLikeResult instanceof Error) {
 				throw checkMenuLikeResult;
@@ -97,14 +95,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음':
+					case ErrorMessage.UpdateError:
 						res.status(204).end();
 						break;
-					case '이미 좋아요 제거한 레시피 입니다.':
-						res.status(204).end();
-						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -114,7 +109,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 	} else {
 		// 그 외의 HTTP 메서드 처리
-		res.status(405).send({message: '허용되지 않은 요청 메서드입니다'});
+		res.status(405).end();
 	}
 };
 

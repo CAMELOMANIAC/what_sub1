@@ -1,6 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {getRecipeLike} from '../../../../../utils/api/recipes';
 import {checkSession} from '../../../../../utils/api/users';
+import {ErrorMessage} from '../../../../../utils/api/errorMessage';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === 'GET') {
 		//사용자가한 레시피 좋아요 정보 읽어오기
@@ -17,21 +18,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 						res.status(200).json(results);
 					}
 				} else {
-					throw new Error('잘못된 요청값 입니다.');
+					throw new Error(ErrorMessage.NoRequest);
 				}
 			} else {
-				throw new Error('쿠키 정보가 없습니다.');
+				throw new Error(ErrorMessage.NoCookie);
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: err.message});
 						break;
-					case '쿠키 정보가 없습니다.':
+					case ErrorMessage.NoCookie:
 						res.status(400).json({message: err.message});
 						break;
 					default:
@@ -42,7 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 	} else {
 		// 그 외의 HTTP 메서드 처리
-		res.status(405).send({message: '허용되지 않은 요청 메서드입니다'});
+		res.status(405).end();
 	}
 };
 

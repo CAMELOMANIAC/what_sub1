@@ -6,6 +6,7 @@ import {
 	insertReply,
 } from '../../../../utils/api/recipes';
 import {checkSession} from '../../../../utils/api/users';
+import {ErrorMessage} from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	//댓글 불러오기
@@ -24,15 +25,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					res.status(200).json(results);
 				}
 			} else {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: err.message});
 						break;
 					default:
@@ -65,15 +66,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					}
 				}
 			} else {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '일치하는 행이 없거나 이미 수정되어 수정할 수 없음':
+					case ErrorMessage.UpdateError:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: err.message});
 						break;
 					default:
@@ -91,15 +92,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			if (req.headers.cookie) {
 				const userId = await checkSession(req.headers.cookie);
 				if (!userId || userId instanceof Error) {
-					throw new Error('로그인이 필요합니다.');
+					throw new Error(ErrorMessage.NoLogin);
 				}
 			} else {
-				throw new Error('쿠키 정보가 없습니다.');
+				throw new Error(ErrorMessage.NoCookie);
 			}
 
 			let replyIdArray: number[] = [];
 			if (!(replyId instanceof Array || typeof replyId === 'number')) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			} else if (typeof replyId === 'number') {
 				replyIdArray = [Number(replyId)];
 			} else if (replyId instanceof Array) {
@@ -111,16 +112,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '일치하는 행이 없거나 이미 수정되어 수정할 수 없음':
+					case ErrorMessage.UpdateError:
 						res.status(204).end();
 						break;
-					case '로그인이 필요합니다.':
+					case ErrorMessage.NoLogin:
 						res.status(400).json({message: err.message});
 						break;
-					case '쿠키 정보가 없습니다.':
+					case ErrorMessage.NoCookie:
 						res.status(400).json({message: err.message});
 						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: err.message});
 						break;
 					default:
@@ -130,7 +131,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드'});
+		res.status(405).send({message: ErrorMessage.NoMethod});
 	}
 };
 

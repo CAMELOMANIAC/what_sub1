@@ -4,6 +4,7 @@ import {
 	checkUser,
 	updateSession,
 } from '../../../utils/api/users';
+import {ErrorMessage} from '../../../utils/api/errorMessage';
 
 //비즈니스 로직은 함수로 만들어서 처리합니다.(함수는 utils/api/ 타입은 interfaces/api에 정의되어 있습니다)
 //서비스 로직은 이곳의 핸들러 함수내에서 작성합니다
@@ -16,16 +17,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 		try {
 			if (!id || !pwd) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 			const userId = await checkUser(id, pwd);
 			if (userId instanceof Error) {
-				throw new Error('아이디, 비밀번호를 다시 확인해주세요');
+				throw new Error(ErrorMessage.NoPassword);
 			}
 
 			const authCheck = await checkAuthComplete(id);
 			if (authCheck instanceof Error) {
-				throw new Error('인증을 완료하지 않은 회원입니다.');
+				throw new Error(ErrorMessage.NoAuthComplete);
 			}
 
 			if (typeof userId === 'string') {
@@ -42,16 +43,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '일치하는 행이 없거나 이미 수정되어 수정할 수 없음':
+					case ErrorMessage.UpdateError:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: err.message});
 						break;
-					case '아이디, 비밀번호를 다시 확인해주세요':
+					case ErrorMessage.NoPassword:
 						res.status(400).json({message: err.message});
 						break;
-					case '인증을 완료하지 않은 회원입니다.':
+					case ErrorMessage.NoAuthComplete:
 						res.status(403).json({message: err.message});
 						break;
 					default:
@@ -61,7 +62,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드입니다'});
+		res.status(405).end();
 	}
 };
 

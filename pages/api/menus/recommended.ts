@@ -1,5 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {getRecommendedMenus} from '../../../utils/api/menus';
+import {ErrorMessage} from '../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === 'GET') {
@@ -14,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
 					default:
@@ -25,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 	} else {
 		// 그 외의 HTTP 메서드 처리
-		res.status(405).send({message: 'Method Not Allowed'});
+		res.status(405).end();
 	}
 };
 

@@ -26,10 +26,10 @@ const WriteRecipesBanner = () => {
 	}, [menuLikeArray]);
 
 	const recipeLikeCount = useSelector(
-		(state: RootState) => state.user.menuLikeArray.length,
+		(state: RootState) => state.user.recipeLikeArray.length,
 	);
 	const menuLikeCount = useSelector(
-		(state: RootState) => state.user.recipeLikeArray.length,
+		(state: RootState) => state.user.menuLikeArray.length,
 	);
 	const MenuLikeButton = ({menuName}: {menuName: string}) => {
 		const {menuLikeHandler} = useMenuLike(menuName);

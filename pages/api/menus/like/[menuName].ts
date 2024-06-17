@@ -6,6 +6,7 @@ import {
 	insertMenuLike,
 } from '../../../../utils/api/menus';
 import {checkSession} from '../../../../utils/api/users';
+import {ErrorMessage} from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {menuName} = req.query;
@@ -14,10 +15,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		//메뉴 좋아요 수 반환
 		try {
 			if (!menuName) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 			if (typeof menuName !== 'string') {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 
 			const result = await countMenuLike(menuName);
@@ -29,11 +30,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -45,10 +46,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		//메뉴 좋아요 추가
 		try {
 			if (!req.headers.cookie || !menuName) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 			if (typeof menuName !== 'string') {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 
 			const userId = await checkSession(req.headers.cookie);
@@ -58,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 			const checkMenuLikeResult = await checkMenuLike(menuName, userId);
 			if (checkMenuLikeResult === true) {
-				throw new Error('이미 좋아요한 메뉴 입니다.');
+				throw new Error(ErrorMessage.UpdateError);
 			}
 			if (checkMenuLikeResult instanceof Error) {
 				throw checkMenuLikeResult;
@@ -76,13 +77,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음':
+					case ErrorMessage.UpdateError:
 						res.status(204).end();
 						break;
-					case '이미 좋아요한 메뉴 입니다.':
-						res.status(204).end();
-						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: err.message});
 						break;
 					default:
@@ -95,10 +93,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		//메뉴 좋아요 제거
 		try {
 			if (!req.headers.cookie || !menuName) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 			if (typeof menuName !== 'string') {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 
 			const userId = await checkSession(req.headers.cookie);
@@ -108,7 +106,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 			const checkMenuLikeResult = await checkMenuLike(menuName, userId);
 			if (checkMenuLikeResult === false) {
-				throw new Error('이미 좋아요 제거한 메뉴 입니다.');
+				throw new Error(ErrorMessage.UpdateError);
 			}
 			if (checkMenuLikeResult instanceof Error) {
 				throw checkMenuLikeResult;
@@ -123,14 +121,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음':
+					case ErrorMessage.UpdateError:
 						res.status(204).end();
 						break;
-					case '이미 좋아요 제거한 메뉴 입니다.':
-						res.status(204).end();
-						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -139,7 +134,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드'});
+		res.status(405).end();
 	}
 };
 

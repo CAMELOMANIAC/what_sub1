@@ -1,5 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {getTopIngredients} from '../../../../../utils/api/menus';
+import {ErrorMessage} from '../../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {sandwichMenu} = req.query;
@@ -15,16 +16,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					res.status(200).json(results);
 				}
 			} else {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -33,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드'});
+		res.status(405).end();
 	}
 };
 

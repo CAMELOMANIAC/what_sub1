@@ -8,7 +8,8 @@ import {
 	getRecipesFromRecipeId,
 } from '../../../../utils/api/recipes';
 import {recipeType} from '../../../../interfaces/api/recipes';
-import {checkSession} from '../../../../utils/checkSession';
+import {checkSession} from '../../../../utils/api/users';
+import {ErrorMessage} from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	let {limit} = req.query;
@@ -21,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		try {
 			let recipeIdArray: number[] = [];
 			if (!(recipeId instanceof Array || typeof recipeId === 'string')) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			} else if (typeof recipeId === 'string') {
 				recipeIdArray = [Number(recipeId)];
 			} else if (recipeId instanceof Array) {
@@ -53,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
 					default:
@@ -68,16 +69,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			if (req.headers.cookie) {
 				const userId = await checkSession(req.headers.cookie);
 				if (!userId || userId instanceof Error) {
-					throw new Error('로그인이 필요합니다.');
+					throw new Error(ErrorMessage.NoLogin);
 				}
 			} else {
-				throw new Error('쿠키 정보가 없습니다.');
+				throw new Error(ErrorMessage.NoCookie);
 			}
-
 			let recipeIdArray: number[] = [];
-			if (!(recipeId instanceof Array || typeof recipeId === 'number')) {
-				throw new Error('잘못된 요청값 입니다.');
-			} else if (typeof recipeId === 'number') {
+			if (!(recipeId instanceof Array)) {
 				recipeIdArray = [Number(recipeId)];
 			} else if (recipeId instanceof Array) {
 				recipeIdArray = recipeId.map(id => Number(id));
@@ -87,19 +85,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			await deleteAllRecipeLike(recipeIdArray);
 			await deleteAllRecipeTag(recipeIdArray);
 			await deleteAllRecipeIngredients(recipeIdArray);
-			await deleteRecipe(recipeIdArray);
+			const deleteRecipeResult = await deleteRecipe(recipeIdArray); //실제 레시피 제거시 실패하면 에러를 던집니다
+			if (!deleteRecipeResult) {
+				throw new Error(ErrorMessage.DeleteError);
+			}
 
 			res.status(200).end();
 		} catch (error) {
 			if (error instanceof Error) {
 				switch (error.message) {
-					case '로그인이 필요합니다.':
+					case ErrorMessage.NoLogin:
 						res.status(400).json({message: error.message});
 						break;
-					case '쿠키 정보가 없습니다.':
+					case ErrorMessage.NoCookie:
 						res.status(400).json({message: error.message});
 						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: error.message});
 						break;
 					default:
@@ -109,7 +110,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드'});
+		res.status(405).send({message: ErrorMessage.NoMethod});
 	}
 };
 

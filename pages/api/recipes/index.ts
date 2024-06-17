@@ -6,6 +6,7 @@ import {
 } from '../../../utils/api/recipes';
 import {recipeType} from '../../../interfaces/api/recipes';
 import {checkSession} from '../../../utils/api/users';
+import {ErrorMessage} from '../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {query} = req.query;
@@ -57,7 +58,43 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 						res.status(200).json(results);
 					}
 				} else if (query instanceof Array) {
-					throw new Error('잘못된 요청값 입니다.');
+					throw new Error(ErrorMessage.NoRequest);
+				}
+			} else if (recipeId) {
+				//레시피 아이디로 검색하기
+				let recipeIdArray: number[] = [];
+				if (
+					!(recipeId instanceof Array || typeof recipeId === 'string')
+				) {
+					throw new Error(ErrorMessage.NoRequest);
+				} else if (typeof recipeId === 'string') {
+					recipeIdArray = [Number(recipeId)];
+				} else if (recipeId instanceof Array) {
+					recipeIdArray = recipeId.map(id => Number(id));
+				}
+
+				if (typeof limit === 'undefined') {
+					limit = '9';
+				}
+				if (typeof offset === 'undefined') {
+					offset = '0';
+				}
+				if (typeof sort !== 'string') {
+					sort = 'like_count';
+				}
+
+				const results: recipeType[] | Error =
+					await getRecipesFromRecipeId({
+						recipeIdArray,
+						offset: Number(offset),
+						limit: Number(limit),
+						sort,
+					});
+
+				if (results instanceof Error) {
+					throw results;
+				} else {
+					res.status(200).json(results);
 				}
 			} else {
 				//모든 레시피 정보 가져오기
@@ -93,48 +130,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					res.status(200).json(results);
 				}
 			}
-			if (recipeId) {
-				//레시피 아이디로 검색하기
-				let recipeIdArray: number[] = [];
-				if (
-					!(recipeId instanceof Array || typeof recipeId === 'string')
-				) {
-					throw new Error('잘못된 요청값 입니다.');
-				} else if (typeof recipeId === 'string') {
-					recipeIdArray = [Number(recipeId)];
-				} else if (recipeId instanceof Array) {
-					recipeIdArray = recipeId.map(id => Number(id));
-				}
-
-				if (typeof limit === 'undefined') {
-					limit = '9';
-				}
-				if (typeof offset === 'undefined') {
-					offset = '0';
-				}
-				if (typeof sort !== 'string') {
-					sort = 'like_count';
-				}
-
-				const results: recipeType[] | Error =
-					await getRecipesFromRecipeId({
-						recipeIdArray,
-						offset: Number(offset),
-						limit: Number(limit),
-						sort,
-					});
-
-				if (results instanceof Error) {
-					throw results;
-				} else {
-					res.status(200).json(results);
-				}
-			}
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
+						break;
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -158,22 +161,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					if (insertRecipeResult instanceof Error) {
 						throw insertRecipeResult;
 					} else {
-						res.status(200).json({message: '성공'});
+						res.status(200).end();
 					}
 				}
 			} else {
-				throw new Error('쿠키 정보가 없습니다.');
+				throw new Error(ErrorMessage.NoCookie);
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '쿠키 정보가 없습니다.':
+					case ErrorMessage.NoCookie:
 						res.status(204).end();
 						break;
-					case '일치하는 행이 없거나 이미 수정되어 수정할 수 없음':
+					case ErrorMessage.UpdateError:
 						res.status(400).json({message: err.message});
 						break;
-					case '잘못된 요청값 입니다.':
+					case ErrorMessage.NoRequest:
 						res.status(400).json({message: err.message});
 						break;
 					default:
@@ -183,7 +186,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드'});
+		res.status(405).end();
 	}
 };
 

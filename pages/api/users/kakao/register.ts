@@ -5,6 +5,7 @@ import {
 	insertKakaoUserInfo,
 	insertUser,
 } from '../../../../utils/api/users';
+import {ErrorMessage} from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const kakaoCode = req.body.kakaoCode;
@@ -14,29 +15,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === 'POST') {
 		try {
 			if (kakaoCode === undefined)
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			if (typeof kakaoCode !== 'string')
-				throw new Error('잘못된 요청값 입니다.');
-			if (id === undefined) throw new Error('잘못된 요청값 입니다.');
-			if (pwd === undefined) throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
+			if (id === undefined) throw new Error(ErrorMessage.NoRequest);
+			if (pwd === undefined) throw new Error(ErrorMessage.NoRequest);
 
 			//1.아이디, 카카오 아이디 중복체크
 			const checkUserId = await getUserData(id);
 			if (checkUserId instanceof Error) {
-				if (checkUserId.message !== '적합한 결과가 없음') {
+				if (checkUserId.message !== ErrorMessage.NoResult) {
 					throw checkUserId;
 				}
 			} else {
-				throw new Error('이미 요청값이 존재합니다.');
+				throw new Error(ErrorMessage.NoResult);
 			}
 
 			const userId = await checkKakaoId(kakaoCode);
 			if (userId instanceof Error) {
-				if (userId.message !== '적합한 결과가 없음') {
+				if (userId.message !== ErrorMessage.NoResult) {
 					throw userId;
 				}
 			} else {
-				throw new Error('이미 요청값이 존재합니다.');
+				throw new Error(ErrorMessage.NoResult);
 			}
 
 			//2. 테이블에 회원정보 저장
@@ -53,11 +54,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -66,7 +67,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드입니다'});
+		res.status(405).end();
 	}
 };
 

@@ -56,8 +56,8 @@ const DelectAccountModal = ({setDeleteAccount}: propsType) => {
 				<Image
 					src="/images/샌드위치_파쇄.png"
 					alt="accountDelete"
-					width={200}
-					height={200}
+					width={150}
+					height={150}
 					className="m-2 mt-4"
 				/>
 				<div className="flex flex-row justify-center items-center">

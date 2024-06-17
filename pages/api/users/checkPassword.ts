@@ -1,5 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {checkSession, getPassword} from '../../../utils/api/users';
+import {ErrorMessage} from '../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	//이 엔드포인트는 비밀번호 일치여부를 확인합니다.
@@ -13,23 +14,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				}
 				const serverPassword = await getPassword(userId);
 				if (String(password) !== serverPassword[0].user_pwd) {
-					throw new Error('비밀번호가 일치하지 않습니다.');
+					throw new Error(ErrorMessage.NoPassword);
 				}
 				res.status(200).end();
 			} else {
-				throw new Error('쿠키 정보가 없습니다.');
+				throw new Error(ErrorMessage.NoCookie);
 			}
 		} catch (error) {
 			if (error instanceof Error) {
 				switch (error.message) {
-					case '적합한 결과가 없음':
-						res.status(400).end();
+					case ErrorMessage.NoResult:
+						res.status(400).json({message: error.message});
 						break;
-					case '쿠키 정보가 없습니다.':
-						res.status(400).end();
+					case ErrorMessage.NoCookie:
+						res.status(400).json({message: error.message});
 						break;
-					case '비밀번호가 일치하지 않습니다.':
-						res.status(401).end();
+					case ErrorMessage.NoPassword:
+						res.status(400).json({message: error.message});
 						break;
 					default:
 						res.status(500).end();
@@ -38,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 요청 메서드입니다'});
+		res.status(405).end();
 	}
 };
 

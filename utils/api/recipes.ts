@@ -7,6 +7,7 @@ import {
 	userRecipeLikeTopDataType,
 } from '../../interfaces/api/recipes';
 import executeQuery from '../../lib/db';
+import {ErrorMessage} from './errorMessage';
 
 //검색어를 통한 레시피 반환
 export const getRecipes = async ({
@@ -512,7 +513,7 @@ export const getRecipeLikeCount = async (
 //레시피 제거
 export const deleteRecipe = async (
 	recipe_id: Array<number>,
-): Promise<boolean | Error> => {
+): Promise<boolean> => {
 	const recipeIdValue = recipe_id;
 	const placeHolder = recipeIdValue.map(() => '?');
 	const query = `DELETE FROM recipe_table WHERE recipe_id IN (${placeHolder});`;
@@ -522,24 +523,19 @@ export const deleteRecipe = async (
 			values: recipeIdValue,
 		});
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			console.log(results);
 			return false;
-		} else if (results instanceof Error) {
-			console.log(results);
-			throw new Error('적합한 결과가 없음');
 		} else {
-			console.log(results);
 			return true;
 		}
-	} catch (err) {
-		return err;
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
 	}
 };
 
 //레시피 태그 제거
 export const deleteAllRecipeTag = async (
 	recipe_id: Array<number>,
-): Promise<boolean | Error> => {
+): Promise<boolean> => {
 	const recipeIdValue = recipe_id;
 	const placeHolder = recipeIdValue.map(() => '?');
 	const query = `DELETE FROM recipe_tag_table WHERE recipe_table_recipe_id IN (${placeHolder});`;
@@ -550,20 +546,39 @@ export const deleteAllRecipeTag = async (
 		});
 		if ('affectedRows' in results && results.affectedRows === 0) {
 			return false;
-		} else if (results instanceof Error) {
-			throw new Error('적합한 결과가 없음');
 		} else {
 			return true;
 		}
-	} catch (err) {
-		return err;
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
+	}
+};
+
+//사용되지 않는 태그 제거
+export const deleteNotUsingRecipeTag = async (): Promise<boolean> => {
+	const query = `DELETE FROM tag_table 
+	WHERE tag_name NOT IN ( 
+    SELECT DISTINCT tag_table_tag_name 
+    FROM recipe_tag_table);`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: [],
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else {
+			return true;
+		}
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
 	}
 };
 
 //레시피 좋아요 제거
 export const deleteAllRecipeLike = async (
 	recipe_id: Array<number>,
-): Promise<boolean | Error> => {
+): Promise<boolean> => {
 	const recipeIdValue = recipe_id;
 	const placeHolder = recipeIdValue.map(() => '?');
 	const query = `DELETE FROM recipe_like_table WHERE recipe_table_recipe_id IN (${placeHolder});`;
@@ -574,20 +589,18 @@ export const deleteAllRecipeLike = async (
 		});
 		if ('affectedRows' in results && results.affectedRows === 0) {
 			return false;
-		} else if (results instanceof Error) {
-			throw new Error('적합한 결과가 없음');
 		} else {
 			return true;
 		}
-	} catch (err) {
-		return err;
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
 	}
 };
 
 //특정 댓글 제거
 export const deleteReply = async (
 	reply_id: Array<number>,
-): Promise<boolean | Error> => {
+): Promise<boolean> => {
 	const replyIdValue = reply_id;
 	const placeHolder = replyIdValue.map(() => '?');
 	const query = `DELETE FROM reply_table WHERE reply_id IN (${placeHolder});`;
@@ -598,44 +611,64 @@ export const deleteReply = async (
 		});
 		if ('affectedRows' in results && results.affectedRows === 0) {
 			return false;
-		} else if (results instanceof Error) {
-			throw new Error('적합한 결과가 없음');
 		} else {
 			return true;
 		}
-	} catch (err) {
-		return err;
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
 	}
 };
 
 //레시피 댓글 제거
 export const deleteAllRecipeReply = async (
 	recipe_id: Array<number>,
-): Promise<boolean | Error> => {
+): Promise<boolean> => {
 	const recipeIdValue = recipe_id;
 	const placeHolder = recipeIdValue.map(() => '?');
 	const query = `DELETE FROM reply_table WHERE recipe_table_recipe_id IN (${placeHolder});`;
 	try {
-		const results: {like_count: number} | Error = await executeQuery({
-			query: query,
-			values: recipeIdValue,
-		});
+		const results: Array<{like_count: number}> | Error = await executeQuery(
+			{
+				query: query,
+				values: recipeIdValue,
+			},
+		);
 		if ('affectedRows' in results && results.affectedRows === 0) {
 			return false;
-		} else if (results instanceof Error) {
-			throw new Error('적합한 결과가 없음');
 		} else {
 			return true;
 		}
-	} catch (err) {
-		return err;
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
+	}
+};
+//레시피 댓글 제거
+export const deleteAllRecipeReplyFromUserId = async (
+	user_id: Array<number>,
+): Promise<boolean> => {
+	const userIdValue = user_id;
+	const query = `DELETE FROM reply_table WHERE user_table_user_id = ?;`;
+	try {
+		const results: Array<{like_count: number}> | Error = await executeQuery(
+			{
+				query: query,
+				values: [userIdValue],
+			},
+		);
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else {
+			return true;
+		}
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
 	}
 };
 
 //레시피 재료 제거
 export const deleteAllRecipeIngredients = async (
 	recipe_id: Array<number>,
-): Promise<boolean | Error> => {
+): Promise<boolean> => {
 	const recipeIdValue = recipe_id;
 	const placeHolder = recipeIdValue.map(() => '?');
 	const query = `DELETE FROM recipe_ingredients_table WHERE recipe_table_recipe_id IN (${placeHolder});`;
@@ -646,12 +679,31 @@ export const deleteAllRecipeIngredients = async (
 		});
 		if ('affectedRows' in results && results.affectedRows === 0) {
 			return false;
-		} else if (results instanceof Error) {
-			throw new Error('적합한 결과가 없음');
 		} else {
 			return true;
 		}
-	} catch (err) {
-		return err;
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
+	}
+};
+
+//사용자의 모든 레시피 제거
+export const deleteUsersRecipe = async (
+	user_id: Array<number>,
+): Promise<boolean> => {
+	const userIdValue = user_id;
+	const query = `DELETE FROM recipe_table WHERE user_table_user_id = ?;`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: userIdValue,
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else {
+			return true;
+		}
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
 	}
 };

@@ -70,6 +70,7 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 			3,
 			filterQuery,
 			sorting,
+			searchParams?.has('favorite') ? 'favorite' : 'not-favorite',
 		],
 		async ({queryKey, pageParam = 0}) => {
 			const [
@@ -91,9 +92,9 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 					))) ||
 				(searchParams?.has('favorite') &&
 					(await fetch(
-						'/api/recipes?&recipeId=' +
+						'/api/recipes?recipeId=' +
 							user.recipeLikeArray.join('&recipeId=') +
-							`?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
+							`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
 					))) ||
 				(await fetch(
 					query || param
@@ -105,8 +106,9 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 						: `/api/recipes?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
 				));
 
-			if (response.status === 200) return response.json();
-			else if (response.status === 204) {
+			if (response.status === 200) {
+				return response.json();
+			} else if (response.status === 204) {
 				setEndRecipe(true);
 				return [];
 			} else throw new Error(response.status.toString());

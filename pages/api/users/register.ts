@@ -15,6 +15,7 @@ import {
 	insertUserInfo,
 } from '../../../utils/api/users';
 import {v4 as uuidv4} from 'uuid';
+import {ErrorMessage} from '../../../utils/api/errorMessage';
 
 //회원가입 로직
 //0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한을 기준으로)
@@ -34,11 +35,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 		try {
 			if (!id || !pwd || !email) {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
-			if (!isValidId(id)) throw new Error('잘못된 요청값 입니다.');
-			if (!isValidPassword(id)) throw new Error('잘못된 요청값 입니다.');
-			if (!isValidEmail(email)) throw new Error('잘못된 요청값 입니다.');
+			if (!isValidId(id)) throw new Error(ErrorMessage.NoRequest);
+			if (!isValidPassword(id)) throw new Error(ErrorMessage.NoRequest);
+			if (!isValidEmail(email)) throw new Error(ErrorMessage.NoRequest);
 
 			const authNumber = uuidv4();
 			const mailOptions = {
@@ -63,7 +64,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					throw checkUserId;
 				}
 			} else {
-				throw new Error('이미 요청값이 존재합니다.');
+				throw new Error(ErrorMessage.UpdateError);
 			}
 
 			const checkUserEmail = await getEmail(id);
@@ -72,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					throw checkUserEmail;
 				}
 			} else {
-				throw new Error('이미 요청값이 존재합니다.');
+				throw new Error(ErrorMessage.UpdateError);
 			}
 
 			//2. 테이블에 회원정보 저장
@@ -95,14 +96,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
-					case '이미 요청값이 존재합니다.':
-						res.status(409).json({message: err.message});
+					case ErrorMessage.UpdateError:
+						res.status(409).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -111,7 +112,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		}
 	} else {
-		res.status(405).send({message: '허용되지 않은 메서드입니다'});
+		res.status(405).end();
 	}
 };
 

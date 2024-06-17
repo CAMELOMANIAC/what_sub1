@@ -1,6 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {getUserData} from '../../../utils/api/users';
 import {userDataType} from '../../../interfaces/api/users';
+import {ErrorMessage} from '../../../utils/api/errorMessage';
 
 //비즈니스 로직은 함수로 만들어서 처리합니다.(함수는 utils/api/ 타입은 interfaces/api에 정의되어 있습니다)
 //서비스 로직은 이곳의 핸들러 함수내에서 작성합니다
@@ -23,16 +24,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					res.status(200).json(results);
 				}
 			} else {
-				throw new Error('잘못된 요청값 입니다.');
+				throw new Error(ErrorMessage.NoRequest);
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				switch (err.message) {
-					case '적합한 결과가 없음':
+					case ErrorMessage.NoResult:
 						res.status(204).end();
 						break;
-					case '잘못된 요청값 입니다.':
-						res.status(400).json({message: err.message});
+					case ErrorMessage.NoRequest:
+						res.status(400).end();
 						break;
 					default:
 						res.status(500).json({message: err.message});
@@ -42,7 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 	} else {
 		// 그 외의 HTTP 메서드 처리
-		res.status(405).send({message: '허용되지 않은 요청 메서드입니다'});
+		res.status(405).end();
 	}
 };
 
