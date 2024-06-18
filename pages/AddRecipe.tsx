@@ -24,6 +24,7 @@ import {recipeContextType} from '../interfaces/AddRecipe';
 import RecipeNav from '../components/RecipeNav/RecipeNav';
 import {useMutation} from 'react-query';
 import Image from 'next/image';
+import {LuLoader2} from 'react-icons/lu';
 
 export type progressBarButtonsType = {
 	id: string;
@@ -210,9 +211,9 @@ const AddRecipe = ({param}: {param: string}) => {
 				credentials: 'include',
 				body: JSON.stringify(context),
 			});
-			if (response.ok) return response.json();
+			if (response.ok) return response;
 			else {
-				throw new Error('레시피 작성에 실패했습니다');
+				throw response;
 			}
 		},
 		{
@@ -297,8 +298,12 @@ const AddRecipe = ({param}: {param: string}) => {
 							} `}
 							onClick={recipeAddHandler}
 							ref={completeRef}>
-							<h3 className="text-xl font-[seoul-metro]">
-								작성완료
+							<h3 className="text-xl font-[seoul-metro] flex items-center justify-center">
+								{RecipeMutation.isLoading ? (
+									<LuLoader2 className={'animate-spin'} />
+								) : (
+									<p>작성완료</p>
+								)}
 							</h3>
 						</button>
 					</div>
