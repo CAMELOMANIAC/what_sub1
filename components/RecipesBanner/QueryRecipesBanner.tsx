@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, {useRef, useState} from 'react';
+import React, {RefObject, useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {BsFillCheckSquareFill} from 'react-icons/bs';
 import {HiFilter} from 'react-icons/hi';
@@ -29,13 +29,32 @@ export const StyleTag = styled.button`
 type Props = {
 	menuData: totalMenuInfoType[];
 	recipeData: recipeType[];
+	parentRef: RefObject<HTMLDivElement>;
 };
 
-const QueryRecipesBanner = ({menuData, recipeData}: Props) => {
+const QueryRecipesBanner = ({menuData, recipeData, parentRef}: Props) => {
 	const dispatch = useDispatch();
+	const buttonRef = useRef<HTMLButtonElement>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const updatePosition = () => {
+			if (buttonRef.current && containerRef.current) {
+				const rect = buttonRef.current.getBoundingClientRect();
+				containerRef.current.style.left = `${rect.left + buttonRef.current.offsetWidth}px`;
+				containerRef.current.style.top = `${rect.top}px`;
+			}
+		};
+		updatePosition();
+
+		window.addEventListener('resize', updatePosition);
+
+		return () => {
+			window.removeEventListener('resize', updatePosition);
+		};
+	}, []);
 
 	//검색 필터 관련
-	const filterRef = useRef(null);
 	const queryFilterArray = [
 		'메뉴이름',
 		'레시피제목',
@@ -60,76 +79,80 @@ const QueryRecipesBanner = ({menuData, recipeData}: Props) => {
 				<article className="sm:pb-8 pb-2">
 					<div className="flex flex-row justify-start items-center my-2 sticky">
 						<SearchBar className="ml-0 mr-2" />
-						<div className="relative" ref={filterRef}>
+						<div className="relative z-10">
+							{parentRef.current &&
+								ReactDOM.createPortal(
+									/*검색 필터옵션 */
+									<div
+										className={`absolute bg-white z-10 top-0 border w-fit ${isFilter ? '' : 'hidden'}`}
+										ref={containerRef}>
+										<ul className=" p-1">
+											{queryFilterArray.map(item => (
+												<li
+													key={item}
+													className="text-sm flex flex-row p-1">
+													<label>
+														{
+															<input
+																type="checkbox"
+																value={item}
+																id={item}
+																checked={filterState.includes(
+																	item,
+																)}
+																onChange={() =>
+																	filterState.includes(
+																		item,
+																	)
+																		? setFilter(
+																				filterState.filter(
+																					filterItem =>
+																						filterItem !==
+																						item,
+																				),
+																			)
+																		: addFilter(
+																				item,
+																			)
+																}
+																className="peer invisible absolute"></input>
+														}
+														<BsFillCheckSquareFill className="relative w-6 h-6 mr-2 text-white border rounded peer-checked:text-green-600 peer-checked:border-0"></BsFillCheckSquareFill>
+													</label>
+													<label
+														htmlFor={item}
+														className="my-auto flex items-center w-max">
+														{item}
+													</label>
+												</li>
+											))}
+										</ul>
+									</div>,
+									parentRef.current,
+								)}
 							<button
 								className="relative text-green-600 text-2xl w-[42px] h-[42px] text-center align-middle flex justify-center items-center z-10"
 								onClick={() =>
 									!isFilter
 										? setIsFilter(true)
 										: setIsFilter(false)
-								}>
-								<HiFilter />
+								}
+								ref={buttonRef}>
+								<HiFilter
+									className={`${isFilter ? 'rotate-90' : 'rotate-0'} transition-all duration-500`}
+								/>
 							</button>
 						</div>
 					</div>
-					{
-						/*검색 필터옵션 */
-						filterRef.current &&
-							ReactDOM.createPortal(
-								<div
-									className={`absolute bg-white top-0 border ${isFilter ? '' : 'hidden'}`}>
-									<ul className="ml-8 mr-1 p-1">
-										{queryFilterArray.map(item => (
-											<li
-												key={item}
-												className="text-sm flex flex-row p-1">
-												<label>
-													{
-														<input
-															type="checkbox"
-															value={item}
-															id={item}
-															checked={filterState.includes(
-																item,
-															)}
-															onChange={() =>
-																filterState.includes(
-																	item,
-																)
-																	? setFilter(
-																			filterState.filter(
-																				filterItem =>
-																					filterItem !==
-																					item,
-																			),
-																		)
-																	: addFilter(
-																			item,
-																		)
-															}
-															className="peer invisible absolute"></input>
-													}
-													<BsFillCheckSquareFill className="relative w-6 h-6 mr-2 text-white border rounded peer-checked:text-green-600 peer-checked:border-0"></BsFillCheckSquareFill>
-												</label>
-												<label
-													htmlFor={item}
-													className="my-auto flex items-center w-max">
-													{item}
-												</label>
-											</li>
-										))}
-									</ul>
-								</div>,
-								filterRef.current,
-							)
-					}
-					<Link href={`/Recipes?query=달콤`}>
+					<Link href={`/Recipes?query=달콤&filter=태그`}>
 						<StyleTag>#달콤</StyleTag>
 					</Link>
-					<Link href={`/Recipes?query=로스티드 치킨`}>
+					<Link
+						href={`/Recipes?query=로스티드 치킨&filter=${['메뉴이름']}`}>
 						<StyleTag>로스티드 치킨</StyleTag>
 					</Link>
-					<Link href={`/Recipes?query=허니머스타드`}>
+					<Link
+						href={`/Recipes?query=허니머스타드&filter=${['재료']}`}>
 						<StyleTag>허니머스타드</StyleTag>
 					</Link>
 					<span className="text-sm text-gray-500">
