@@ -65,7 +65,7 @@ const PasswordChangeModal = ({setIsPasswordChange}: propsType) => {
 		},
 	});
 
-	const changePassword = async () => {
+	const fetchChangePassword = async () => {
 		const result = await fetch('/api/users/changePassword', {
 			method: 'PATCH',
 			headers: {
@@ -77,27 +77,23 @@ const PasswordChangeModal = ({setIsPasswordChange}: propsType) => {
 		if (result.ok) {
 			return result;
 		} else {
-			switch (result.status) {
-				case 400:
-					throw new Error('잘못된 입력값입니다');
-				case 401:
-					throw new Error('인증되지 않은 사용자 입니다');
-				case 500:
-					throw new Error('서버와 통신 할 수 없습니다');
-				default:
-					throw new Error('비밀번호 변경에 실패하였습니다');
-			}
+			throw result;
 		}
 	};
-	const changePasswordMutate = useMutation('changePassword', changePassword, {
-		onSuccess: () => {
-			setIsLoaded(false);
-			alert('비밀번호가 변경되었습니다');
+
+	const changePasswordMutate = useMutation(
+		'changePassword',
+		fetchChangePassword,
+		{
+			onSuccess: () => {
+				setIsLoaded(false);
+				alert('비밀번호가 변경되었습니다');
+			},
+			onError: (error: Error) => {
+				alert(error.message);
+			},
 		},
-		onError: (error: Error) => {
-			alert(error.message);
-		},
-	});
+	);
 
 	return (
 		<MediumModal setIsLoaded={setIsLoaded} isLoaded={isLoaded}>

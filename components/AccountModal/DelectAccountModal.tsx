@@ -1,8 +1,12 @@
 import React, {useState} from 'react';
 import MediumModal from '../interface/MediumModal';
 import useModalAnimationHook from '../../utils/modalAnimationHook';
-import {useQuery} from 'react-query';
+import {useMutation, useQuery} from 'react-query';
 import Image from 'next/image';
+import {useRouter} from 'next/router';
+import {actionSetLogoutData} from '../../redux/reducer/userReducer';
+import {useDispatch} from 'react-redux';
+import {deleteCookie} from '../../utils/publicFunction';
 
 type propsType = {
 	setDeleteAccount: (arg: boolean) => void;
@@ -16,6 +20,7 @@ const DelectAccountModal = ({setDeleteAccount}: propsType) => {
 		setPrevPwd(e.target.value);
 	};
 
+	//비밀번호 확인 요청
 	const checkPasswordQuery = async () => {
 		const result = await fetch('/api/users/checkPassword', {
 			method: 'POST',
@@ -48,6 +53,56 @@ const DelectAccountModal = ({setDeleteAccount}: propsType) => {
 			setIsCheck(true);
 		},
 	});
+
+	const router = useRouter();
+	const dispatch = useDispatch();
+	//로그아웃 요청
+	const logoutMutation = useMutation(
+		'user',
+		async () => {
+			fetch('/api/users/deleteCookie', {method: 'POST'});
+		},
+		{
+			onSuccess: () => {
+				deleteCookie('user');
+				setIsLoaded(false);
+				dispatch(actionSetLogoutData());
+				router.push('/');
+			},
+		},
+	);
+
+	//회원탈퇴 요청
+	const fetchDeleteAccount = async () => {
+		const result = await fetch('/api/users', {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+				included: 'true',
+			},
+		});
+
+		if (result.ok) {
+			return result;
+		} else {
+			throw result;
+		}
+	};
+
+	const deleteAccountMutation = useMutation(
+		'fetchDeleteAccount',
+		fetchDeleteAccount,
+		{
+			onSuccess: () => {
+				setIsLoaded(false);
+				alert('탈퇴가 완료되었습니다.');
+				logoutMutation.mutate();
+			},
+			onError: (error: Error) => {
+				alert(error.message);
+			},
+		},
+	);
 
 	return (
 		<MediumModal setIsLoaded={setIsLoaded} isLoaded={isLoaded}>
@@ -93,7 +148,9 @@ const DelectAccountModal = ({setDeleteAccount}: propsType) => {
 								<br />
 								탈퇴시 모든 정보가 삭제되며 되돌릴 수 없습니다.
 							</p>
-							<button className="text-red-600 ml-auto">
+							<button
+								className="text-red-600 ml-auto"
+								onClick={() => deleteAccountMutation.mutate()}>
 								탈퇴하기
 							</button>
 						</div>
