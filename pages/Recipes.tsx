@@ -52,7 +52,6 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 
 	//api 통신을 위해 필요한 값들
 	const filterQuery = filter.join('&filter=');
-
 	const {
 		refetch,
 		fetchNextPage,
@@ -60,6 +59,7 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 		isLoading,
 		isFetching,
 		isError,
+		data: queryData,
 	} = useInfiniteQuery(
 		[
 			Object.keys(router.query),
@@ -115,13 +115,16 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 		},
 		{
 			getNextPageParam: (_lastPage, allPages) => allPages.flat().length,
-			onSuccess: data => {
-				setRecipes(data.pages.flat());
-			},
 			staleTime: 1000 * 60 * 1,
 			enabled: false,
 		},
 	);
+
+	useEffect(() => {
+		if (queryData) {
+			setRecipes(queryData.pages.flat());
+		}
+	}, [queryData]);
 
 	//초기 레시피 불러오기
 	useEffect(() => {

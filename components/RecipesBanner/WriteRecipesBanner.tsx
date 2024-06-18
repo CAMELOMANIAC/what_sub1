@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import {useQuery} from 'react-query';
@@ -18,7 +18,7 @@ const WriteRecipesBanner = () => {
 	const [recipeCount, setRecipeCount] = React.useState<number>(0);
 	const [recipeLikeCount, setRecipeLikeCount] = React.useState<number>(0);
 
-	useQuery(
+	const {data: userRecipeCountData} = useQuery(
 		'userRecipeCount',
 		async () => {
 			const response = await fetch('/api/users/recipes/count');
@@ -28,13 +28,15 @@ const WriteRecipesBanner = () => {
 				throw new Error('실패');
 			}
 		},
-		{
-			onSuccess: data => {
-				setRecipeCount(data[0].count);
-			},
-		},
 	);
-	useQuery(
+
+	useEffect(() => {
+		if (userRecipeCountData) {
+			setRecipeCount(userRecipeCountData[0].count);
+		}
+	}, [userRecipeCountData]);
+
+	const {data: userRecipeLikeCount} = useQuery(
 		'userRecipeLikeCount',
 		async () => {
 			const response = await fetch('/api/users/recipes/like/count');
@@ -44,13 +46,15 @@ const WriteRecipesBanner = () => {
 				throw new Error('실패');
 			}
 		},
-		{
-			onSuccess: data => {
-				setRecipeLikeCount(data[0].like_count);
-			},
-		},
 	);
-	useQuery(
+
+	useEffect(() => {
+		if (userRecipeLikeCount) {
+			setRecipeLikeCount(userRecipeLikeCount[0].like_count);
+		}
+	}, [userRecipeLikeCount]);
+
+	const {data: userMenuWriteTopData} = useQuery(
 		'userMenuWriteTop',
 		async () => {
 			const response = await fetch('/api/users/menus');
@@ -60,13 +64,15 @@ const WriteRecipesBanner = () => {
 				throw new Error('실패');
 			}
 		},
-		{
-			onSuccess: data => {
-				setMenuWriteTop(data);
-			},
-		},
 	);
-	useQuery(
+
+	useEffect(() => {
+		if (userMenuWriteTopData) {
+			setMenuWriteTop(userMenuWriteTopData);
+		}
+	}, [userMenuWriteTopData]);
+
+	const {data: userRecipeLikeTop} = useQuery(
 		'userRecipeLikeTop',
 		async () => {
 			const response = await fetch('/api/users/recipes/popular');
@@ -76,12 +82,12 @@ const WriteRecipesBanner = () => {
 				throw new Error('실패');
 			}
 		},
-		{
-			onSuccess: data => {
-				setRecipeLikeTop(data);
-			},
-		},
 	);
+	useEffect(() => {
+		if (userRecipeLikeTop) {
+			setRecipeLikeTop(userRecipeLikeTop);
+		}
+	}, [userRecipeLikeTop]);
 
 	return (
 		<RecipesBannerContainer>

@@ -51,7 +51,7 @@ const ParamRecipesBanner = () => {
 
 	const paramQuery = encodeURIComponent(String(router.query.param));
 
-	useQuery(
+	const {data: breadData} = useQuery(
 		['bread', paramQuery],
 		async ({queryKey}) => {
 			const [, param] = queryKey;
@@ -67,17 +67,18 @@ const ParamRecipesBanner = () => {
 		{
 			enabled: !!router.query.param,
 			onError: error => console.log(error),
-			onSuccess: data => {
-				let parsedResult = data.map(item => item?.recipe_ingredients);
-				setBreadTop(parsedResult);
-				parsedResult = data.map(item => item?.likes);
-				setBreadTopLike(parsedResult);
-				parsedResult = data.map(item => item?.occurrence);
-				setBreadTopOccurrence(parsedResult);
-			},
 		},
 	);
-	useQuery(
+
+	useEffect(() => {
+		if (breadData) {
+			setBreadTop(breadData.map(item => item?.recipe_ingredients));
+			setBreadTopLike(breadData.map(item => item?.likes));
+			setBreadTopOccurrence(breadData.map(item => item?.occurrence));
+		}
+	}, [breadData]);
+
+	const {data: sauceData} = useQuery(
 		['sauce', paramQuery],
 		async ({queryKey}) => {
 			const [, param] = queryKey;
@@ -93,19 +94,20 @@ const ParamRecipesBanner = () => {
 		{
 			enabled: !!router.query.param,
 			onError: error => console.log(error),
-			onSuccess: data => {
-				let parsedResult = data.map(item =>
-					item?.combined_ingredients?.split(', '),
-				);
-				setSauceTop(parsedResult);
-				parsedResult = data.map(item => item?.likes);
-				setSauceTopLike(parsedResult);
-				parsedResult = data.map(item => item?.occurrence);
-				setSauceTopOccurrence(parsedResult);
-			},
 		},
 	);
-	useQuery(
+
+	useEffect(() => {
+		if (sauceData) {
+			setSauceTop(
+				sauceData.map(item => item?.combined_ingredients?.split(', ')),
+			);
+			setSauceTopLike(sauceData.map(item => item?.likes));
+			setSauceTopOccurrence(sauceData.map(item => item?.occurrence));
+		}
+	}, [sauceData]);
+
+	const {data: menuInfoData} = useQuery(
 		['menuInfo', paramQuery],
 		async ({queryKey}) => {
 			const [, param] = queryKey;
@@ -118,13 +120,16 @@ const ParamRecipesBanner = () => {
 		},
 		{
 			enabled: !!router.query.param,
-			onSuccess: data => {
-				setMenuLike(data[0].like_count);
-				setMenuRecipe(data[0].recipe_count);
-				setRecipeLike(data[0].recipe_like_count);
-			},
 		},
 	);
+
+	useEffect(() => {
+		if (menuInfoData) {
+			setMenuLike(menuInfoData[0].like_count);
+			setMenuRecipe(menuInfoData[0].recipe_count);
+			setRecipeLike(menuInfoData[0].recipe_like_count);
+		}
+	}, [menuInfoData]);
 
 	return (
 		<RecipesBannerContainer>

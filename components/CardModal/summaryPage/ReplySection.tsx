@@ -39,12 +39,15 @@ const ReplySection = ({recipe, className, userName}: props) => {
 		}
 	};
 
-	const {refetch} = useQuery(['reply', recipe.recipe_id], getReply, {
+	const {refetch, data} = useQuery(['reply', recipe.recipe_id], getReply, {
 		staleTime: 1000 * 60 * 1,
-		onSuccess: data => {
-			setReply(data);
-		},
 	});
+
+	useEffect(() => {
+		if (data) {
+			setReply(data);
+		}
+	}, [data]);
 
 	const queryClient = useQueryClient();
 

@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {deleteCookie} from '../../utils/publicFunction';
-import {useQuery} from 'react-query';
+import {useMutation} from 'react-query';
 import {useDispatch} from 'react-redux';
 import {actionSetLogoutData} from '../../redux/reducer/userReducer';
 import {PiHeartStraightFill} from 'react-icons/pi';
@@ -79,13 +79,12 @@ const LoginTureModal = ({
 	}, [buttonRef]);
 
 	//로그아웃 요청
-	const {refetch} = useQuery(
+	const logoutMutation = useMutation(
 		'user',
-		() => {
+		async () => {
 			fetch('/api/users/deleteCookie', {method: 'POST'});
 		},
 		{
-			enabled: false,
 			onSuccess: () => {
 				deleteCookie('user');
 				handleClose(false);
@@ -96,7 +95,7 @@ const LoginTureModal = ({
 	);
 
 	const logoutHandler = () => {
-		refetch();
+		logoutMutation.mutate();
 	};
 
 	const AccountHandler = () => {

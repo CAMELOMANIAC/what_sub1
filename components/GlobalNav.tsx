@@ -27,38 +27,46 @@ const GlobalNav = () => {
 	const [isLoginTureModal, setLoginTureModal] = useState(false);
 	const userName = useSelector((state: RootState) => state.user.userName);
 	const buttonRef = useRef<HTMLButtonElement>(null);
+	const dispatch = useDispatch();
 
 	//새로고침시 좋아요 목록을 불러와서 전역 상태값으로 저장
-	const {refetch: refetchRecipeLike} = useQuery(
+	const {refetch: refetchRecipeLike, data: recipeLikeData} = useQuery(
 		'recipeLike',
 		loadRecipeLike,
 		{
-			onSuccess: data => {
-				dispatch(
-					actionSetRecipeLike(
-						data.map(item => item.recipe_table_recipe_id),
-					),
-				);
-			},
 			enabled: false,
 		},
 	);
-	const {refetch: refetchMenuLike} = useQuery('menuLike', loadMenuLike, {
-		onSuccess: data => {
-			dispatch(
-				actionSetMenuLike(
-					data.map(item => item.sandwich_table_sandwich_name),
-				),
-			);
+	const {refetch: refetchMenuLike, data: menuLikeData} = useQuery(
+		'menuLike',
+		loadMenuLike,
+		{
+			enabled: false,
 		},
-		enabled: false,
-	});
+	);
 	useEffect(() => {
 		if (getCookieValue('user')) {
 			refetchRecipeLike();
 			refetchMenuLike();
 		}
 	}, [refetchMenuLike, refetchRecipeLike]);
+
+	useEffect(() => {
+		if (recipeLikeData) {
+			dispatch(
+				actionSetRecipeLike(
+					recipeLikeData.map(item => item.recipe_table_recipe_id),
+				),
+			);
+		}
+		if (menuLikeData) {
+			dispatch(
+				actionSetMenuLike(
+					menuLikeData.map(item => item.sandwich_table_sandwich_name),
+				),
+			);
+		}
+	}, [recipeLikeData, menuLikeData, dispatch]);
 
 	//router.events는 라우터 이벤트로 이벤트객체가 변경될때(=주소창 경로가 바뀔때) 상태값을 변경하는 이벤트핸들러 추가
 	useEffect(() => {
@@ -73,7 +81,6 @@ const GlobalNav = () => {
 		};
 	}, [router.events]);
 
-	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(actionLoginChangeId(getCookieValue('user')));
 	}, [dispatch]);

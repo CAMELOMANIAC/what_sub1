@@ -49,11 +49,6 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 	const router = useRouter();
 	const dispatch = useDispatch();
 
-	const recipeLikeQuery = useQuery('recipeLike', loadRecipeLike, {
-		enabled: false,
-	});
-	const menuLikeQuery = useQuery('menuLike', loadMenuLike, {enabled: false});
-
 	const kakaoLoginQuery = useQuery(
 		'kakaoLogin',
 		async () => {
@@ -69,36 +64,47 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 				case 400:
 					throw new Error('잘못된 요청입니다.');
 			}
+			if (response.ok) {
+				return response.json();
+			}
 		},
 		{
-			enabled: false,
-			onSuccess: async () => {
-				//새로고침시에 쿠키값을 가져와서 로그인여부를 판단하고 전역상태로 저장
-				dispatch(actionLoginChangeId(getCookieValue('user')));
-				//레시피 좋아요 정보를 전역 상태값으로 저장
-				const {data: recipeLikeData} = await recipeLikeQuery.refetch();
-				dispatch(
-					actionSetRecipeLike(
-						recipeLikeData.map(item => item.recipe_table_recipe_id),
-					),
-				);
-
-				//메뉴좋아요 정보를 전역 상태값으로 저장
-				const {data: menuLikeData} = await menuLikeQuery.refetch();
-				dispatch(
-					actionSetMenuLike(
-						menuLikeData.map(
-							item => item.sandwich_table_sandwich_name,
-						),
-					),
-				);
-			},
+			enabled: !!router.query.param,
 			onError: (error: Error) => {
 				alert(error.message);
 				router.push('/Register');
 			},
 		},
 	);
+
+	const {data: recipeLikeData} = useQuery('recipeLike', loadRecipeLike, {
+		enabled: false,
+	});
+
+	const {data: menuLikeData} = useQuery('menuLike', loadMenuLike, {
+		enabled: false,
+	});
+
+	useEffect(() => {
+		if (kakaoLoginQuery.isSuccess) {
+			dispatch(actionLoginChangeId(getCookieValue('user')));
+		}
+		if (recipeLikeData) {
+			dispatch(
+				actionSetRecipeLike(
+					recipeLikeData.map(item => item.recipe_table_recipe_id),
+				),
+			);
+		}
+		if (menuLikeData) {
+			dispatch(
+				actionSetMenuLike(
+					menuLikeData.map(item => item.sandwich_table_sandwich_name),
+				),
+			);
+		}
+	}, [kakaoLoginQuery.isSuccess, recipeLikeData, menuLikeData, dispatch]);
+
 	const kakaoLoginQueryRef = useRef(kakaoLoginQuery);
 
 	useEffect(() => {
