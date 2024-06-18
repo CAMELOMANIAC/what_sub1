@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {getRecipeLike} from '../../../../../utils/api/recipes';
 import {checkSession} from '../../../../../utils/api/users';
-import {ErrorMessage} from '../../../../../utils/api/errorMessage';
+import ErrorMessage from '../../../../../utils/api/errorMessage';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === 'GET') {
 		//사용자가한 레시피 좋아요 정보 읽어오기

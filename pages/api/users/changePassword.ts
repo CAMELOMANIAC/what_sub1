@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {changePassword, checkSession} from '../../../utils/api/users';
 import {isValidPassword} from '../../../utils/publicFunction';
-import {ErrorMessage} from '../../../utils/api/errorMessage';
+import ErrorMessage from '../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	//이 엔드포인트는 유저의 비밀번호와 관련되어 있습니다.

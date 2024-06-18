@@ -2,6 +2,7 @@ import {updateReturnType} from '../../interfaces/api/db';
 import {userDataType} from '../../interfaces/api/users';
 import executeQuery from '../../lib/db';
 import {v4 as uuidv4} from 'uuid';
+import ErrorMessage from './errorMessage';
 
 //사용자 여러명의 정보
 export const getUsersData = async (): Promise<userDataType[] | Error> => {
@@ -13,7 +14,7 @@ export const getUsersData = async (): Promise<userDataType[] | Error> => {
 			values: [],
 		});
 		if (Array.isArray(results) && results.length < 0) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -36,7 +37,7 @@ export const getUserData = async (
 			values: [valuesId],
 		});
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -56,7 +57,7 @@ export const getEmail = async (id: string): Promise<string | Error> => {
 			values: [valuesId],
 		});
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -81,7 +82,7 @@ export const checkUser = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			if (results instanceof Error) {
 				return results;
@@ -109,9 +110,7 @@ export const updateSession = async (
 		});
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 수정되어 수정할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return sessionId;
 		}
@@ -146,7 +145,7 @@ export const checkSession = async (cookie): Promise<string | Error> => {
 		});
 
 		if (Array.isArray(results) && results.length < 0) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			if (results instanceof Error) {
 				return results;
@@ -174,13 +173,13 @@ export const checkAuthComplete = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else if (results instanceof Error) {
 			return results;
 		} else if (results[0].auth === '1') {
 			return true;
 		} else {
-			throw new Error('인증을 완료하지 않은 회원입니다.');
+			throw new Error(ErrorMessage.NoAuthComplete);
 		}
 	} catch (err) {
 		return err;
@@ -201,7 +200,7 @@ export const checkAuth = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else if (results instanceof Error) {
 			return results;
 		} else {
@@ -232,9 +231,7 @@ export const insertUser = async (
 		});
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 수정되어 수정할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -264,9 +261,7 @@ export const insertUserInfo = async (
 		});
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 수정되어 수정할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -292,9 +287,7 @@ export const insertKakaoUserInfo = async (
 		});
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 수정되어 수정할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -312,15 +305,15 @@ export const updateUserInfo = async (
 	const valuesAuthNumber = authNumber;
 
 	try {
+		console.log(authNumber);
 		const results: updateReturnType | Error = await executeQuery({
 			query: query,
 			values: [valuesAuthNumber],
 		});
+		console.log(results);
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 수정되어 수정할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -335,19 +328,20 @@ export const getExpiredAuth = async (
 ): Promise<Array<{auth: string; user_table_user_id: string}> | Error> => {
 	if (authNumber) {
 		const query =
-			'SELECT auth, user_table_user_id FROM user_info_table WHERE auth = ?;';
+			'SELECT auth, user_table_user_id FROM user_info_table WHERE auth = ? AND auth_expired < ?;';
 		const valuesAuthNumber = authNumber;
+		const nowDate = new Date();
 
 		try {
 			const results:
 				| Array<{auth: string; user_table_user_id: string}>
 				| Error = await executeQuery({
 				query: query,
-				values: [valuesAuthNumber],
+				values: [valuesAuthNumber, nowDate],
 			});
 
 			if (Array.isArray(results) && results.length < 0) {
-				throw new Error('적합한 결과가 없음');
+				throw new Error(ErrorMessage.NoResult);
 			} else {
 				if (results instanceof Error) {
 					return results;
@@ -369,7 +363,7 @@ export const getExpiredAuth = async (
 				| Error = await executeQuery({query: query, values: [nowDate]});
 
 			if (Array.isArray(results) && results.length < 0) {
-				throw new Error('적합한 결과가 없음');
+				throw new Error(ErrorMessage.NoResult);
 			} else {
 				if (results instanceof Error) {
 					return results;
@@ -409,6 +403,25 @@ export const deleteUserInfo = async (
 	}
 };
 
+//유저 아이디로 유저 정보 제거
+export const deleteUserInfoFromUserId = async (userId: string) => {
+	const query = `DELETE FROM user_info_table WHERE user_table_user_id = ?`;
+	const valuesId = userId;
+
+	const results: updateReturnType | Error = await executeQuery({
+		query: query,
+		values: [valuesId],
+	});
+
+	if ('affectedRows' in results && results.affectedRows === 0) {
+		throw new Error(ErrorMessage.UpdateError);
+	} else if (results instanceof Error) {
+		throw new Error(ErrorMessage.DatabaseError);
+	} else {
+		return results;
+	}
+};
+
 //유저 여러명 제거
 export const deleteUser = async (
 	authNumberArray: Array<{auth: string; user_table_user_id: string}>,
@@ -426,7 +439,6 @@ export const deleteUser = async (
 		});
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			console.log(query, valuesUserIdArray, results);
 			return true;
 		} else if (results instanceof Error) {
 			return results;
@@ -435,6 +447,26 @@ export const deleteUser = async (
 		}
 	} catch (err) {
 		return err;
+	}
+};
+
+//유저 아이디로 유저 제거
+export const deleteUserFromUserId = async (
+	userId: string,
+): Promise<boolean | Error> => {
+	const query = `DELETE FROM user_table WHERE user_id = ? `;
+	const valuesUserId = userId;
+	const results: updateReturnType | Error = await executeQuery({
+		query: query,
+		values: [valuesUserId],
+	});
+
+	if ('affectedRows' in results && results.affectedRows === 0) {
+		return true;
+	} else if (results instanceof Error) {
+		return results;
+	} else {
+		return false;
 	}
 };
 
@@ -451,7 +483,7 @@ export const checkKakaoId = async (
 			values: [valuesKakaoId],
 		});
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results[0].user_table_user_id;
 		}
@@ -472,9 +504,9 @@ export const changePassword = async (id: string, passWord: string) => {
 	});
 
 	if ('affectedRows' in results && results.affectedRows === 0) {
-		throw new Error('일치하는 행이 없거나 이미 수정되어 수정할 수 없음');
+		throw new Error(ErrorMessage.UpdateError);
 	} else if (results instanceof Error) {
-		throw new Error('DB와 통신 할 수 없거나 쿼리문이 잘못됨');
+		throw new Error(ErrorMessage.DatabaseError);
 	} else {
 		return results;
 	}
@@ -491,9 +523,9 @@ export const getPassword = async (id: string) => {
 	});
 
 	if (Array.isArray(results) && results.length < 0) {
-		throw new Error('적합한 결과가 없음');
+		throw new Error(ErrorMessage.NoResult);
 	} else if (results instanceof Error) {
-		throw new Error('DB와 통신 할 수 없거나 쿼리문이 잘못됨');
+		throw new Error(ErrorMessage.DatabaseError);
 	} else {
 		return results;
 	}

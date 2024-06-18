@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {checkSession} from '../../../utils/api/users';
-import {ErrorMessage} from '../../../utils/api/errorMessage';
+import ErrorMessage from '../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	//이 엔드포인트는 유저 세션을 체크해서 반환만함

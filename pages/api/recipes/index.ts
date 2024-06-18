@@ -3,14 +3,16 @@ import {
 	insertRecipe,
 	getRecipes,
 	getRecipesFromRecipeId,
+	getRecipesFromUserId,
 } from '../../../utils/api/recipes';
 import {recipeType} from '../../../interfaces/api/recipes';
 import {checkSession} from '../../../utils/api/users';
-import {ErrorMessage} from '../../../utils/api/errorMessage';
+import ErrorMessage from '../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {query} = req.query;
 	const {recipeId} = req.query;
+	const {userId} = req.query;
 	let {filter} = req.query;
 	let {limit} = req.query;
 	let {offset} = req.query;
@@ -96,6 +98,37 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				} else {
 					res.status(200).json(results);
 				}
+			} else if (userId) {
+				//유저 아이디로 검색하기
+				if (!userId) {
+					throw new Error(ErrorMessage.NoRequest);
+				} else if (typeof userId !== 'string') {
+					throw new Error(ErrorMessage.NoRequest);
+				}
+
+				if (typeof limit === 'undefined') {
+					limit = '9';
+				}
+				if (typeof offset === 'undefined') {
+					offset = '0';
+				}
+				if (typeof sort !== 'string') {
+					sort = 'like_count';
+				}
+
+				const results: recipeType[] | Error =
+					await getRecipesFromUserId({
+						userId,
+						offset: Number(offset),
+						limit: Number(limit),
+						sort,
+					});
+
+				if (results instanceof Error) {
+					throw results;
+				} else {
+					res.status(200).json(results);
+				}
 			} else {
 				//모든 레시피 정보 가져오기
 				const filter = [
@@ -171,7 +204,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			if (err instanceof Error) {
 				switch (err.message) {
 					case ErrorMessage.NoCookie:
-						res.status(204).end();
+						res.status(400).json({message: err.message});
 						break;
 					case ErrorMessage.UpdateError:
 						res.status(400).json({message: err.message});

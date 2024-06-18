@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {checkSession, getPassword} from '../../../utils/api/users';
-import {ErrorMessage} from '../../../utils/api/errorMessage';
+import ErrorMessage from '../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	//이 엔드포인트는 비밀번호 일치여부를 확인합니다.

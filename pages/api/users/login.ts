@@ -4,7 +4,7 @@ import {
 	checkUser,
 	updateSession,
 } from '../../../utils/api/users';
-import {ErrorMessage} from '../../../utils/api/errorMessage';
+import ErrorMessage from '../../../utils/api/errorMessage';
 
 //비즈니스 로직은 함수로 만들어서 처리합니다.(함수는 utils/api/ 타입은 interfaces/api에 정의되어 있습니다)
 //서비스 로직은 이곳의 핸들러 함수내에서 작성합니다

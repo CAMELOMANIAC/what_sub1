@@ -15,7 +15,7 @@ import {
 	insertUserInfo,
 } from '../../../utils/api/users';
 import {v4 as uuidv4} from 'uuid';
-import {ErrorMessage} from '../../../utils/api/errorMessage';
+import ErrorMessage from '../../../utils/api/errorMessage';
 
 //회원가입 로직
 //0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한을 기준으로)
@@ -60,20 +60,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			//1.아이디, 이메일 중복체크
 			const checkUserId = await getUserData(id);
 			if (checkUserId instanceof Error) {
-				if (checkUserId.message !== '적합한 결과가 없음') {
-					throw checkUserId;
+				if (checkUserId.message !== ErrorMessage.NoResult) {
+					throw new Error(ErrorMessage.NoRequest);
 				}
-			} else {
-				throw new Error(ErrorMessage.UpdateError);
 			}
 
 			const checkUserEmail = await getEmail(id);
 			if (checkUserEmail instanceof Error) {
-				if (checkUserEmail.message !== '적합한 결과가 없음') {
-					throw checkUserEmail;
+				if (checkUserEmail.message !== ErrorMessage.NoResult) {
+					throw new Error(ErrorMessage.NoRequest);
 				}
-			} else {
-				throw new Error(ErrorMessage.UpdateError);
 			}
 
 			//2. 테이블에 회원정보 저장

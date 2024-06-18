@@ -7,7 +7,7 @@ import {
 	userRecipeLikeTopDataType,
 } from '../../interfaces/api/recipes';
 import executeQuery from '../../lib/db';
-import {ErrorMessage} from './errorMessage';
+import ErrorMessage from './errorMessage';
 
 //검색어를 통한 레시피 반환
 export const getRecipes = async ({
@@ -76,7 +76,7 @@ export const getRecipes = async ({
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -142,7 +142,60 @@ export const getRecipesFromRecipeId = async ({
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
+		} else {
+			return results;
+		}
+	} catch (err) {
+		return err;
+	}
+};
+
+type userIdArgType = Omit<recipeIdArgType, 'recipeIdArray'> & {userId: string};
+//사용자 아이디를 통한 레시피 반환
+export const getRecipesFromUserId = async ({
+	userId,
+	offset,
+	limit,
+	sort,
+}: userIdArgType): Promise<recipeType[] | Error> => {
+	try {
+		const query = `SELECT 
+        recipe_table.recipe_id, 
+        recipe_table.recipe_name, 
+        GROUP_CONCAT(DISTINCT recipe_ingredients_table.recipe_ingredients) AS recipe_ingredients, 
+        recipe_table.user_table_user_id, 
+        recipe_table.sandwich_table_sandwich_name, 
+        GROUP_CONCAT(DISTINCT recipe_tag_table.tag_table_tag_name) AS tag, 
+        COUNT(DISTINCT reply_table.reply_id) AS reply_count, 
+        COALESCE(like_counts.like_count, 0) AS like_count 
+        FROM recipe_table 
+        LEFT JOIN recipe_ingredients_table ON recipe_table.recipe_id = recipe_ingredients_table.recipe_table_recipe_id 
+        LEFT JOIN recipe_tag_table ON recipe_table.recipe_id = recipe_tag_table.recipe_table_recipe_id 
+        LEFT JOIN reply_table ON recipe_table.recipe_id = reply_table.recipe_table_recipe_id 
+        LEFT JOIN ( 
+        SELECT recipe_table_recipe_id, COUNT(*) AS like_count 
+        FROM recipe_like_table 
+        GROUP BY recipe_table_recipe_id 
+        ) AS like_counts ON recipe_table.recipe_id = like_counts.recipe_table_recipe_id 
+		WHERE recipe_table.user_table_user_id = ? 
+        GROUP BY recipe_table.recipe_id, 
+        recipe_table.recipe_name, 
+        recipe_table.user_table_user_id, 
+        recipe_table.sandwich_table_sandwich_name 
+        ORDER BY ? DESC 
+        LIMIT ? OFFSET ?`;
+		const userIdValue = userId;
+		const sortValue = sort;
+		const offsetValue = Number(offset);
+		const limitValue = Number(limit);
+		const results: recipeType[] | Error = await executeQuery({
+			query: query,
+			values: [userIdValue, sortValue, limitValue, offsetValue],
+		});
+
+		if (Array.isArray(results) && results.length < 1) {
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -164,7 +217,7 @@ export const getRecipeLike = async (
 				values: [userIdValue],
 			});
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -233,9 +286,7 @@ export const insertRecipe = async (
 			],
 		});
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 수정되어 수정할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -258,9 +309,7 @@ export const insertRecipeLike = async (
 			values: [recipeIdValue, userIdValue],
 		});
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 수정되어 수정할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -284,9 +333,7 @@ export const deleteRecipeLike = async (
 		});
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -313,7 +360,7 @@ export const checkRecipeLike = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else if (results[0].count > 0) {
 			return true;
 		} else {
@@ -358,7 +405,7 @@ export const getRecommendedRecipes = async (): Promise<
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -379,7 +426,7 @@ export const getReply = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -402,9 +449,7 @@ export const insertReply = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 수정되어 수정할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -439,7 +484,7 @@ export const getRecipeLikeTop = async (
 				values: [userIdValue],
 			});
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -469,7 +514,7 @@ export const getRecipeCount = async (
 			values: [userIdValue],
 		});
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -501,7 +546,7 @@ export const getRecipeLikeCount = async (
 			values: [userIdValue],
 		});
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -521,6 +566,27 @@ export const deleteRecipe = async (
 		const results: {like_count: number} | Error = await executeQuery({
 			query: query,
 			values: recipeIdValue,
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else {
+			return true;
+		}
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
+	}
+};
+
+//사용자 아이디로 레시피 제거
+export const deleteRecipeFromUserId = async (
+	userId: string,
+): Promise<boolean> => {
+	const userIdValue = userId;
+	const query = `DELETE FROM recipe_table WHERE user_table_user_id= ?;`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: [userIdValue],
 		});
 		if ('affectedRows' in results && results.affectedRows === 0) {
 			return false;
@@ -597,6 +663,27 @@ export const deleteAllRecipeLike = async (
 	}
 };
 
+//사용자의 모든 레시피 좋아요 제거
+export const deleteAllRecipeLikeFromUserId = async (
+	user_id: string,
+): Promise<boolean> => {
+	const userIdValue = user_id;
+	const query = `DELETE FROM recipe_like_table WHERE user_table_user_id = ?;`;
+	try {
+		const results: {like_count: number} | Error = await executeQuery({
+			query: query,
+			values: [userIdValue],
+		});
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			return false;
+		} else {
+			return true;
+		}
+	} catch (error) {
+		throw new Error(ErrorMessage.DatabaseError);
+	}
+};
+
 //특정 댓글 제거
 export const deleteReply = async (
 	reply_id: Array<number>,
@@ -642,9 +729,10 @@ export const deleteAllRecipeReply = async (
 		throw new Error(ErrorMessage.DatabaseError);
 	}
 };
-//레시피 댓글 제거
+
+//사용자의 모든 레시피 댓글 제거
 export const deleteAllRecipeReplyFromUserId = async (
-	user_id: Array<number>,
+	user_id: string,
 ): Promise<boolean> => {
 	const userIdValue = user_id;
 	const query = `DELETE FROM reply_table WHERE user_table_user_id = ?;`;

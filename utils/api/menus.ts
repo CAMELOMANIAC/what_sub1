@@ -5,6 +5,7 @@ import {
 } from '../../interfaces/api/menus';
 import executeQuery from '../../lib/db';
 import {breadNutrientArray, sauceNutrientArray} from '../menuArray';
+import ErrorMessage from './errorMessage';
 
 //menu관련 모든 정보 불러오기
 export const getTotalMenuInfo = async (): Promise<
@@ -25,7 +26,7 @@ export const getTotalMenuInfo = async (): Promise<
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -53,7 +54,7 @@ export const getMenuInfo = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -101,7 +102,7 @@ export const getTopIngredients = async (
 			});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -152,7 +153,7 @@ export const getRecipeIngredients = async (
 			});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -169,7 +170,7 @@ export const getRecipeIngredients = async (
  * @throws {Error} - 쿼리 결과가 없거나, 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
  * @example
  * getMenuLike('user123'); // returns [{ sandwich_table_sandwich_name: 'B.L.T' }, { sandwich_table_sandwich_name: '에그마요' }]
- * getMenuLike('user456'); // returns Error('적합한 결과가 없음')
+ * getMenuLike('user456'); // returns Error(ErrorMessage.NoResult)
  */
 export const getMenuLike = async (
 	userId: string,
@@ -184,7 +185,7 @@ export const getMenuLike = async (
 			});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -202,7 +203,7 @@ export const getMenuLike = async (
  * @throws {Error} - 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
  * @example
  * insertMenuLike('에그마요', 'user123'); // returns { fieldCount: 0, affectedRows: 1, ... }
- * insertMenuLike('에그마요', 'user456'); // returns Error('적합한 결과가 없음')
+ * insertMenuLike('에그마요', 'user456'); // returns Error(ErrorMessage.NoResult)
  */
 export const insertMenuLike = async (
 	menuName: string,
@@ -218,9 +219,7 @@ export const insertMenuLike = async (
 		});
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -238,7 +237,7 @@ export const insertMenuLike = async (
  * @throws {Error} - 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
  * @example
  * deleteMenuLike('에그마요', 'user123'); // returns { fieldCount: 0, affectedRows: 1, ... }
- * deleteMenuLike('에그마요', 'user456'); // returns Error('적합한 결과가 없음')
+ * deleteMenuLike('에그마요', 'user456'); // returns Error(ErrorMessage.NoResult)
  */
 export const deleteMenuLike = async (
 	menuName: string,
@@ -254,9 +253,29 @@ export const deleteMenuLike = async (
 		});
 
 		if ('affectedRows' in results && results.affectedRows === 0) {
-			throw new Error(
-				'일치하는 행이 없거나 이미 삭제되어 삭제할 수 없음',
-			);
+			throw new Error(ErrorMessage.UpdateError);
+		} else {
+			return results;
+		}
+	} catch (err) {
+		return err;
+	}
+};
+
+//유저 아이디로 메뉴 좋아요 제거
+export const deleteMenuLikeFromUserId = async (
+	userId: string,
+): Promise<updateReturnType | Error> => {
+	const query = `DELETE FROM sandwich_like_table WHERE user_table_user_id = ?;`;
+	const userIdValue = userId;
+	try {
+		const results: updateReturnType | Error = await executeQuery({
+			query: query,
+			values: [userIdValue],
+		});
+
+		if ('affectedRows' in results && results.affectedRows === 0) {
+			throw new Error(ErrorMessage.UpdateError);
 		} else {
 			return results;
 		}
@@ -282,7 +301,7 @@ export const checkMenuLike = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else if (results[0].count > 0) {
 			return true;
 		} else {
@@ -307,7 +326,7 @@ export const countMenuLike = async (
 		});
 
 		if (Array.isArray(result) && result.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return parseInt(result[0].count);
 		}
@@ -336,7 +355,7 @@ export const getRecommendedMenus = async (): Promise<
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -353,7 +372,7 @@ export const getRecommendedMenus = async (): Promise<
  * @throws {Error} - 쿼리 결과가 없거나, 쿼리 실행 중 에러가 발생한 경우 Error 객체를 던집니다.
  * @example
  * getMenuWriteTop('user123'); // returns [{ sandwich_table_sandwich_name: 'B.L.T', count:4 }, { sandwich_table_sandwich_name: '에그마요', count:2 }]
- * getMenuWriteTop('user456'); // returns Error('적합한 결과가 없음')
+ * getMenuWriteTop('user456'); // returns Error(ErrorMessage.NoResult)
  */
 export const getMenuWriteTop = async (
 	userId: string,
@@ -369,7 +388,7 @@ export const getMenuWriteTop = async (
 		);
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}

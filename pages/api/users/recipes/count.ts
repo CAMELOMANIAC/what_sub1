@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {getRecipeCount} from '../../../../utils/api/recipes';
 import {checkSession} from '../../../../utils/api/users';
-import {ErrorMessage} from '../../../../utils/api/errorMessage';
+import ErrorMessage from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === 'GET') {

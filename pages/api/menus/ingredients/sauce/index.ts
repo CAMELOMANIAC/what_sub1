@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {getRecipeIngredients} from '../../../../../utils/api/menus';
-import {ErrorMessage} from '../../../../../utils/api/errorMessage';
+import ErrorMessage from '../../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {sandwichMenu} = req.query;

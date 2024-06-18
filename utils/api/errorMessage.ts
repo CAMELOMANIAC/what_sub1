@@ -1,4 +1,4 @@
-export enum ErrorMessage {
+enum ErrorMessage {
 	DatabaseError = 'DB와 통신에 실패하였거나 SQL에 오류가 있습니다.',
 	DeleteError = '제거에 실패 했습니다.',
 	NoResult = '적합한 결과가 없습니다.',
@@ -11,3 +11,4 @@ export enum ErrorMessage {
 	NoAuthComplete = '인증을 완료하지 않은 회원입니다.',
 	ExpiredAuth = '유효기간이 만료 되었습니다.',
 }
+export default ErrorMessage;

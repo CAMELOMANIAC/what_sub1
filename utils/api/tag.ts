@@ -1,4 +1,5 @@
 import executeQuery from '../../lib/db';
+import ErrorMessage from './errorMessage';
 
 export const getRecipeTag = async (
 	sandwichMenu: string,
@@ -18,7 +19,7 @@ export const getRecipeTag = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}
@@ -40,7 +41,7 @@ export const getTag = async (
 		});
 
 		if (Array.isArray(results) && results.length < 1) {
-			throw new Error('적합한 결과가 없음');
+			throw new Error(ErrorMessage.NoResult);
 		} else {
 			return results;
 		}

@@ -6,7 +6,7 @@ import {
 	insertMenuLike,
 } from '../../../../utils/api/menus';
 import {checkSession} from '../../../../utils/api/users';
-import {ErrorMessage} from '../../../../utils/api/errorMessage';
+import ErrorMessage from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {menuName} = req.query;

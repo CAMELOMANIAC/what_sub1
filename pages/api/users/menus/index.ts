@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {getMenuWriteTop} from '../../../../utils/api/menus';
 import {checkSession} from '../../../../utils/api/users';
-import {ErrorMessage} from '../../../../utils/api/errorMessage';
+import ErrorMessage from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	//이 엔드포인트는 유저가 좋아요를 한 메뉴 정보를 반환함

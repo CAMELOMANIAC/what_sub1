@@ -6,7 +6,7 @@ import {
 	deleteUser,
 	deleteUserInfo,
 } from '../../../utils/api/users';
-import {ErrorMessage} from '../../../utils/api/errorMessage';
+import ErrorMessage from '../../../utils/api/errorMessage';
 
 //회원가입 로직
 //0. 인증을 완료하지 않고 기한이 만료된 유저정보가 있을경우 미리 제거(만료기한을 기준으로)
@@ -36,6 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			//5. 실패시 생성되었던 DB제거(인증번호를 기준으로)
 			const expiredAuth = await getExpiredAuth(authNumber);
 			if (!(expiredAuth instanceof Error)) {
+				console.log('getExpiredAuth', getExpiredAuth);
 				await deleteUserInfo(expiredAuth);
 				await deleteUser(expiredAuth);
 			}
