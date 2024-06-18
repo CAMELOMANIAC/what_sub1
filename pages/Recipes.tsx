@@ -86,7 +86,7 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 			const response =
 				(searchParams?.has('write') &&
 					(await fetch(
-						'/api/recipes?query=' +
+						'/api/recipes?userId=' +
 							encodeURIComponent(String(user.userName)) +
 							`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${['작성자']}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
 					))) ||
