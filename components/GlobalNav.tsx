@@ -19,12 +19,15 @@ import {
 } from '../utils/publicFunction';
 import LoginTureModal from './LoginModal/LoginTureModal';
 import {useQuery} from 'react-query';
+import DynamicSideNav from './DynamicSideNav';
+import {IoMenuOutline} from 'react-icons/io5';
 
 const GlobalNav = () => {
 	const router = useRouter();
 	const [currentPath, setCurrentPath] = useState(router.pathname); //pathname속성은 현재 경로만 저장되는 속성
 	const [isLoginModal, setLoginModal] = useState(false);
 	const [isLoginTureModal, setLoginTureModal] = useState(false);
+	const [isDynamicSideNav, setDynamicSideNav] = useState(false);
 	const userName = useSelector((state: RootState) => state.user.userName);
 	const buttonRef = useRef<HTMLButtonElement>(null);
 	const dispatch = useDispatch();
@@ -90,7 +93,7 @@ const GlobalNav = () => {
 			<Link href="/" className="mx-2">
 				<Logo size="2rem" />
 			</Link>
-			<div className="flex align-middle ml-2">
+			<div className="hidden sm:flex align-middle ml-2">
 				<Link
 					href="/"
 					className={`font-[seoul-metro] text-xl py-2 px-6 my-auto text-black hover:text-green-600 ${currentPath == '/' ? 'border-green-600 border-b-4 text-green-600' : ''}`}>
@@ -109,7 +112,7 @@ const GlobalNav = () => {
 				<button
 					name="loginButton"
 					className={
-						'absolute flex items-center right-2 top-2 px-1 h-4/6 rounded-full border-green-600 text-sm z-30 ' +
+						'absolute flex items-center right-2 top-2 px-1 h-4/6 rounded-full border-green-600 text-sm ' +
 						`${userName !== '' ? 'bg-green-600 text-white' : 'text-green-600 bg-white'}`
 					}
 					onClick={() =>
@@ -129,14 +132,26 @@ const GlobalNav = () => {
 						</>
 					)}
 				</button>
-				{isLoginModal && <LoginModal handleClose={setLoginModal} />}
-				{isLoginTureModal && buttonRef.current && (
-					<LoginTureModal
-						handleClose={setLoginTureModal}
-						buttonRef={buttonRef.current}
-					/>
-				)}
 			</div>
+			<IoMenuOutline
+				className="w-8 h-8 my-auto ml-auto mr-2 sm:hidden"
+				onClick={() => setDynamicSideNav(true)}
+			/>
+			{isDynamicSideNav && (
+				<DynamicSideNav
+					handleClose={setDynamicSideNav}
+					userName={userName}
+					setLoginModal={setLoginModal}
+				/>
+			)}
+
+			{isLoginModal && <LoginModal handleClose={setLoginModal} />}
+			{isLoginTureModal && buttonRef.current && (
+				<LoginTureModal
+					handleClose={setLoginTureModal}
+					buttonRef={buttonRef.current}
+				/>
+			)}
 		</div>
 	);
 };
