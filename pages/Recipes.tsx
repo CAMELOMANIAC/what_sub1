@@ -189,7 +189,7 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 							<>
 								{hasNextPage && (
 									<>
-										<p>스크롤을 내려서 더 읽어 볼까요?</p>
+										<p>아래로 내려서 더 읽어 볼까요?</p>
 										<MdKeyboardDoubleArrowDown className="animate-bounce" />
 									</>
 								)}
