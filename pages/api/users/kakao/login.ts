@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {checkKakaoId, updateSession} from '../../../../utils/api/users';
-import {ErrorMessage} from '../../../../utils/api/errorMessage';
+import ErrorMessage from '../../../../utils/api/errorMessage';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {kakaoCode} = req.query;
