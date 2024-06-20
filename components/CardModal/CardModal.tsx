@@ -68,7 +68,7 @@ const CardModal = ({recipe, setIsActive}: props) => {
 								</div>
 							</div>
 							<CardHorizontalNav
-								className="col-span-6 px-10 pb-10 border-b-[1px] rounded-l-lg md:hidden"
+								className="col-span-6 border-b-[1px] rounded-l-lg md:hidden"
 								setPage={setPage}
 								page={page}></CardHorizontalNav>
 						</div>

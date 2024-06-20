@@ -74,9 +74,9 @@ const QueryRecipesBanner = ({menuData, recipeData, parentRef}: Props) => {
 	};
 
 	return (
-		<section className={`relative w-screen bg-white border-gray-200`}>
+		<div className={`relative bg-white border-gray-200 w-full`}>
 			<div className="mx-auto pt-4 md:pb-8 max-w-[1024px]">
-				<article className="sm:pb-8 pb-2">
+				<section className="sm:pb-8 pb-2">
 					<div className="flex flex-row justify-start items-center my-2 sticky">
 						<SearchBar className="ml-0 mr-2" />
 						<div className="relative z-10">
@@ -158,7 +158,7 @@ const QueryRecipesBanner = ({menuData, recipeData, parentRef}: Props) => {
 					<span className="text-sm text-gray-500">
 						으로 검색해보세요
 					</span>
-				</article>
+				</section>
 				<section className="grid grid-cols-1 md:grid-cols-2 grid-flow-row max-h-0 sm:max-h-[1000px] transition-all duration-500 ease-in-out overflow-hidden">
 					<article className="md:border-l md:border-b-0 md:mb-0 px-4 col-span-1 border-b border-l-0 mb-3">
 						<span className=" font-bold">추천 메뉴 top3</span>
@@ -223,7 +223,7 @@ const QueryRecipesBanner = ({menuData, recipeData, parentRef}: Props) => {
 					</article>
 				</section>
 			</div>
-		</section>
+		</div>
 	);
 };
 

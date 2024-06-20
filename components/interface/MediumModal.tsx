@@ -15,7 +15,7 @@ const MediumModal = ({setIsLoaded, isLoaded, children}: propsType) => {
 				if (e.target === e.currentTarget) setIsLoaded(false);
 			}}>
 			<article
-				className={`w-[500px] h-[550px] bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-lg rounded-lg flex flex-row overflow-hidden transition-all duration-500 ease-in-out ${isLoaded ? 'max-h-[550px]' : 'max-h-0'}`}>
+				className={`w-screen h-screen sm:w-[500px] sm:h-[550px] bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-lg rounded-lg flex flex-row overflow-hidden transition-all duration-500 ease-in-out ${isLoaded ? 'sm:max-h-[550px] max-h-[1024px]' : 'max-h-0'}`}>
 				{children}
 				<button
 					className={'fixed right-5 top-5'}

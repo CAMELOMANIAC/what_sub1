@@ -144,7 +144,7 @@ const Register = () => {
 					content="WhatSub 회원가입 페이지 입니다."
 				/>
 			</Head>
-			<article className="w-[500px] p-10 bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-lg rounded-lg flex flex-col justify-center items-center">
+			<article className="w-screen sm:w-[500px] p-10 bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-lg rounded-lg flex flex-col justify-center items-center">
 				<div className="w-full flex flex-col my-auto justify-center items-center">
 					<Logo />
 					{kakaoCode === '' ? (

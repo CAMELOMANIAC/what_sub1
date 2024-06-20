@@ -77,12 +77,12 @@ const CardHorizontalNav = ({className, setPage, page}: props) => {
 
 	return (
 		<nav className={className}>
-			<ul className="h-full font-bold items-end grid grid-cols-7">
+			<ul className="h-full font-bold items-end grid grid-cols-7 mb-4">
 				{buttonArray.map((items, index) => buttons(index, items.name))}
 			</ul>
 			<Image
 				src="/images/front_banner.png"
-				className="absolute right-1/2 translate-x-1/2 transition-all duration-200"
+				className="absolute transition-all duration-200 transform -translate-y-1/2"
 				ref={sandwichRef}
 				alt="front_banner"
 				width={60}

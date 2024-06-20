@@ -23,7 +23,7 @@ const RecipesBanner = ({recipeData, menuData, sorting, setSorting}: Props) => {
 	const ref = useRef<HTMLDivElement>(null);
 
 	return (
-		<div ref={ref}>
+		<div ref={ref} className="w-screen">
 			{router.isReady &&
 			router.query.param &&
 			router.query.param.length !== 0 ? (

@@ -17,6 +17,7 @@
 		display: flex;
 		justify-content: center;
 		@apply bg-gray-50;
+		overflow-x: hidden;
 	}
 
 	body::after {
