@@ -13,7 +13,7 @@ const LogoSpan = styled.span<{color?: string; size?: string}>`
 
 const Logo = (props: {size?: string}) => {
 	return (
-		<span>
+		<span className="mx-4">
 			<LogoSpan color="#ffce32" size={props.size}>
 				WhaT
 			</LogoSpan>

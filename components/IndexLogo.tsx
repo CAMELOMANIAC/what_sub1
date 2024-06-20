@@ -9,9 +9,10 @@ import {MdOutlineArrowForward} from 'react-icons/md';
 type PropsType = {
 	prevHandler: () => void;
 	nextHandler: () => void;
+	carouselItemName: string;
 };
 
-const IndexLogo = ({prevHandler, nextHandler}: PropsType) => {
+const IndexLogo = ({prevHandler, nextHandler, carouselItemName}: PropsType) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [isFocus, setFocus] = useState<boolean>(false);
@@ -73,16 +74,16 @@ const IndexLogo = ({prevHandler, nextHandler}: PropsType) => {
 					이전
 				</button>
 				<div
-					className="w-auto bg-white border-[12px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center"
+					className="w-fit max-w-[100vw] bg-white border-[12px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center"
 					ref={divRef}>
-					<span className="flex justify-center items-center w-[70px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square mr-6">
+					<span className="justify-center items-center w-[70px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square sm:flex hidden">
 						<button onClick={queryPushHandler} name="searchButton">
 							<FaSearch />
 						</button>
 					</span>
 
 					<div
-						className="flex flex-col flex-nowrap justify-center items-center mr-6 my-2 text-5xl"
+						className="flex flex-col flex-nowrap justify-center items-center my-2 text-5xl"
 						onClick={() => setFocus(true)}>
 						{isFocus ? (
 							<input
@@ -97,7 +98,7 @@ const IndexLogo = ({prevHandler, nextHandler}: PropsType) => {
 							<Logo />
 						)}
 						<div className="font-[seoul-metro] text-gray-600 text-lg">
-							넌 뭐먹어?
+							{carouselItemName ? carouselItemName : '넌 뭐먹어?'}
 						</div>
 					</div>
 				</div>
