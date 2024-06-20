@@ -5,7 +5,7 @@ import {
 	insertRecipeLike,
 } from '../../../../utils/api/recipes';
 import {checkSession} from '../../../../utils/api/users';
-import {ErrorMessage} from '../../../../utils/api/errorMessage';
+import ErrorMessage from '../../../../utils/api/errorMessage';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const {recipeName} = req.query;
 
