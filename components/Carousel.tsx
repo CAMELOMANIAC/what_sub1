@@ -15,6 +15,8 @@ type PropsType = {
 	recipeArray: recipeType[];
 	currentItemRef: MutableRefObject<number>;
 	setCarouselItemName: Dispatch<SetStateAction<string>>;
+	onMouseEnter: () => void;
+	onMouseLeave: () => void;
 };
 
 const Carousel = ({
@@ -24,6 +26,8 @@ const Carousel = ({
 	carouselRef,
 	currentItemRef,
 	setCarouselItemName,
+	onMouseEnter,
+	onMouseLeave,
 }: PropsType) => {
 	//옵저버 객체 생성 및 탐지 요소 등록
 	useEffect(() => {
@@ -84,7 +88,11 @@ const Carousel = ({
 		setCarouselItemName,
 	]);
 
-	return <>{children}</>;
+	return (
+		<article onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+			{children}
+		</article>
+	);
 };
 
 export default Carousel;
