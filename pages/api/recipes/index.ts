@@ -162,7 +162,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					break;
 				}
 			}
-			if (Object.keys(req.query).length === 0) {
+			if (!req.query.query) {
 				await handleAllRecipes(req, res);
 			}
 		} catch (err: unknown) {
