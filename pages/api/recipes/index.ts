@@ -162,11 +162,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					break;
 				}
 			}
-			if (
-				req.query &&
-				req.query instanceof Array &&
-				req.query.some(queryItem => queryItem === undefined)
-			) {
+			if (Object.keys(req.query).length === 0) {
 				await handleAllRecipes(req, res);
 			}
 		} catch (err: unknown) {
