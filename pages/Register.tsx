@@ -162,7 +162,7 @@ const Register = () => {
 									type=""
 									id="userId"
 									placeholder="아이디"></input>
-								{!isValidId(id) && (
+								{id && !isValidId(id) && (
 									<p
 										className="text-red-600 text-sm"
 										ref={alertIdRef}>
@@ -183,7 +183,7 @@ const Register = () => {
 									type="password"
 									id="userPwd"
 									placeholder="비밀번호"></input>
-								{!isValidPassword(pwd) && (
+								{pwd && !isValidPassword(pwd) && (
 									<p
 										className="text-red-600 text-sm"
 										ref={alertPwdRef}>
@@ -225,7 +225,7 @@ const Register = () => {
 									type="email"
 									id="userEmail"
 									placeholder="이메일"></input>
-								{!isValidEmail(email) && (
+								{email && !isValidEmail(email) && (
 									<p
 										className="text-red-600 text-sm"
 										ref={alertEmailRef}>
