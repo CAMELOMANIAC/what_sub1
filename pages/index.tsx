@@ -120,6 +120,7 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 	}, [router.isReady]);
 
 	//캐러셀
+	const [isHover, setIsHover] = useState<boolean>(false);
 	useEffect(() => {
 		let animationId;
 
@@ -129,7 +130,7 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 				cancelAnimationFrame(animationId);
 			} else {
 				animationId = requestAnimationFrame(carouselMove);
-				if (carouselRef.current) {
+				if (carouselRef.current && !isHover) {
 					carouselRef.current.scrollLeft += 1;
 				}
 			}
@@ -139,7 +140,7 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 		return () => {
 			cancelAnimationFrame(animationId);
 		};
-	}, [isMoving]);
+	}, [isHover, isMoving]);
 
 	const currentItemRef = useRef<number>(0);
 	useEffect(() => {
@@ -195,7 +196,9 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 				recipeArray={recipeArray}
 				carouselRef={carouselRef}
 				currentItemRef={currentItemRef}
-				setCarouselItemName={setCarouselItemName}>
+				setCarouselItemName={setCarouselItemName}
+				onMouseEnter={() => setIsHover(true)}
+				onMouseLeave={() => setIsHover(false)}>
 				<CarouselContainer
 					className="w-screen mx-auto max-w-5xl left-0 p-0 sm:p-12 my-auto flex flex-row gap-2 overflow-x-auto overflow-y-hidden transition-all duration-500 ease-in-out max-h-0 sm:max-h-[400px]"
 					ref={carouselRef}>
