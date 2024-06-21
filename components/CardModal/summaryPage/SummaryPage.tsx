@@ -8,6 +8,7 @@ import {useMutation} from 'react-query';
 import Image from 'next/image';
 import ReplySection from './ReplySection';
 import ChartSection from './ChartSection';
+import {menuNutrientArray} from '../../../utils/menuArray';
 
 type props = {
 	recipe: recipeType;
@@ -70,9 +71,16 @@ const SummaryPage = ({recipe, className}: props) => {
 										width={70}
 										height={70}
 										src={
-											'/images/sandwich_menu/ingredients/' +
-											item +
-											'.jpg'
+											menuNutrientArray.some(
+												someItem =>
+													item === someItem.name,
+											)
+												? '/images/sandwich_menu/' +
+													item +
+													'.png'
+												: '/images/sandwich_menu/ingredients/' +
+													item +
+													'.jpg'
 										}
 										key={item}
 										className="object-cover w-12 aspect-square rounded-md"

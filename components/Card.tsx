@@ -154,9 +154,15 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
 							) : (
 								<Image
 									src={
-										'/images/sandwich_menu/ingredients/' +
-										item +
-										'.jpg'
+										menuNutrientArray.some(
+											someItem => item === someItem.name,
+										)
+											? '/images/sandwich_menu/' +
+												item +
+												'.png'
+											: '/images/sandwich_menu/ingredients/' +
+												item +
+												'.jpg'
 									}
 									key={item}
 									className="object-cover w-[70px] h-[70px] rounded-md"
