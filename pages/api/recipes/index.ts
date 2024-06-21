@@ -9,159 +9,165 @@ import {recipeType} from '../../../interfaces/api/recipes';
 import {checkSession} from '../../../utils/api/users';
 import ErrorMessage from '../../../utils/api/errorMessage';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-	const {query} = req.query;
-	const {recipeId} = req.query;
-	const {userId} = req.query;
-	let {filter} = req.query;
-	let {limit} = req.query;
-	let {offset} = req.query;
-	let {sort} = req.query;
+//레시피 이름으로 검색하기
+const handleQuery = async (query, req, res) => {
+	let {filter, limit, offset, sort} = req.query;
+	if (typeof query === 'string') {
+		//offset,limit,filter는 옵셔널 쿼리문자열이므로 추가적 처리가 필요
+		if (typeof limit === 'undefined') {
+			limit = '3';
+		}
+		if (typeof offset === 'undefined') {
+			offset = '0';
+		}
+		if (typeof filter === 'string') {
+			filter = [filter];
+		} else if (typeof filter === 'undefined') {
+			filter = ['메뉴이름', '레시피제목', '작성자', '재료', '태그'];
+		}
+		if (typeof sort != 'string') {
+			sort = 'recipe_id';
+		}
 
+		const results: recipeType[] | Error = await getRecipes({
+			searchQuery: query,
+			offset: Number(offset),
+			limit: Number(limit),
+			filter,
+			sort,
+		});
+
+		if (results instanceof Error) {
+			throw results;
+		} else {
+			res.status(200).json(results);
+		}
+	} else if (query instanceof Array) {
+		throw new Error(ErrorMessage.NoRequest);
+	}
+};
+
+//레시피 아이디로 검색하기
+const handleRecipeId = async (recipeId, req, res) => {
+	let {limit, offset, sort} = req.query;
+	let recipeIdArray: number[] = [];
+	if (!(recipeId instanceof Array || typeof recipeId === 'string')) {
+		throw new Error(ErrorMessage.NoRequest);
+	} else if (typeof recipeId === 'string') {
+		recipeIdArray = [Number(recipeId)];
+	} else if (recipeId instanceof Array) {
+		recipeIdArray = recipeId.map(id => Number(id));
+	}
+
+	if (typeof limit === 'undefined') {
+		limit = '9';
+	}
+	if (typeof offset === 'undefined') {
+		offset = '0';
+	}
+	if (typeof sort !== 'string') {
+		sort = 'like_count';
+	}
+
+	const results: recipeType[] | Error = await getRecipesFromRecipeId({
+		recipeIdArray,
+		offset: Number(offset),
+		limit: Number(limit),
+		sort,
+	});
+
+	if (results instanceof Error) {
+		throw results;
+	} else {
+		res.status(200).json(results);
+	}
+};
+//유저 아이디로 검색하기
+const handleUserId = async (userId, req, res) => {
+	let {limit, offset, sort} = req.query;
+	if (!userId) {
+		throw new Error(ErrorMessage.NoRequest);
+	} else if (typeof userId !== 'string') {
+		throw new Error(ErrorMessage.NoRequest);
+	}
+
+	if (typeof limit === 'undefined') {
+		limit = '9';
+	}
+	if (typeof offset === 'undefined') {
+		offset = '0';
+	}
+	if (typeof sort !== 'string') {
+		sort = 'like_count';
+	}
+
+	const results: recipeType[] | Error = await getRecipesFromUserId({
+		userId,
+		offset: Number(offset),
+		limit: Number(limit),
+		sort,
+	});
+
+	if (results instanceof Error) {
+		throw results;
+	} else {
+		res.status(200).json(results);
+	}
+};
+
+//모든 레시피 정보 가져오기
+const handleAllRecipes = async (req, res) => {
+	let {limit, offset, sort} = req.query;
+	const filter = ['메뉴이름', '레시피제목', '작성자', '재료', '태그'];
+	//offset,limit는 옵셔널 쿼리문자열이므로 추가적 처리가 필요
+	if (typeof limit === 'undefined') {
+		limit = '9';
+	}
+	if (typeof offset === 'undefined') {
+		offset = '0';
+	}
+	if (typeof sort != 'string') {
+		sort = 'like_count';
+	}
+
+	const results: recipeType[] | Error = await getRecipes({
+		searchQuery: ' ',
+		offset: Number(offset),
+		limit: Number(limit),
+		filter,
+		sort,
+	});
+
+	if (results instanceof Error) {
+		throw results;
+	} else {
+		res.status(200).json(results);
+	}
+};
+
+const handlers = {
+	query: handleQuery,
+	recipeId: handleRecipeId,
+	userId: handleUserId,
+};
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	//이 엔드포인트는 레시피에 관한 api입니다
 	if (req.method === 'GET') {
 		try {
-			if (query) {
-				//레시피 이름으로 검색하기
-				if (typeof query === 'string') {
-					//offset,limit,filter는 옵셔널 쿼리문자열이므로 추가적 처리가 필요
-					if (typeof limit === 'undefined') {
-						limit = '3';
-					}
-					if (typeof offset === 'undefined') {
-						offset = '0';
-					}
-					if (typeof filter === 'string') {
-						filter = [filter];
-					} else if (typeof filter === 'undefined') {
-						filter = [
-							'메뉴이름',
-							'레시피제목',
-							'작성자',
-							'재료',
-							'태그',
-						];
-					}
-					if (typeof sort != 'string') {
-						sort = 'recipe_id';
-					}
-
-					const results: recipeType[] | Error = await getRecipes({
-						searchQuery: query,
-						offset: Number(offset),
-						limit: Number(limit),
-						filter,
-						sort,
-					});
-
-					if (results instanceof Error) {
-						throw results;
-					} else {
-						res.status(200).json(results);
-					}
-				} else if (query instanceof Array) {
-					throw new Error(ErrorMessage.NoRequest);
+			for (const key in handlers) {
+				if (req.query[key]) {
+					//req매개변수는 query, recipeId, userId 객체를 반환, 하나라도 존재하면 해당 핸들러를 실행
+					await handlers[key](req.query[key], req, res); //3개 함수의 매개변수가 모두 같으므로 가능
+					break;
 				}
-			} else if (recipeId) {
-				//레시피 아이디로 검색하기
-				let recipeIdArray: number[] = [];
-				if (
-					!(recipeId instanceof Array || typeof recipeId === 'string')
-				) {
-					throw new Error(ErrorMessage.NoRequest);
-				} else if (typeof recipeId === 'string') {
-					recipeIdArray = [Number(recipeId)];
-				} else if (recipeId instanceof Array) {
-					recipeIdArray = recipeId.map(id => Number(id));
-				}
-
-				if (typeof limit === 'undefined') {
-					limit = '9';
-				}
-				if (typeof offset === 'undefined') {
-					offset = '0';
-				}
-				if (typeof sort !== 'string') {
-					sort = 'like_count';
-				}
-
-				const results: recipeType[] | Error =
-					await getRecipesFromRecipeId({
-						recipeIdArray,
-						offset: Number(offset),
-						limit: Number(limit),
-						sort,
-					});
-
-				if (results instanceof Error) {
-					throw results;
-				} else {
-					res.status(200).json(results);
-				}
-			} else if (userId) {
-				//유저 아이디로 검색하기
-				if (!userId) {
-					throw new Error(ErrorMessage.NoRequest);
-				} else if (typeof userId !== 'string') {
-					throw new Error(ErrorMessage.NoRequest);
-				}
-
-				if (typeof limit === 'undefined') {
-					limit = '9';
-				}
-				if (typeof offset === 'undefined') {
-					offset = '0';
-				}
-				if (typeof sort !== 'string') {
-					sort = 'like_count';
-				}
-
-				const results: recipeType[] | Error =
-					await getRecipesFromUserId({
-						userId,
-						offset: Number(offset),
-						limit: Number(limit),
-						sort,
-					});
-
-				if (results instanceof Error) {
-					throw results;
-				} else {
-					res.status(200).json(results);
-				}
-			} else {
-				//모든 레시피 정보 가져오기
-				const filter = [
-					'메뉴이름',
-					'레시피제목',
-					'작성자',
-					'재료',
-					'태그',
-				];
-				//offset,limit는 옵셔널 쿼리문자열이므로 추가적 처리가 필요
-				if (typeof limit === 'undefined') {
-					limit = '9';
-				}
-				if (typeof offset === 'undefined') {
-					offset = '0';
-				}
-				if (typeof sort != 'string') {
-					sort = 'like_count';
-				}
-
-				const results: recipeType[] | Error = await getRecipes({
-					searchQuery: ' ',
-					offset: Number(offset),
-					limit: Number(limit),
-					filter,
-					sort,
-				});
-
-				if (results instanceof Error) {
-					throw results;
-				} else {
-					res.status(200).json(results);
-				}
+			}
+			if (
+				req.query &&
+				req.query instanceof Array &&
+				req.query.some(queryItem => queryItem === undefined)
+			) {
+				await handleAllRecipes(req, res);
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) {
