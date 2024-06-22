@@ -42,7 +42,7 @@ export async function getServerSideProps() {
 }
 
 const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
-	const [recipeArray] = useState([
+	const [recipeArray, setRecipeArray] = useState([
 		...recipeData,
 		...recipeData,
 		...recipeData,
@@ -184,6 +184,12 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 
 	const [carouselItemName, setCarouselItemName] = useState<string>('');
 
+	const refetchHander = async () => {
+		const result = await fetch(`${process.env.URL}/api/recipes`);
+		const recipeData = await result.json();
+		setRecipeArray([...recipeData, ...recipeData, ...recipeData]);
+	};
+
 	return (
 		<div className="w-screen mx-auto">
 			<IndexLogo
@@ -215,7 +221,8 @@ const IndexPage = ({recipeData}: {recipeData: recipeType[]}) => {
 										cardRefs.current.push(element);
 									}
 								}}
-								className=""></Card>
+								refetch={() => refetchHander()}
+							/>
 						))}
 				</CarouselContainer>
 			</Carousel>

@@ -13,9 +13,11 @@ import {menuNutrientArray} from '../../../utils/menuArray';
 type props = {
 	recipe: recipeType;
 	className?: string;
+	refetch?: () => void;
+	setIsLoaded?: () => void;
 };
 
-const SummaryPage = ({recipe, className}: props) => {
+const SummaryPage = ({recipe, className, refetch, setIsLoaded}: props) => {
 	//재료에 맞게 재분류
 	const ingredientsArray = recipe.recipe_ingredients.split(',');
 	const {likeCount, recipeLikeHandler} = useRecipeLike(recipe);
@@ -25,7 +27,6 @@ const SummaryPage = ({recipe, className}: props) => {
 
 	//로그인 여부 체크
 	const userName = useSelector((state: RootState) => state.user.userName);
-
 	//레시피 삭제 요청 뮤테이션
 	const recipeDeleteMutation = useMutation(
 		async ({recipeId}: {recipeId: string}) => {
@@ -41,11 +42,11 @@ const SummaryPage = ({recipe, className}: props) => {
 		{
 			onSuccess: () => {
 				alert('레시피 삭제 성공');
-				location.reload();
+				refetch && refetch();
+				setIsLoaded && setIsLoaded();
 			},
 			onError: error => {
 				alert('잠시후 다시 시도해주세요' + error);
-				location.reload();
 			},
 		},
 	);
