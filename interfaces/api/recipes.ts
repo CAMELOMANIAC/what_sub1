@@ -29,3 +29,19 @@ export type getRecipesArg = {
 	filter: string[];
 	sort: string;
 };
+
+export enum filterType {
+	menuName = '메뉴이름',
+	recipeName = '레시피제목',
+	writer = '작성자',
+	ingredients = '재료',
+	tag = '태그',
+}
+export enum visibleType {
+	meat = '미트',
+	cheese = '치즈',
+	sauce = '소스',
+	vegetable = '채소',
+	bread = '빵',
+	toasting = '토스팅',
+}

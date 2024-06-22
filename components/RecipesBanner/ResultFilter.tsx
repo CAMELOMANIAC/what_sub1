@@ -10,6 +10,7 @@ import {
 } from '../../redux/reducer/pageReducer';
 import {RootState} from '../../redux/store';
 import {styled} from 'styled-components';
+import {visibleType} from '../../interfaces/api/recipes';
 
 export const StyledBackGroundDiv = styled.div`
 	background: linear-gradient(
@@ -42,12 +43,18 @@ const ResultFilter = ({sorting, setSorting}: Props) => {
 		(state: RootState) => state.page.VISIBLE_ARRAY,
 	);
 	const visibleItemArray = [
-		{name: '미트', element: <GiMeat className="mx-3" />},
-		{name: '빵', element: <BiSolidBaguette className="mx-3" />},
-		{name: '치즈', element: <BiSolidCheese className="mx-3" />},
-		{name: '채소', element: <GiTomato className="mx-3" />},
-		{name: '소스', element: <GiKetchup className="mx-3" />},
-		{name: '토스팅', element: <MdOutdoorGrill className="mx-3" />},
+		{name: visibleType.meat, element: <GiMeat className="mx-3" />},
+		{
+			name: visibleType.bread,
+			element: <BiSolidBaguette className="mx-3" />,
+		},
+		{name: visibleType.cheese, element: <BiSolidCheese className="mx-3" />},
+		{name: visibleType.vegetable, element: <GiTomato className="mx-3" />},
+		{name: visibleType.sauce, element: <GiKetchup className="mx-3" />},
+		{
+			name: visibleType.toasting,
+			element: <MdOutdoorGrill className="mx-3" />,
+		},
 	];
 	const sortHandler = item => {
 		if (visibleItem.includes(item)) {

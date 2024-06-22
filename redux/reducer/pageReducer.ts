@@ -1,18 +1,26 @@
+import {filterType, visibleType} from '../../interfaces/api/recipes';
+
 // 액션 타입 정의
 const SET_FILTER_TYPE = 'ACTION_SET_FILTER_TYPE';
 const ADD_FILTER_TYPE = 'ACTION_ADD_FILTER_TYPE';
 const ADD_VISIBLE_TYPE = 'ACTION_ADD_VISIBLE_TYPE';
 const REMOVE_VISIBLE_TYPE = 'ACTION_REMOVE_VISIBLE_TYPE';
 
-type pageStateType = {
+export type pageStateType = {
 	FILTER_ARRAY: string[];
 	VISIBLE_ARRAY: string[];
 };
 
 // 초기 상태 정의
 const initialState: pageStateType = {
-	FILTER_ARRAY: ['메뉴이름', '레시피제목', '작성자', '재료', '태그'],
-	VISIBLE_ARRAY: ['미트', '치즈', '소스'],
+	FILTER_ARRAY: [
+		filterType.menuName,
+		filterType.recipeName,
+		filterType.writer,
+		filterType.ingredients,
+		filterType.tag,
+	], //쿼리필터에서 사용되는 값들
+	VISIBLE_ARRAY: [visibleType.meat, visibleType.cheese, visibleType.sauce], //result 필터에서 사용되는 값들
 };
 
 // 리듀서 정의

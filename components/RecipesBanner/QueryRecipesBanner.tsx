@@ -13,7 +13,7 @@ import {RootState} from '../../redux/store';
 import Image from 'next/image';
 import {styled} from 'styled-components';
 import {totalMenuInfoType} from '../../interfaces/api/menus';
-import {recipeType} from '../../interfaces/api/recipes';
+import {filterType, recipeType} from '../../interfaces/api/recipes';
 
 export const StyleTag = styled.button`
 	height: 100%;
@@ -56,11 +56,11 @@ const QueryRecipesBanner = ({menuData, recipeData, parentRef}: Props) => {
 
 	//검색 필터 관련
 	const queryFilterArray = [
-		'메뉴이름',
-		'레시피제목',
-		'작성자',
-		'재료',
-		'태그',
+		filterType.menuName,
+		filterType.recipeName,
+		filterType.writer,
+		filterType.ingredients,
+		filterType.tag,
 	];
 	const [isFilter, setIsFilter] = useState<boolean>(false);
 	const filterState = useSelector(
@@ -148,11 +148,11 @@ const QueryRecipesBanner = ({menuData, recipeData, parentRef}: Props) => {
 						<StyleTag>#달콤</StyleTag>
 					</Link>
 					<Link
-						href={`/Recipes?query=로스티드 치킨&filter=${['메뉴이름']}`}>
+						href={`/Recipes?query=로스티드 치킨&filter=${[filterType.menuName]}`}>
 						<StyleTag>로스티드 치킨</StyleTag>
 					</Link>
 					<Link
-						href={`/Recipes?query=허니머스타드&filter=${['재료']}`}>
+						href={`/Recipes?query=허니머스타드&filter=${[filterType.ingredients]}`}>
 						<StyleTag>허니머스타드</StyleTag>
 					</Link>
 					<span className="text-sm text-gray-500">

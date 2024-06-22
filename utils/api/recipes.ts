@@ -1,6 +1,7 @@
 import {recipeContextType} from '../../interfaces/AddRecipe';
 import {updateReturnType} from '../../interfaces/api/db';
 import {
+	filterType,
 	getRecipesArg,
 	recipeType,
 	replyType,
@@ -22,15 +23,15 @@ export const getRecipes = async ({
 		if (Array.isArray(filter)) {
 			filterQuery = filter.map(item => {
 				switch (item) {
-					case '메뉴이름':
+					case filterType.menuName:
 						return ' recipe_table.sandwich_table_sandwich_name LIKE ? ';
-					case '레시피제목':
+					case filterType.recipeName:
 						return ' recipe_table.recipe_name LIKE ? ';
-					case '작성자':
+					case filterType.writer:
 						return ' recipe_table.user_table_user_id LIKE ? ';
-					case '재료':
+					case filterType.ingredients:
 						return ' recipe_ingredients LIKE ? ';
-					case '태그':
+					case filterType.tag:
 						return ' tag LIKE ? ';
 				}
 			});

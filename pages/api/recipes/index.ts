@@ -5,7 +5,7 @@ import {
 	getRecipesFromRecipeId,
 	getRecipesFromUserId,
 } from '../../../utils/api/recipes';
-import {recipeType} from '../../../interfaces/api/recipes';
+import {filterType, recipeType} from '../../../interfaces/api/recipes';
 import {checkSession} from '../../../utils/api/users';
 import ErrorMessage from '../../../utils/api/errorMessage';
 
@@ -23,7 +23,13 @@ const handleQuery = async (query, req, res) => {
 		if (typeof filter === 'string') {
 			filter = [filter];
 		} else if (typeof filter === 'undefined') {
-			filter = ['메뉴이름', '레시피제목', '작성자', '재료', '태그'];
+			filter = [
+				filterType.menuName,
+				filterType.recipeName,
+				filterType.writer,
+				filterType.ingredients,
+				filterType.tag,
+			];
 		}
 		if (typeof sort != 'string') {
 			sort = 'recipe_id';
@@ -118,7 +124,7 @@ const handleUserId = async (userId, req, res) => {
 //모든 레시피 정보 가져오기
 const handleAllRecipes = async (req, res) => {
 	let {limit, offset, sort} = req.query;
-	const filter = ['메뉴이름', '레시피제목', '작성자', '재료', '태그'];
+	const filter = [filterType.menuName, filterType.recipeName, filterType.writer, filterType.ingredients, filterType.tag];
 	//offset,limit는 옵셔널 쿼리문자열이므로 추가적 처리가 필요
 	if (typeof limit === 'undefined') {
 		limit = '9';
