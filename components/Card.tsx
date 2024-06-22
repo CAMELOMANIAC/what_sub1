@@ -22,10 +22,11 @@ import Image from 'next/image';
 type CardProps = {
 	recipe: recipeType;
 	className?: string;
+	refetch?: () => void;
 };
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
-	({recipe, className}, ref) => {
+	({recipe, className, refetch}, ref) => {
 		const {likeCount, recipeLikeHandler} = useRecipeLike(recipe);
 		const recipeTag: string[] = [];
 		const likeRecipe: string[] = useSelector(
@@ -205,7 +206,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
 					<CardModal
 						recipe={recipe}
 						setIsActive={setIsActive}
-						ingredients={ingredients}></CardModal>
+						ingredients={ingredients}
+						refetch={refetch}></CardModal>
 				)}
 			</>
 		);

@@ -1,11 +1,11 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState, useMemo} from 'react';
 import Card from '../components/Card';
 import EmptyCard from '../components/EmptyCard';
 import RecipesBanner from '../components/RecipesBanner/RecipesBanner';
 import {useRouter} from 'next/router';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
-import {recipeType} from '../interfaces/api/recipes';
+import {filterType, recipeType} from '../interfaces/api/recipes';
 import {totalMenuInfoType} from '../interfaces/api/menus';
 import Head from 'next/head';
 import {useInfiniteQuery} from 'react-query';
@@ -49,19 +49,10 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 	const [endRecipe, setEndRecipe] = useState<boolean>(false);
 	const searchParams = useSearchParams();
 	const user = useSelector((state: RootState) => state.user);
-
 	//api 통신을 위해 필요한 값들
 	const filterQuery = filter.join('&filter=');
-	const {
-		refetch,
-		fetchNextPage,
-		hasNextPage,
-		isLoading,
-		isFetching,
-		isError,
-		data: queryData,
-	} = useInfiniteQuery(
-		[
+	const queryKey = useMemo(
+		() => [
 			Object.keys(router.query),
 			router.query.query,
 			router.query.param,
@@ -72,6 +63,20 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 			sorting,
 			searchParams?.has('favorite') ? 'favorite' : 'not-favorite',
 		],
+		[router.query, filterQuery, sorting, searchParams],
+	);
+
+	//검색 useInfiniteQuery
+	const {
+		refetch,
+		fetchNextPage,
+		hasNextPage,
+		isLoading,
+		isFetching,
+		isError,
+		data: queryData,
+	} = useInfiniteQuery(
+		queryKey,
 		async ({queryKey, pageParam = 0}) => {
 			const [
 				,
@@ -88,7 +93,7 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 					(await fetch(
 						'/api/recipes?userId=' +
 							encodeURIComponent(String(user.userName)) +
-							`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${['작성자']}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
+							`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${[filterType.writer]}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
 					))) ||
 				(searchParams?.has('favorite') &&
 					(await fetch(
@@ -102,7 +107,7 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 								encodeURIComponent(
 									String(param ? param : query),
 								) +
-								`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? (param ? Number(limit) - 1 : limit) : dynamicLimit}&filter=${param ? ['메뉴이름'] : filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`
+								`&offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? (param ? Number(limit) - 1 : limit) : dynamicLimit}&filter=${param ? [filterType.menuName] : filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`
 						: `/api/recipes?offset=${pageParam === 0 ? offset : pageParam}&limit=${pageParam === 0 ? limit : dynamicLimit}&filter=${filter}&sort=${sorting === '최신순' ? 'recipe_id' : 'like_count'}`,
 				));
 
@@ -116,7 +121,8 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 		{
 			getNextPageParam: (_lastPage, allPages) => allPages.flat().length,
 			staleTime: 1000 * 60 * 1,
-			enabled: false,
+			onSuccess: data =>
+				data.pageParams.length === 0 && setEndRecipe(true),
 		},
 	);
 
@@ -125,16 +131,6 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 			setRecipes(queryData.pages.flat());
 		}
 	}, [queryData]);
-
-	//초기 레시피 불러오기
-	useEffect(() => {
-		refetch();
-	}, [refetch, router.isReady]);
-	//레시피 초기화
-	useEffect(() => {
-		refetch();
-		setEndRecipe(false);
-	}, [sorting, router.query, refetch]);
 
 	const scrollAnchor = useRef<HTMLDivElement>(null);
 
@@ -178,7 +174,10 @@ const Recipes = ({recipeData, menuData}: propsType) => {
 						<EmptyCard></EmptyCard>
 					)}
 					{recipes.map((recipe, index) => (
-						<Card key={index} recipe={recipe}></Card>
+						<Card
+							key={index}
+							recipe={recipe}
+							refetch={refetch}></Card>
 					))}
 					<div
 						className="col-span-2 md:col-span-4 lg:col-span-6 h-[200px] flex justify-center items-center"

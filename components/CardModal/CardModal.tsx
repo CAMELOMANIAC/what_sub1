@@ -13,9 +13,10 @@ type props = {
 	recipe: recipeType;
 	setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 	ingredients: string[];
+	refetch?: () => void;
 };
 
-const CardModal = ({recipe, setIsActive}: props) => {
+const CardModal = ({recipe, setIsActive, refetch}: props) => {
 	const [page, setPage] = useState<number>(0);
 	const {isLoaded, setIsLoaded} = useModalAnimationHook(setIsActive);
 
@@ -73,7 +74,11 @@ const CardModal = ({recipe, setIsActive}: props) => {
 								page={page}></CardHorizontalNav>
 						</div>
 						{page === 0 && (
-							<SummaryPage recipe={recipe}></SummaryPage>
+							<SummaryPage
+								recipe={recipe}
+								refetch={refetch}
+								setIsLoaded={() => setIsLoaded(false)}
+							/>
 						)}
 						{page !== 0 && (
 							<IngredientsPage
