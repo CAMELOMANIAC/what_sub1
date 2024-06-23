@@ -133,10 +133,12 @@ const GlobalNav = () => {
 					)}
 				</button>
 			</div>
-			<IoMenuOutline
-				className="w-8 h-8 my-auto ml-auto mr-2 sm:hidden"
-				onClick={() => setDynamicSideNav(true)}
-			/>
+			<button className="my-auto ml-auto mr-2 sm:hidden">
+				<IoMenuOutline
+					className="w-8 h-8"
+					onClick={() => setDynamicSideNav(true)}
+				/>
+			</button>
 			{isDynamicSideNav && (
 				<DynamicSideNav
 					handleClose={setDynamicSideNav}
