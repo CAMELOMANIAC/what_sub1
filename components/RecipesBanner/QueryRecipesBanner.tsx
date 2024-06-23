@@ -36,6 +36,7 @@ const QueryRecipesBanner = ({menuData, recipeData, parentRef}: Props) => {
 	const dispatch = useDispatch();
 	const buttonRef = useRef<HTMLButtonElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const [refReady, setRefReady] = useState<Array<number>>([]);
 
 	useEffect(() => {
 		const updatePosition = () => {
@@ -45,14 +46,50 @@ const QueryRecipesBanner = ({menuData, recipeData, parentRef}: Props) => {
 				containerRef.current.style.top = `${rect.top}px`;
 			}
 		};
-		updatePosition();
-
 		window.addEventListener('resize', updatePosition);
+
+		//컴포넌트가 마운트되면서 ref객체가 생성됨을 감지하지 못하므로 observer객체를 생성하여 감지
+		const buttonRefObserver = new MutationObserver(() => {
+			//요소가 변경됨을 감지하는 observer객체 생성
+			setRefReady(prev => [...prev, 0]);
+		});
+
+		if (buttonRef.current) {
+			buttonRefObserver.observe(buttonRef.current, {
+				attributes: true, //dom의 속성 변경을 감지
+				childList: true, //자식 노드의 추가, 삭제를 감지
+				subtree: true, //하위 노드까지 모두 감지
+			});
+		}
+		const containerRefObserver = new MutationObserver(() => {
+			//요소가 변경됨을 감지하는 observer객체 생성
+			setRefReady(prev => [...prev, 1]);
+		});
+
+		if (containerRef.current) {
+			containerRefObserver.observe(containerRef.current, {
+				attributes: true, //dom의 속성 변경을 감지
+				childList: true, //자식 노드의 추가, 삭제를 감지
+				subtree: true, //하위 노드까지 모두 감지
+			});
+		}
 
 		return () => {
 			window.removeEventListener('resize', updatePosition);
+			buttonRefObserver.disconnect();
+			containerRefObserver.disconnect();
+			setRefReady([]);
 		};
 	}, []);
+
+	useEffect(() => {
+		//refReady가 변경되면 위치 재조정
+		if (buttonRef.current && containerRef.current) {
+			const rect = buttonRef.current.getBoundingClientRect();
+			containerRef.current.style.left = `${rect.left + buttonRef.current.offsetWidth}px`;
+			containerRef.current.style.top = `${rect.top}px`;
+		}
+	}, [refReady]);
 
 	//검색 필터 관련
 	const queryFilterArray = [
