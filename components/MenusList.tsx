@@ -125,7 +125,7 @@ const MenusList = ({setSelected}: propsType) => {
 					{arrayTemplate.likeRecipe}
 				</button>
 				<button
-					name='orderRecipesCount'
+					name="orderRecipesCount"
 					className={
 						`inline-block w-[15%] text-center py-1 ` +
 						`${order === 'recipes' && ' border-b-4 border-green-600 text-green-600 '}` +
@@ -181,7 +181,17 @@ const MenusList = ({setSelected}: propsType) => {
 						{item.recipes}
 					</span>
 					<span className="flex justify-center items-center  w-[30%] text-center">
-						{item.matches}
+						{item.matches?.map(
+							(match, index) =>
+								index < 3 && (
+									<Image
+										src={`/images/sandwich_menu/ingredients/${match}.jpg`}
+										width={50}
+										height={50}
+										key={match}
+										alt={match}></Image>
+								),
+						)}
 					</span>
 				</button>
 			))}

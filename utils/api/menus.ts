@@ -1,5 +1,6 @@
 import {updateReturnType} from '../../interfaces/api/db';
 import {
+	addMenuIngredientType,
 	totalMenuInfoType,
 	userMenuWriteTopData,
 } from '../../interfaces/api/menus';
@@ -394,5 +395,30 @@ export const getMenuWriteTop = async (
 		}
 	} catch (err) {
 		return err;
+	}
+};
+
+//menu페이지에서 재료추가 정보 불러오기
+export const getMenuAddIngredients = async () => {
+	const query = `SELECT sandwich_table_sandwich_name, recipe_ingredients, COUNT(*) as count 
+FROM recipe_table 
+JOIN recipe_ingredients_table 
+ON recipe_table.recipe_id = recipe_ingredients_table.recipe_table_recipe_id 
+WHERE recipe_ingredients LIKE '%재료%' 
+GROUP BY sandwich_table_sandwich_name, recipe_ingredients 
+ORDER BY count DESC;`;
+	try {
+		const results: Array<addMenuIngredientType> | Error =
+			await executeQuery({
+				query: query,
+				values: [],
+			});
+		if (Array.isArray(results) && results.length < 1) {
+			throw new Error(ErrorMessage.NoResult);
+		} else {
+			return results;
+		}
+	} catch (err) {
+		err;
 	}
 };

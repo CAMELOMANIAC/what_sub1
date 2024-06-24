@@ -10,3 +10,9 @@ export type userMenuWriteTopData = {
 	sandwich_table_sandwich_name: string;
 	count: number;
 };
+
+export type addMenuIngredientType = {
+	sandwich_table_sandwich_name: string;
+	recipe_ingredients: string;
+	count: number;
+};

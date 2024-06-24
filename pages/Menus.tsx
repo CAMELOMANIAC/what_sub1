@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import {menuArray, menuArrayType} from '../utils/menuArray';
-import {totalMenuInfoType} from '../interfaces/api/menus';
+import {
+	addMenuIngredientType,
+	totalMenuInfoType,
+} from '../interfaces/api/menus';
 import MenusBanner from '../components/MenusBanner';
 import MenusList from '../components/MenusList';
 import MenusGrid from '../components/MenusGrid';
@@ -13,19 +16,26 @@ export async function getServerSideProps() {
 		const result = await fetch(process.env.URL + '/api/menus');
 		return result.json();
 	};
+	const loadAddIngredientsInfo = async () => {
+		const result = await fetch(process.env.URL + '/api/menus/ingredients');
+		return result.json();
+	};
 	const totalMenuInfo = await loadTotalMenuInfo();
+	const addIngredientsInfo = await loadAddIngredientsInfo();
 	return {
 		props: {
 			totalMenuInfo,
+			addIngredientsInfo,
 		},
 	};
 }
 
 type props = {
 	totalMenuInfo: totalMenuInfoType[];
+	addIngredientsInfo: addMenuIngredientType[];
 };
 
-const Menus = ({totalMenuInfo}: props) => {
+const Menus = ({totalMenuInfo, addIngredientsInfo}: props) => {
 	const fixedMenuArray: menuArrayType[] = menuArray;
 	fixedMenuArray.map(menuArray => {
 		totalMenuInfo.find(
@@ -47,6 +57,21 @@ const Menus = ({totalMenuInfo}: props) => {
 					)?.recipe_like_count ?? '0',
 				)))
 			: null;
+	});
+	fixedMenuArray.forEach(menuArray => {
+		const match = addIngredientsInfo
+			.filter(
+				infoArray =>
+					infoArray.sandwich_table_sandwich_name === menuArray.name,
+			)
+			.map(infoArray => infoArray.recipe_ingredients);
+		if (match) {
+			if (!menuArray.matches) {
+				menuArray.matches = []; // matches가 undefined일 경우 빈 배열로 초기화
+			}
+		}
+		menuArray.matches = match;
+		console.log(menuArray.name, menuArray.matches, match);
 	});
 
 	const [selected, setSelected] = useState<menuArrayType>(menuArray[0]);

@@ -24,6 +24,7 @@ export const menuArray: menuArrayType[] = [
 			'스위트어니언.jpg',
 			'올리브오일.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '로티세리 바베큐',
@@ -39,6 +40,7 @@ export const menuArray: menuArrayType[] = [
 			'스위트칠리.jpg',
 			'랜치.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '베지',
@@ -53,6 +55,7 @@ export const menuArray: menuArrayType[] = [
 			'레드와인식초.jpg',
 			'올리브오일.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '서브웨이 클럽',
@@ -70,6 +73,7 @@ export const menuArray: menuArrayType[] = [
 			'랜치.jpg',
 			'스위트어니언.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '스파이시 쉬림프',
@@ -80,6 +84,7 @@ export const menuArray: menuArrayType[] = [
 		summary:
 			'탱글한 쉬림프에 이국적인 시즈닝을 더해 색다른 매콤함을 만나보세요!',
 		ingredients: ['스파이시 쉬림프.jpg', '아메리칸.jpg', '랜치.jpg'],
+		matches: [],
 	},
 	{
 		name: '스파이시 바베큐',
@@ -95,6 +100,7 @@ export const menuArray: menuArrayType[] = [
 			'마요네즈.jpg',
 			'뉴 사우스웨스트 치폴레.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '스파이시 이탈리안',
@@ -111,6 +117,7 @@ export const menuArray: menuArrayType[] = [
 			'랜치.jpg',
 			'스위트어니언.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '스테이크 & 치즈',
@@ -125,6 +132,7 @@ export const menuArray: menuArrayType[] = [
 			'뉴 사우스웨스트 치폴레.jpg',
 			'마요네즈.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '쉬림프',
@@ -135,6 +143,7 @@ export const menuArray: menuArrayType[] = [
 		summary:
 			'탱글한 쉬림프 5마리가 그대로,\n 신선하고 담백한 쉬림프의 맛 그대로 즐겨보세요!',
 		ingredients: ['새우.jpg', '아메리칸.jpg', '랜치.jpg', '스위트칠리.jpg'],
+		matches: [],
 	},
 	{
 		name: '이탈리안 B.M.T',
@@ -152,6 +161,7 @@ export const menuArray: menuArrayType[] = [
 			'스위트어니언.jpg',
 			'랜치.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '에그마요',
@@ -167,6 +177,7 @@ export const menuArray: menuArrayType[] = [
 			'랜치.jpg',
 			'스위트칠리.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '참치',
@@ -182,6 +193,7 @@ export const menuArray: menuArrayType[] = [
 			'핫칠리.jpg',
 			'스위트칠리.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '치킨 베이컨 아보카도',
@@ -199,6 +211,7 @@ export const menuArray: menuArrayType[] = [
 			'랜치.jpg',
 			'홀스래디쉬.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '치킨 슬라이스',
@@ -213,6 +226,7 @@ export const menuArray: menuArrayType[] = [
 			'스위트칠리.jpg',
 			'뉴 사우스웨스트 치폴레.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '치킨 데리야끼',
@@ -228,6 +242,7 @@ export const menuArray: menuArrayType[] = [
 			'스모크바베큐.jpg',
 			'마요네즈.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '풀드포크',
@@ -242,6 +257,7 @@ export const menuArray: menuArrayType[] = [
 			'스모크바베큐.jpg',
 			'랜치.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: '햄',
@@ -256,6 +272,7 @@ export const menuArray: menuArrayType[] = [
 			'마요네즈.jpg',
 			'홀스래디쉬.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: 'B.L.T',
@@ -270,6 +287,7 @@ export const menuArray: menuArrayType[] = [
 			'마요네즈.jpg',
 			'뉴 사우스웨스트 치폴레.jpg',
 		],
+		matches: [],
 	},
 	{
 		name: 'K-bbq',
@@ -285,6 +303,7 @@ export const menuArray: menuArrayType[] = [
 			'올리브오일.jpg',
 			'후추.jpg',
 		],
+		matches: [],
 	},
 ];
 
