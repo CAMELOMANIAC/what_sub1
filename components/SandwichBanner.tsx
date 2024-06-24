@@ -1,8 +1,7 @@
-import {useRef, useEffect, useState} from 'react';
+import {useRef, useEffect} from 'react';
 
 const SandwichBanner = () => {
 	const sandwichRef: {current: HTMLCanvasElement | null} = useRef(null);
-	const [forkPosition, setForkPosition] = useState({x: 0, y: -100, angle: 0});
 
 	useEffect(() => {
 		const context = sandwichRef.current
@@ -171,54 +170,8 @@ const SandwichBanner = () => {
 					};
 					canvas.addEventListener('mouseup', clickListener);
 
-					const mouseMoveListener = event => {
-						const x = event.clientX - rect.left;
-						const y = event.clientY - rect.top;
-
-						const gridX = Math.floor(x / gridWidth);
-						const gridY = Math.floor(y / gridHeight);
-
-						const currentCell =
-							gridValues[gridY] && gridValues[gridY][gridX];
-						const leftCell =
-							gridValues[gridY] && gridValues[gridY][gridX - 1];
-						const rightCell =
-							gridValues[gridY] && gridValues[gridY][gridX + 1];
-						const upCell =
-							gridValues[gridY - 1] &&
-							gridValues[gridY - 1][gridX];
-						const downCell =
-							gridValues[gridY + 1] &&
-							gridValues[gridY + 1][gridX];
-
-						if (
-							currentCell === false &&
-							(leftCell ||
-								rightCell ||
-								upCell ||
-								downCell ||
-								!gridValues[gridY] ||
-								gridX === 0 ||
-								gridX === cols - 1)
-						) {
-							const centerX = (rect.width * scale) / 2; // 캔버스의 중앙 x 좌표
-							const centerY = (rect.height * scale) / 2; // 캔버스의 중앙 y 좌표
-							const angle = Math.atan2(y - centerY, x - centerX);
-
-							setForkPosition({x, y, angle});
-						} else {
-							setForkPosition({x: 0, y: -100, angle: 0});
-						}
-					};
-
-					canvas.addEventListener('mousemove', mouseMoveListener);
-
 					return () => {
 						canvas.removeEventListener('mouseup', clickListener);
-						canvas.removeEventListener(
-							'mousemove',
-							mouseMoveListener,
-						);
 					};
 				}
 			};
@@ -229,24 +182,9 @@ const SandwichBanner = () => {
 
 	return (
 		<div className="relative w-full h-full">
-			<canvas ref={sandwichRef} className="mx-auto w-80 h-80"></canvas>
-			{forkPosition && (
-				<img
-					src="/images/fork.png"
-					alt="fork"
-					className="sm:block hidden"
-					style={{
-						position: 'absolute',
-						top: forkPosition.y,
-						left: forkPosition.x + 300,
-						pointerEvents: 'none',
-						transform: `rotate(${forkPosition.angle + 180}rad)`,
-						transformOrigin: 'top center', // 회전 중심점을 이미지 중앙으로 설정
-						transition: 'top 1s, left 1s, transform 1s',
-						scale: '0.4',
-					}}
-				/>
-			)}
+			<canvas
+				ref={sandwichRef}
+				className="mx-auto w-80 h-80 transition-all scale-100 hover:scale-95"></canvas>
 		</div>
 	);
 };
