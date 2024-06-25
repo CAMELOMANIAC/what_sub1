@@ -71,7 +71,6 @@ const Menus = ({totalMenuInfo, addIngredientsInfo}: props) => {
 			}
 		}
 		menuArray.matches = match;
-		console.log(menuArray.name, menuArray.matches, match);
 	});
 
 	const [selected, setSelected] = useState<menuArrayType>(menuArray[0]);

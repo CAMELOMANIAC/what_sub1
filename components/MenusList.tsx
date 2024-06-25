@@ -180,7 +180,7 @@ const MenusList = ({setSelected}: propsType) => {
 						}>
 						{item.recipes}
 					</span>
-					<span className="flex justify-center items-center  w-[30%] text-center">
+					<span className="flex justify-start items-center w-[30%] text-center overflow-hidden">
 						{item.matches?.map(
 							(match, index) =>
 								index < 3 && (
@@ -189,7 +189,8 @@ const MenusList = ({setSelected}: propsType) => {
 										width={50}
 										height={50}
 										key={match}
-										alt={match}></Image>
+										alt={match}
+										className="rounded-full"></Image>
 								),
 						)}
 					</span>
