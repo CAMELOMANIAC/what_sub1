@@ -2,6 +2,7 @@
 	"theme_color": "#009223",
 	"background_color": "#ffffff",
 	"display": "standalone",
+	"orientation": "portrait",
 	"scope": "/",
 	"start_url": "/",
 	"name": "WhatSub",
@@ -9,7 +10,14 @@
 	"description": "\uc11c\ube0c\uc6e8\uc774 \ub808\uc2dc\ud53c\uac00 \ud544\uc694\ud558\uba74? WhatSub",
 	"icons": [
 		{
-			"name": "/images/icon-512-512.png"
+			"src": "/images/icon-512-512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "/images/icon-192-192.png",
+			"sizes": "192x192",
+			"type": "image/png"
 		}
 	]
 }
