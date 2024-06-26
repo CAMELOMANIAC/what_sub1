@@ -63,6 +63,7 @@ const DynamicSideNav = ({handleClose, userName, setLoginModal}: Props) => {
 						<div className="relative flex flex-col border-b-2 border-gray-300 text-xl mx-6">
 							<button
 								name="loginButton"
+								aria-label="loginButton"
 								className="flex justify-center items-center w-fit"
 								onClick={() =>
 									!userName && setLoginModal(true)

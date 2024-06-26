@@ -77,7 +77,10 @@ const IndexLogo = ({prevHandler, nextHandler, carouselItemName}: PropsType) => {
 					className="w-fit max-w-[100vw] bg-white border-[12px] border-green-600 rounded-full px-6 py-2 flex flex-row justify-center items-center"
 					ref={divRef}>
 					<span className="justify-center items-center w-[70px] text-white text-4xl font-extrabold font-[seoul-metro] rounded-full bg-green-600 aspect-square sm:flex hidden">
-						<button onClick={queryPushHandler} name="searchButton">
+						<button
+							onClick={queryPushHandler}
+							name="searchButton"
+							aria-label="searchButton">
 							<FaSearch />
 						</button>
 					</span>
