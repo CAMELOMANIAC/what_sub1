@@ -1,4 +1,4 @@
-import Document from 'next/document';
+import Document, {Head, Html, Main, NextScript} from 'next/document';
 import {ServerStyleSheet} from 'styled-components';
 
 //styled-components 사용하기 위해 추가한 코드
@@ -31,6 +31,19 @@ class MyDocument extends Document {
 		} finally {
 			sheet.seal();
 		}
+	}
+	render() {
+		return (
+			<Html>
+				<Head>
+					<link rel="manifest" href="/manifest.json" />
+				</Head>
+				<body>
+					<Main />
+					<NextScript />
+				</body>
+			</Html>
+		);
 	}
 }
 

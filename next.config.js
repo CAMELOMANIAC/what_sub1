@@ -2,6 +2,13 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
 	enabled: process.env.ANALYZE === 'true',
 });
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withPlugins = require('next-compose-plugins'); //여러 플러그인을 사용하기 위한 라이브러리
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withPWA = require('next-pwa')({
+	//PWA를 사용하기 위한 라이브러리
+	dest: 'public',
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -19,5 +26,4 @@ const nextConfig = {
 		defaultLocale: 'ko',
 	},
 };
-
-module.exports = withBundleAnalyzer(nextConfig);
+module.exports = withPlugins([withBundleAnalyzer, withPWA], nextConfig);

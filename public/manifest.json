@@ -1,0 +1,15 @@
+{
+	"theme_color": "#009223",
+	"background_color": "#ffffff",
+	"display": "standalone",
+	"scope": "/",
+	"start_url": "/",
+	"name": "WhatSub",
+	"short_name": "WhatSub",
+	"description": "\uc11c\ube0c\uc6e8\uc774 \ub808\uc2dc\ud53c\uac00 \ud544\uc694\ud558\uba74? WhatSub",
+	"icons": [
+		{
+			"name": "/images/icon-512-512.png"
+		}
+	]
+}

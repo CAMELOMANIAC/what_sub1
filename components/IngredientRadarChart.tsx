@@ -137,7 +137,6 @@ const IngredientsRadarChart = ({context}: {context: recipeContextType}) => {
 };
 
 export default IngredientsRadarChart;
-export const MemoizedChart = React.memo(IngredientsRadarChart);
 
 const CustomTooltip = ({
 	active,
