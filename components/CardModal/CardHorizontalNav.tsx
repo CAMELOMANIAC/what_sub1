@@ -30,7 +30,9 @@ const CardHorizontalNav = ({className, setPage, page}: props) => {
 			<li
 				className="relative col-span-1 grow border-b-8 border-green-600 flex items-center justify-center"
 				key={name}
-				ref={element => (buttonRefArray.current[index] = element)}>
+				ref={element => {
+					buttonRefArray.current[index] = element;
+				}}>
 				<div className="absolute bg-white w-[18px] h-[18px] right-1/2 bottom-0 translate-x-1/2 translate-y-[13px] rounded-full border-[3px] border-green-600"></div>
 				<button className="mb-4" onClick={() => setPage(index)}>
 					{name}

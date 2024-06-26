@@ -30,7 +30,9 @@ const CardNav = ({className, setPage, page}: props) => {
 			<li
 				className="relative grow border-r-8 border-green-600 flex items-center"
 				key={name}
-				ref={element => (buttonRefArray.current[index] = element)}>
+				ref={element => {
+					buttonRefArray.current[index] = element;
+				}}>
 				<div className="absolute bg-white w-[18px] h-[18px] translate-x-[13px] right-0 rounded-full border-[3px] border-green-600"></div>
 				<button
 					className="mr-5 transition-all duration-200"
