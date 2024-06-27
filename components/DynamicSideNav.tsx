@@ -62,7 +62,7 @@ const DynamicSideNav = ({
 			}}>
 			<article
 				className={`w-5/6 h-screen bg-white fixed top-0 right-0 shadow-lg flex flex-col overflow-hidden transition-all duration-500 ease-in-out ${isLoaded ? 'max-w-[640px]' : 'max-w-0'}`}>
-				<div className="w-[640px]">
+				<div className="w-[83vw]">
 					<button
 						className={'relative ml-5 mt-5 w-fit h-fit'}
 						onClick={() => setIsLoaded(false)}>
@@ -144,7 +144,7 @@ const DynamicSideNav = ({
 							레시피
 						</Link>
 						<button
-							className={`absolute bottom-0 bg-green-600 w-full text-white text-lg p-2 m-2 rounded-lg`}
+							className={`relative bg-green-600 text-white text-lg p-2 m-2 rounded-lg`}
 							onClick={() =>
 								installPrompt
 									? installPrompt.prompt()
