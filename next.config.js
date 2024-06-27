@@ -8,6 +8,7 @@ const withPlugins = require('next-compose-plugins'); //여러 플러그인을 �
 const withPWA = require('next-pwa')({
 	//PWA를 사용하기 위한 라이브러리
 	dest: 'public',
+	disable: process.env.NODE_ENV === 'development',
 });
 
 /** @type {import('next').NextConfig} */

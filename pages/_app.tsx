@@ -112,14 +112,13 @@ export default function MyApp({Component, pageProps}: AppProps) {
 				/>
 				<meta
 					property="og:image"
-					content={`${process.env.URL}/images/front_banner.png`}
+					content={`/images/front_banner.png`}
 				/>
+				<meta name="theme-color" content="#009223" />
 				<link
 					rel=" shortcut icon "
-					href={`${process.env.URL}/images/front_banner.ico`}></link>
-				<link
-					rel="icon"
-					href={`${process.env.URL}/images/front_banner.ico`}></link>
+					href={`/images/front_banner.ico`}></link>
+				<link rel="icon" href={`/images/front_banner.ico`}></link>
 			</Head>
 			<QueryClientProvider client={queryClient}>
 				<Provider store={store}>
