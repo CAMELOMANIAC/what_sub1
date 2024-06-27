@@ -21,8 +21,13 @@ import LoginTureModal from './LoginModal/LoginTureModal';
 import {useQuery} from 'react-query';
 import DynamicSideNav from './DynamicSideNav';
 import {IoMenuOutline} from 'react-icons/io5';
+import {BeforeInstallPromptEvent} from '../pages/_app';
 
-const GlobalNav = () => {
+const GlobalNav = ({
+	installPrompt,
+}: {
+	installPrompt: BeforeInstallPromptEvent | undefined;
+}) => {
 	const router = useRouter();
 	const [currentPath, setCurrentPath] = useState(router.pathname); //pathname속성은 현재 경로만 저장되는 속성
 	const [isLoginModal, setLoginModal] = useState(false);
@@ -144,6 +149,7 @@ const GlobalNav = () => {
 					handleClose={setDynamicSideNav}
 					userName={userName}
 					setLoginModal={setLoginModal}
+					installPrompt={installPrompt}
 				/>
 			)}
 

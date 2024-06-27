@@ -12,13 +12,21 @@ import {useMutation} from 'react-query';
 import {deleteCookie} from '../utils/publicFunction';
 import {useDispatch} from 'react-redux';
 import {actionSetLogoutData} from '../redux/reducer/userReducer';
+import {BeforeInstallPromptEvent} from '../pages/_app';
 
 type Props = {
 	handleClose: Dispatch<SetStateAction<boolean>>;
 	userName: string;
 	setLoginModal: Dispatch<SetStateAction<boolean>>;
+	installPrompt: BeforeInstallPromptEvent | undefined;
 };
-const DynamicSideNav = ({handleClose, userName, setLoginModal}: Props) => {
+
+const DynamicSideNav = ({
+	handleClose,
+	userName,
+	setLoginModal,
+	installPrompt,
+}: Props) => {
 	const {isLoaded, setIsLoaded} = useModalAnimationHook(handleClose);
 	const router = useRouter();
 	const dispatch = useDispatch();
@@ -45,6 +53,7 @@ const DynamicSideNav = ({handleClose, userName, setLoginModal}: Props) => {
 	const AccountHandler = () => {
 		router.push('/Account');
 	};
+
 	return (
 		<nav
 			className="fixed sm:hidden bg-gray-600/10 top-0 left-0 w-full h-screen backdrop-blur-sm"
@@ -134,6 +143,17 @@ const DynamicSideNav = ({handleClose, userName, setLoginModal}: Props) => {
 							onClick={() => setIsLoaded(false)}>
 							레시피
 						</Link>
+						<button
+							className={`${!installPrompt ? 'hidden' : null} absolute bottom-0 bg-green-600 w-full text-white text-lg p-2 m-2 rounded-lg`}
+							onClick={() =>
+								installPrompt
+									? installPrompt.prompt()
+									: alert(
+											'ios는 설정에서 홈화면의 추가를 눌러주세요',
+										)
+							}>
+							앱 설치로 더 편하게 사용해보세요
+						</button>
 					</div>
 				</div>
 			</article>

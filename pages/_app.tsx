@@ -12,6 +12,14 @@ import {Noto_Sans_KR} from 'next/font/google'; // 원하는 폰트 가져와서 
 
 const notoSansKr = Noto_Sans_KR({subsets: ['latin']});
 
+export type BeforeInstallPromptEvent = Event & {
+	prompt(): Promise<void>;
+	userChoice: Promise<{
+		outcome: 'accepted' | 'dismissed';
+		platform: string;
+	}>;
+};
+
 // 전역적으로 사용되는 부분
 export default function MyApp({Component, pageProps}: AppProps) {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -82,6 +90,25 @@ export default function MyApp({Component, pageProps}: AppProps) {
 		};
 	}, [router.events]);
 
+	//pwa앱 설치
+	const [installPrompt, setInstallPrompt] =
+		useState<BeforeInstallPromptEvent>();
+	useEffect(() => {
+		const appInstallHandler = (event: BeforeInstallPromptEvent) => {
+			setInstallPrompt(event);
+			event.preventDefault();
+		};
+
+		window.addEventListener('beforeinstallprompt', appInstallHandler);
+
+		return () => {
+			window.removeEventListener(
+				'beforeinstallprompt',
+				appInstallHandler,
+			);
+		};
+	}, []);
+
 	return (
 		<>
 			<Head>
@@ -124,7 +151,7 @@ export default function MyApp({Component, pageProps}: AppProps) {
 				<Provider store={store}>
 					<nav className="mb-12">
 						{/*globalNav이 가리는 부분을 방지하는 여백*/}
-						<GlobalNav></GlobalNav>
+						<GlobalNav installPrompt={installPrompt}></GlobalNav>
 					</nav>
 					<main className={notoSansKr.className}>
 						<Component {...pageProps} />
