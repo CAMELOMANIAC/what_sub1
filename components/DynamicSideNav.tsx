@@ -144,7 +144,7 @@ const DynamicSideNav = ({
 							레시피
 						</Link>
 						<button
-							className={`${!installPrompt ? 'hidden' : null} absolute bottom-0 bg-green-600 w-full text-white text-lg p-2 m-2 rounded-lg`}
+							className={`absolute bottom-0 bg-green-600 w-full text-white text-lg p-2 m-2 rounded-lg`}
 							onClick={() =>
 								installPrompt
 									? installPrompt.prompt()

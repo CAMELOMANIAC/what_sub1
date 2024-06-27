@@ -142,6 +142,7 @@ export default function MyApp({Component, pageProps}: AppProps) {
 					content={`/images/front_banner.png`}
 				/>
 				<meta name="theme-color" content="#009223" />
+				<link rel="manifest" href="/manifest.json" />
 				<link
 					rel=" shortcut icon "
 					href={`/images/front_banner.ico`}></link>
