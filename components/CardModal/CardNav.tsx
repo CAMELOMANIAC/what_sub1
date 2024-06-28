@@ -61,6 +61,7 @@ const CardNav = ({className, setPage, page}: props) => {
 		return () => {
 			if (currentButtonRefArray) {
 				resizeObserver.unobserve(currentButtonRefArray);
+				resizeObserver.disconnect();
 			}
 		};
 	}, []);
